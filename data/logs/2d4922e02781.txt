@@ -1,0 +1,6 @@
+No proxy configured — requests will go out directly
+
+[1/1] Processing: https://www.facebook.com/photo/?fbid=28367693232926618&set=a.252566568199328
+  No direct ID in URL, fetching post: https://www.facebook.com/photo/?fbid=28367693232926618&set=a.252566568199328
+  Post ID not found in URL
+  Could not extract post ID

@@ -1,0 +1,6 @@
+No proxy configured — requests will go out directly
+
+[1/1] Processing: http://127.0.0.1:5001
+  No direct ID in URL, fetching post: http://127.0.0.1:5001
+  Post ID not found in URL
+  Could not extract post ID

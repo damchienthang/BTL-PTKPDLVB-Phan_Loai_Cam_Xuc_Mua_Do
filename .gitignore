@@ -1,0 +1,27 @@
+# Virtual environment
+.venv/
+env/
+venv/
+ENV/
+
+# Sensitive environment variables and credentials
+.env
+*.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Binaries and executables
+*.exe
+
+# Temporary Excel lock files
+~$*.xlsx
+~$*.xls
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

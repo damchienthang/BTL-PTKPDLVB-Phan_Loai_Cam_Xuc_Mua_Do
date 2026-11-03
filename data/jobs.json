@@ -1,0 +1,282 @@
+[
+  {
+    "id": "1fb4e94c6186",
+    "name": "test",
+    "type": "simple_post",
+    "params": {
+      "urls": [
+        "https://www.facebook.com/groups/khenphim/permalink/2609384586202349/"
+      ],
+      "download_images": false
+    },
+    "status": "done",
+    "started_at": 1793169926.5912185,
+    "finished_at": 1793170318.0902214,
+    "error": null
+  },
+  {
+    "id": "ef0a6217ef6b",
+    "name": "test",
+    "type": "simple_post",
+    "params": {
+      "urls": [
+        "https://www.facebook.com/groups/khenphim/permalink/2609384586202349/"
+      ],
+      "download_images": false
+    },
+    "status": "done",
+    "started_at": 1793170997.9192586,
+    "finished_at": 1793171126.4647367,
+    "error": null
+  },
+  {
+    "id": "d9ba0dd9f863",
+    "name": "TBN",
+    "type": "simple_post",
+    "params": {
+      "urls": [
+        "https://www.facebook.com/cuongphimreview/posts/pfbid0CDzL1HAWQocU5cDPBPqq5X8MzmpxHyMqTZFAW7Mfzy49NmeLhxUCYFQH5uZCJQCql"
+      ],
+      "download_images": false
+    },
+    "status": "done",
+    "started_at": 1793171692.4648316,
+    "finished_at": 1793172611.6103077,
+    "error": null
+  },
+  {
+    "id": "1f7a49547a02",
+    "name": "TBN",
+    "type": "simple_post",
+    "params": {
+      "urls": [
+        "https://www.facebook.com/photo?fbid=10227454610350340&set=a.10220047795704603"
+      ],
+      "download_images": false
+    },
+    "status": "done",
+    "started_at": 1793172796.28771,
+    "finished_at": 1793172799.2723296,
+    "error": null
+  },
+  {
+    "id": "9fe2061ed859",
+    "name": "TBN2",
+    "type": "simple_post",
+    "params": {
+      "urls": [
+        "https://www.facebook.com/photo?fbid=10227454610350340&set=a.10220047795704603"
+      ],
+      "download_images": false
+    },
+    "status": "done",
+    "started_at": 1793172813.9485185,
+    "finished_at": 1793172818.9859056,
+    "error": null
+  },
+  {
+    "id": "2d4922e02781",
+    "name": "TBN2",
+    "type": "simple_post",
+    "params": {
+      "urls": [
+        "https://www.facebook.com/photo/?fbid=28367693232926618&set=a.252566568199328"
+      ],
+      "download_images": false
+    },
+    "status": "done",
+    "started_at": 1793172859.6799555,
+    "finished_at": 1793172862.2696996,
+    "error": null
+  },
+  {
+    "id": "0c02ea858b36",
+    "name": "TBN2",
+    "type": "simple_post",
+    "params": {
+      "urls": [
+        "https://www.facebook.com/groups/khenphim/permalink/2582033612270780/"
+      ],
+      "download_images": false
+    },
+    "status": "done",
+    "started_at": 1793172925.7772396,
+    "finished_at": 1793173079.2768826,
+    "error": null
+  },
+  {
+    "id": "715c93137eb9",
+    "name": "Single posts — Oct 28, 14:45",
+    "type": "simple_post",
+    "params": {
+      "urls": [
+        "https://www.facebook.com/photo/?fbid=1858071312215489&set=a.760085335347431&__cft__[0]=AZinLdSXLzW2n_-vaZ3xJZXMiygIbIeuqW3BWi4TUhFcQdnX3dW6DSt075hEDOQDS-gUmsq3UQ8X9IrSP-sfPT4Gut5I7r_r8ym6tzwZZUa614BCvCrQLjRRJdh970MQneGiBcNAIiqqxVw9nqfA29CaIa3f59ju&__tn__=EH-R"
+      ],
+      "download_images": true
+    },
+    "status": "done",
+    "started_at": 1793173545.8208086,
+    "finished_at": 1793173550.5030556,
+    "error": null
+  },
+  {
+    "id": "5a5ee5a35aa4",
+    "name": "Single posts — Oct 28, 14:45",
+    "type": "simple_post",
+    "params": {
+      "urls": [
+        "https://www.facebook.com/photo/?fbid=1858071312215489&set=a.760085335347431&__cft__[0]=AZinLdSXLzW2n_-vaZ3xJZXMiygIbIeuqW3BWi4TUhFcQdnX3dW6DSt075hEDOQDS-gUmsq3UQ8X9IrSP-sfPT4Gut5I7r_r8ym6tzwZZUa614BCvCrQLjRRJdh970MQneGiBcNAIiqqxVw9nqfA29CaIa3f59ju&__tn__=EH-R"
+      ],
+      "download_images": false
+    },
+    "status": "done",
+    "started_at": 1793173553.9230049,
+    "finished_at": 1793173556.4961953,
+    "error": null
+  },
+  {
+    "id": "76793f661d41",
+    "name": "Single posts — Oct 28, 14:48",
+    "type": "simple_post",
+    "params": {
+      "urls": [
+        "https://www.facebook.com/photo?fbid=1858071312215489&set=a.760085335347431"
+      ],
+      "download_images": false
+    },
+    "status": "done",
+    "started_at": 1793173707.6987374,
+    "finished_at": 1793173710.343054,
+    "error": null
+  },
+  {
+    "id": "f45dbfdb2bcd",
+    "name": "TBN2",
+    "type": "simple_post",
+    "params": {
+      "urls": [
+        "https://www.facebook.com/NMQ.thaoxu1987/posts/pfbid0wJwBLj1XMyeJF5w8xTa1CksJgYxK1pbcEpLzeGe5FRz5UxUs7UbpMc8Qsb4mf9Zbl"
+      ],
+      "download_images": false
+    },
+    "status": "done",
+    "started_at": 1793174291.6004293,
+    "finished_at": 1793174893.7901318,
+    "error": null
+  },
+  {
+    "id": "5176eb62128a",
+    "name": "TBN2",
+    "type": "simple_post",
+    "params": {
+      "urls": [
+        "http://127.0.0.1:5001"
+      ],
+      "download_images": false
+    },
+    "status": "done",
+    "started_at": 1793174964.5623422,
+    "finished_at": 1793174965.5750146,
+    "error": null
+  },
+  {
+    "id": "b3824f538edb",
+    "name": "TBN2",
+    "type": "simple_post",
+    "params": {
+      "urls": [
+        "https://www.facebook.com/unfilmde/posts/pfbid02uCBVbhngScf81HMD7xUhQguB4HebrZp1ndRVUv1Q9mQwpzNCg58qB6oKq4suoAK9l"
+      ],
+      "download_images": false
+    },
+    "status": "done",
+    "started_at": 1793175774.654639,
+    "finished_at": 1793176351.7894592,
+    "error": null
+  },
+  {
+    "id": "420da3adca66",
+    "name": "tbn3",
+    "type": "simple_post",
+    "params": {
+      "urls": [
+        "https://www.facebook.com/imhangdauu/posts/pfbid02bJuSbEbUU4GDEjZtFfMkaaKXPotZ115exZwqpSQkoSHXHFkLV9WbQNRpYJMZpHy4l"
+      ],
+      "download_images": true
+    },
+    "status": "done",
+    "started_at": 1793361025.345008,
+    "finished_at": 1793361459.7093017,
+    "error": null
+  },
+  {
+    "id": "c2800d725b4f",
+    "name": "tbn3",
+    "type": "simple_post",
+    "params": {
+      "urls": [
+        "https://www.facebook.com/cuongphimreview/posts/pfbid0CXnrGnTyR3Y9gUXqcBz7mE4RcGqe8rMT3RzLMMEwCrowWzn12yoiUtPSrvgAKfRzl",
+        "https://www.facebook.com/cuongcinema/posts/pfbid02QWNEsmKYFd7UaEpHsX8ZQTRCtS41LhyUYRf6SZAcmQppNA7mXQyzBDupRnEBHoKUl",
+        "https://www.facebook.com/radiantmovie/posts/pfbid023AFYatFVV8qTwDvT2RWUQ2sjpDPccZvzd49BPneDdqVqBVtAPoJ864hojp64gJeol",
+        "https://www.facebook.com/groups/khenphim/permalink/2582033612270780/",
+        "https://www.facebook.com/cuongphimreview/posts/pfbid0gLc7XnPfaNy9mn6D9Lgp3A2DjwZhk88e4NkJRDS81qafnCpXn1dEGEivBkJ1yB35l"
+      ],
+      "download_images": true
+    },
+    "status": "done",
+    "started_at": 1793361646.8205724,
+    "finished_at": 1793362598.3765728,
+    "error": null
+  },
+  {
+    "id": "4973a5683732",
+    "name": "Single posts — Oct 31, 22:13",
+    "type": "simple_post",
+    "params": {
+      "urls": [
+        "https://www.facebook.com/share/p/1Km6FhxkbD/",
+        "https://www.facebook.com/share/p/1BuMVFToDD/",
+        "https://www.facebook.com/share/p/1DNvB67qVC/",
+        "https://www.facebook.com/share/v/1CGMyp4t7n/",
+        "https://www.facebook.com/share/p/18jXYWLSB1/",
+        "https://www.facebook.com/share/p/19n4pxUekq/"
+      ],
+      "download_images": true
+    },
+    "status": "running",
+    "started_at": 1793459583.8842902,
+    "finished_at": null,
+    "error": null
+  },
+  {
+    "id": "c337c4aec707",
+    "name": "Single posts — Nov 01, 17:46",
+    "type": "simple_post",
+    "params": {
+      "urls": [
+        "https://www.facebook.com/groups/1489850877861839/permalink/3466354553544785/",
+        "https://www.facebook.com/groups/1489850877861839/permalink/3475755469271360/",
+        "https://www.facebook.com/search/top/?q=xin%20review%20tr%E1%BA%A1i%20bu%C3%B4n%20ng%C6%B0%E1%BB%9Di",
+        "http://facebook.com/duyenhuynh2912/posts/pfbid02SrLMLZF9kb3FdqkPfMHZ6MubQdjGPpvrjW3UFtaDAkNdjtc6WepfG9JZsUtBqVTJl",
+        "https://www.facebook.com/su.tram.77312/posts/pfbid0K4yDg9pnELjpMSYb84pwkNbnRatgq93Vceb4EoJ3Q9CGmoXe2hpQZYHqD7cfa3fwl",
+        "https://www.facebook.com/tina.tinh.33/posts/pfbid0rWETbh8BN3L5moz7WmggyUeuuYTP4na6M4dUVy3wkegEpBFAJdX9cEs9GxBoffEPl",
+        "https://www.facebook.com/permalink.php?story_fbid=pfbid0ciht5xi8maDBPzFL2BwPgueavXNHGh9uPuzC6mBjmXQKzcHjofdNbLmPUWZg7F8gl&id=61575515854532",
+        "https://www.facebook.com/groups/khenphim/permalink/2586522381821903/",
+        "https://www.facebook.com/ngocc.be.593414/posts/pfbid02cxuEwrHaBd8eeVCM7H2bYFWbvMZ9LoefUx34pH6KVLtrpQTT6e8riEtXGg3fcDsUl",
+        "https://www.facebook.com/nguyenvanloi.220420/posts/pfbid02nrUQsVo1pYuB1ZG78UJ2MJZ3C3GcZAYxAXSPhcB89hWJLbuHFrLWYRpyezJokQyrl",
+        "https://www.facebook.com/huong.nguyen.91230/posts/pfbid0pnR1iTJAqJUzochHV8wvhfLpq1RKf7ct5wk84XpEakHnTeR1dkH4NyusJ1MbWyUel",
+        "https://www.facebook.com/groups/chosamsungphoyen/permalink/4821269821426098/",
+        "https://www.facebook.com/minh.nhi.914294/posts/pfbid02Exfxvi6P6YE1TLUGPWo4XMjUWxuJxV9A1StKWy5WVBxtbmNpc8emUu2k6FB17gSbl",
+        "https://www.facebook.com/groups/khenphim/permalink/2589178004889674/",
+        "https://www.facebook.com/namlunlangthang1403/posts/pfbid02j2ZM1gAyNi9Y7tDK9REJKxfaKfEL4TMF58AhEQnkzmb6Uhmnnoz5Qd6CvdnfzPAUl",
+        "https://www.facebook.com/Mitanh239/posts/pfbid026uUKHhLXXtVCPxUjc4CLTykC8LyVMQT4TgXZ75xgZwRqXMVYhm6bPEmYKGQZ5VRBl",
+        "https://www.facebook.com/bich.thuy.aerobic/posts/pfbid0Pa6FxjPuxuMkhW6kPd7AUbDriQckC4UBrfZkSWUguD1gsZMH3jum1e1d8yKFpBgYl"
+      ],
+      "download_images": true
+    },
+    "status": "done",
+    "started_at": 1793530010.4208274,
+    "finished_at": 1793530625.6977465,
+    "error": null
+  }
+]

@@ -1,0 +1,126 @@
+No proxy configured — requests will go out directly
+
+[1/1] Processing: https://www.facebook.com/groups/khenphim/permalink/2582033612270780/
+  No direct ID in URL, fetching post: https://www.facebook.com/groups/khenphim/permalink/2582033612270780/
+  Found post ID from og:url: 2582033612270780
+  Post ID: 2582033612270780
+  Fetching comments for post 2582033612270780...
+  Extracted post info: {'post_story_id': 'UzpfSTEwMDAxNTA1OTg2Mzg1ODpWSzoyNTgyMDMzNjEyMjcwNzgw', 'media_id': None}
+    Hoàng Thu Trang: Mình mới đi xem về thấy chạy seeding mkt khen thôi chứ k có 
+      Toàn Kaa: Hoàng Thu Trang chuẩn thật, hôm qua e đi xem về thấy bth mà 
+      Văn Mai Trang: Hoàng Thu Trang có ai chế..t ko b 😂
+    Ly Na: Mới xem Trại Buôn Người xong mà thấy hơi hụt hẫng 😅. Nội dun
+      Mai Anh: Ly Na mình cũng vừa đi xen về, cảm giác tương tự b luôn ấyyy
+      Toàn Kaa: Mai Anh chuẩn luôn ạ, thấy cứ sao sao ấy
+      Trần Quốc Huy: Ly Na chỗ đó hơi vô lý nhưng chắc do đạo diễn ko muốn cho ng
+      Ly Na: Trần Quốc Huy oh mình đi xem vì dàn diễn viên phim Hùng Long
+      Trần Quốc Huy: Ly Na chắc do action C trong phim này bị phế võ công quá,toà
+      Toàn Kaa: Trần Quốc Huy chuẩn b, xem đánh đấm mà thấy chán
+      Trần Quốc Huy: Toàn Kaa có phải phim võ thuật đâu
+      Dung Anh: Ly Na cái đấy t thấy diễn viên trả lời là do chủ quản thực t
+    Hải Bánh: Seeding quá đà. Phim dở. Nếu nói trắng ra cảm thấy phim Thiê
+      Toàn Kaa: Hải Bánh chuẩn b oi, giống e
+    Nguyễn Hoàng Phú: Thấy nhiều con vợ cmt khen hay các kiểu. Cho đến khi có vài 
+      Hoàng Thu Trang: Nguyễn Hoàng Phú tui cx đã từng hứa vs lòng k đi xem film vi
+      Toàn Kaa: TCTK là gì vậy b
+      Toàn Kaa: Hoàng Thu Trang đúng thật
+      Hoàng Thu Trang: Toàn Kaa  film tử chiến trên không đó b
+      Toàn Kaa: Hoàng Thu Trang à, phim trại này nội dung bối cảnh khá giống
+      Nguyễn Hoàng Phú: Thoại phim Việt rất chán + kịch bản xàm L, diễn xuất thì nhò
+    Cường Trần: PHIM DUY NHẤT CỦA VIỆT NAM MÀ KO CẦN 1 REVIEW 😃
+      Toàn Kaa: Cường Trần e khoái đánh đấm, phim này đánh đấm ổn k ạ
+      Nhi Nhi: Toàn Kaa đấm suốt phim
+      Annie Nguyen: Toàn Kaa đánh combat ít chủ yếu là đánh người hành hạ là nhi
+    Cindy Vananh: Lần đầu đi coi mà phải mua ghế hàng A.  Đáng xem nha
+      Cindy Vananh: 
+      Thu Hà: Cindy Vananh c ngồi thấy mỏi cổ k c
+      Cindy Vananh: Thu Hà đành chịu thôi, do cái tội mua vé giờ chót :))
+      Thu Hà: Cindy Vananh chứ e nhìn là thẩy ê ê cái cổ lắm gòii đó kaka
+    Bes Hằng: Hằng Ny nè
+    Chica Chica: Phim có phụ đề tiếng Anh ko ạ? Mình đi xem với bạn người nướ
+      Vicky Lu: Chica Chica có đó bạn
+      Chica Chica: Vicky Lu cám ơn bạn
+    Chiến Văn: Trại buôn người - rất đáng xem và nên được chiếu rộng rãi! 
+
+    Vjkky Hoa: Sóc Nhím Gấuu
+    Nguyễn Dũng: phim dở vl
+    Thoa Kim Lê: Hay nha , kịch tính , hấp dẫn
+    Max Bùi: Coi ổn áp nhắm. Trừ cái vụ combat hơi lê thê thì mọi thứ ổn 
+    Tú Chảnh: Hiệp Tý Linh ChaeRim Ngọc Hiệp vào việc
+      Linh ChaeRim: Tú Chảnh chuẩn bị thôi, kkk😂
+    Kim Phượng: Mới coi hồi trưa phim khá nha, đầu tư dựng cảnh hoành tráng 
+    Nguyễn Hương: Phim rất rất rất đáng xem ạ
+    Diễm Trang: Đỉnh luôn
+    Nghĩa Sama: CGV mình mua tòan 115k/ve
+      Amy Tran: Nghĩa Sama coi galaxy rẻ or beta j đó
+    Võ Hoàng Thiên Hương: Nó hơi ảo ảo xíu nhma nó peak vi ci eooooo. Nó hài nó đã
+    Văn Kha: Hay mà hài 10₫
+    Nguyễn Bùi Huyền Linh: Hay lắm b ơi, tui vừa đi xem về. Xem cảm giác chân thật, diễ
+    Thuy Phan: Phim này mới ra à mn sao nghe giống phim gì Quang Tuấn Thanh
+    Dương Dương: hay nha. tui mới coi xong
+    Hàng Phượng Nguyễn: E mới đi coi về, hay nha, kịch tính, hấp dẫn, dàn dv hơi bị 
+    Trang Hoàng Mai: Hay nên đi xem nhé mng ơii
+    Ngan Dang Kim: Xem hay nha. Vừa xem xong
+    Tiểuu Băng Băng: Ở beta có phim này k ạ
+      Thời Mới: Tiểuu Băng Băng k nha
+    Linh Tây: NGUYỄN MẠNH PHƯƠNGnh
+    Cẩm Nhung: T Khánh Duy đi xem
+    Hồ Uyên: hay
+    Quỳnh Rượu Ngon: hay nhá
+    Anh Phuong Ngoc Nguyen: Trên 18 mang cccd đi nhé bạn
+    Đặng Thuỳ: Hay vừa xem
+    Hoàng Phúc Trần: Hay nha
+    Vũ T Nga: Hay cực
+    Mộc Miên: Cũng hay nhưng không xuất sắc như lời đồn.
+    Le Le: Cũng đag tính mai đi xem đây. Mà có 1 m
+    Thúy Thúy Đặng: Hay nha
+    Trang Trầnn: Mình vừa xem xong. Đỉnh lắm. Steven đóng ngầu ghê
+    Noémie Trần: Mytine Phuong Hoa Hoa đi
+    Lê Quỳnh Anh: hay nha. ko uong tiền vé đâu
+    Ha Duong: Hay lắm
+    Tranq Quỳnh: Phim tuyên truyền giáo dục tốt
+    Thanh Ngân: Phim hay mà sao mn chê dữ vậy?
+    Thu Hien: Mình thấy khá giống Thiên Đường Máu, và thấy Thiên Đường Máu
+    Nguyễn Ngọc Kim: đỉnh điên
+    Duong Thuy: Ngày nào cũng có lịch chiếu ạ các bạn
+    Lê Đặng Trung: Hay lắm
+    Trinh Quach Tuan: Phim hay nha bro
+    Nguyễn Thị Thảo: Huhu hay lắm ạ , lần đầu xem mà vừa khóc vừa cười cùng lúc í
+    Oliver Yanzii: Minh Dương ee nta review nè tr
+    Ngô Nguyệt Ánh: Hay nha ￼, rất đáng tiền
+    Đặng Hà Dâng: Hay lắm luôn á
+    MH Hân: hay nha
+    Lê Văn Thiện: Hay nha
+    Sing Can: Đây là bộ phim thứ 3 mình xem về đề tài nay trong năm nay rồ
+    Nguyễn Yoona: Rất hay
+    Aley Võ: Hay lắm luôn. Đi xem ngay liền cho tuiii
+    Linn Nhii: Hay
+    Nguyễn Văn Luân: ảo vclin ra ấy😂😂
+    Hà My: có khóc ko mn
+    Lê Hoàng Hải: Hay nên đi ủng hộ phim việt phim như này cộng đồng sẽ ủng hộ
+    Thảo Quỳnh: hay á
+    Hoang Tien Anh: Hay
+    Hà Anh: Vừa xem xong và gặp đoàn phim lun. 
+Hay - kịch tính - hồi hộ
+    Phuong Quynh: Nma full rạp cái ngày mà gluu phim â :)) canh nhé
+    Phuong Quynh: Trên 18 và PHẢI MANG CCCD Ạ
+    Phuong Quynh: Hay ạaaaa meeeere
+    Chang Lee: Cũng cũng
+    Luna Linn Nguyễn: 11g nay tui mới chuẩn bị đi coi. Hẹ hẹ
+    Đức Mừng: Tôi sợ bạn ko mua được vé ý ở đó mà hỏi
+      Nguyễn Thiên Quang: Đức Mừng vé đầy ra ông cố ơi
+      K' Tỉnh: Đức Mừng trên rừng hay gì k mua đc vé :))) xuất chiếu thì tr
+      Hà Suri: Đức Mừng sợ k có tiền để mua thôi chứ gế thì bao la
+    Phạm Kiên Trung: Hay
+    Nguyễn Thư: Hay nhé bạn .
+    Tấn Đạt: Nó 1 màu y chang Thiên Đường Máu, kiểu như quy mô to hơn TĐM
+    Tuan Anh: Quá hay nhé
+    Nguyễn Quang Tú: Đỉnh vcl luôn á, xem đi b
+    Nhật Bổn: Tuấn Đặng thấy bảo hay lứmm
+    Nguyễn Quốc Minh: Cũng hay á
+    Đặng Thuỳ: Hay
+    Khangg Võ: 10/10 … hay điên. Coi đi ko thì tiếc
+    Tiễu Nhy Car: đợi 1 tiếng rưỡi nữa coi xong kể cho nghe
+  Found 81 comments
+  Saved to data\simple_post\2582033612270780\2582033612270780.json
+  Image downloading is off — skipping album images

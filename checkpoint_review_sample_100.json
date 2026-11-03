@@ -1,0 +1,702 @@
+{
+  "20": {
+    "row_id": 20,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "HIGH",
+    "reason": "Bình luận khen ngợi nhân vật phản diện trong phim thể hiện sự thích thú, tích cực đối với diễn viên hoặc vai diễn."
+  },
+  "112": {
+    "row_id": 112,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "HIGH",
+    "reason": "Nhận xét trực tiếp bộ phim rất hay, rõ ràng mang cảm xúc tích cực."
+  },
+  "126": {
+    "row_id": 126,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "HIGH",
+    "reason": "Khen ngợi phim hết lời (wow cả chục lần, không uổng tiền, không hột sạn) và mê phong cách phản diện, nhãn cũ Positive chính xác."
+  },
+  "130": {
+    "row_id": 130,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "HIGH",
+    "reason": "Sợ hãi/ám ảnh do nội dung phim mang lại được tính là phim chạm đến cảm xúc người xem, là khen phim (Positive), sửa nhãn cũ từ Negative thành Positive."
+  },
+  "139": {
+    "row_id": 139,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Nội dung reply cụt lủn, tag tên hoặc không đủ ý nghĩa độc lập để đánh giá."
+  },
+  "179": {
+    "row_id": 179,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Reply trao đổi thông tin nội bộ giữa người dùng về độ tuổi xem phim, không đủ nhận xét đánh giá độc lập."
+  },
+  "194": {
+    "row_id": 194,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "MEDIUM",
+    "reason": "Nhận xét về sự tàn ác được miêu tả trong phim phản ánh độ chân thực và ấn tượng mạnh của phim đối với khán giả, sửa thành Positive."
+  },
+  "197": {
+    "row_id": 197,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "MEDIUM",
+    "reason": "Bình luận giải thích tình tiết phim nhằm làm rõ nội dung câu chuyện, thể hiện sự quan tâm đến phim, sửa nhãn từ Negative thành Positive."
+  },
+  "254": {
+    "row_id": 254,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Reply ngắn gọn nhắc đến phân loại độ tuổi (18+ c a), phụ thuộc ngữ cảnh trò chuyện, loại bỏ."
+  },
+  "257": {
+    "row_id": 257,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "HIGH",
+    "reason": "Cảm xúc run, sợ, khóc khi xem phim cho thấy phim rất ám ảnh và thành công, sửa nhãn từ Negative thành Positive."
+  },
+  "295": {
+    "row_id": 295,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "MEDIUM",
+    "reason": "Biểu cảm thốt lên kinh ngạc kèm icon cười thể hiện sự bất ngờ và ấn tượng với nội dung phim."
+  },
+  "310": {
+    "row_id": 310,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Bình luận rủ rỉ trò chuyện cá nhân, không đánh giá phim, giữ nguyên nhãn REMOVE."
+  },
+  "317": {
+    "row_id": 317,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Lời rủ đi xem phim kèm tag tên, không chứa đánh giá nội dung phim, giữ nguyên REMOVE."
+  },
+  "371": {
+    "row_id": 371,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Reply cụt lủn (kh nha ạ), phụ thuộc hoàn toàn vào bình luận cha, loại bỏ."
+  },
+  "401": {
+    "row_id": 401,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Reply 'Tui cũng mê ảnh' là bình luận phụ thuộc hoàn toàn vào ý kiến của bình luận cha trước đó, không tự xác định được đối tượng, cần loại bỏ."
+  },
+  "406": {
+    "row_id": 406,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Rủ đi xem phim, không đánh giá phim, giữ nguyên REMOVE."
+  },
+  "409": {
+    "row_id": 409,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Ý kiến cá nhân muốn đi xem, không đánh giá phim, giữ nguyên REMOVE."
+  },
+  "427": {
+    "row_id": 427,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Rủ đi xem phim, giữ nguyên REMOVE."
+  },
+  "459": {
+    "row_id": 459,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Reply rủ rê đi xem phim ('triển thôi cj ơi'), thiếu đánh giá độc lập về phim, loại bỏ."
+  },
+  "483": {
+    "row_id": 483,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Tag nhiều người rủ đi xem phim, không đánh giá phim, giữ nguyên REMOVE."
+  },
+  "570": {
+    "row_id": 570,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Trao đổi cá nhân, không liên quan đến bộ phim."
+  },
+  "586": {
+    "row_id": 586,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "HIGH",
+    "reason": "Bình luận ngắn thể hiện sự khen ngợi, đánh giá cao (Chất lừ)."
+  },
+  "711": {
+    "row_id": 711,
+    "filter_status": "KEEP",
+    "sentiment": "Neutral",
+    "confidence_level": "HIGH",
+    "reason": "Cung cấp thông tin khách quan về lịch chiếu phim."
+  },
+  "721": {
+    "row_id": 721,
+    "filter_status": "KEEP",
+    "sentiment": "Neutral",
+    "confidence_level": "HIGH",
+    "reason": "Hỏi thông tin địa điểm chiếu phim một cách khách quan."
+  },
+  "740": {
+    "row_id": 740,
+    "filter_status": "KEEP",
+    "sentiment": "Neutral",
+    "confidence_level": "HIGH",
+    "reason": "Hỏi thông tin liên quan đến bộ phim."
+  },
+  "748": {
+    "row_id": 748,
+    "filter_status": "KEEP",
+    "sentiment": "Neutral",
+    "confidence_level": "HIGH",
+    "reason": "Câu hỏi đánh giá về phim nhưng mang tính chất hỏi thông tin, chưa rõ thái độ rõ rệt."
+  },
+  "775": {
+    "row_id": 775,
+    "filter_status": "REMOVE",
+    "sentiment": "Negative",
+    "confidence_level": "HIGH",
+    "reason": "Chỉ tag tên bạn bè và nhắc đến việc tag, không có nội dung đánh giá phim."
+  },
+  "777": {
+    "row_id": 777,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Rủ rê, tag tên bạn bè, không chứa nội dung độc lập đánh giá phim."
+  },
+  "794": {
+    "row_id": 794,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Reply rủ rê ngắn gọn, phụ thuộc hoàn toàn vào ngữ cảnh để hiểu."
+  },
+  "808": {
+    "row_id": 808,
+    "filter_status": "KEEP",
+    "sentiment": "Neutral",
+    "confidence_level": "HIGH",
+    "reason": "Cung cấp thông tin khách quan về việc dời lịch chiếu phim."
+  },
+  "819": {
+    "row_id": 819,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Reply rủ đi xem phim ngắn gọn, phụ thuộc ngữ cảnh."
+  },
+  "846": {
+    "row_id": 846,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Chỉ tag tên bạn bè, không có nội dung bàn luận về phim."
+  },
+  "874": {
+    "row_id": 874,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Nhắn nhủ cá nhân với bạn bè, không đánh giá nội dung phim."
+  },
+  "880": {
+    "row_id": 880,
+    "filter_status": "KEEP",
+    "sentiment": "Neutral",
+    "confidence_level": "HIGH",
+    "reason": "Hỏi thông tin khách quan về suất chiếu và thời gian của phim."
+  },
+  "929": {
+    "row_id": 929,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "MEDIUM",
+    "reason": "Bình luận thể hiện sự hào hứng và cảm xúc mạnh khi xem (khóc trôi rạp)."
+  },
+  "1101": {
+    "row_id": 1101,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Biểu cảm cảm thán ngắn gọn phụ thuộc vào bình luận cha."
+  },
+  "1103": {
+    "row_id": 1103,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Rủ rê đi xem phim ngắn gọn, thiếu đánh giá độc lập."
+  },
+  "1113": {
+    "row_id": 1113,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Rủ rê đi xem phim ngắn gọn, thiếu đánh giá độc lập."
+  },
+  "1132": {
+    "row_id": 1132,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Thể hiện sự hưởng ứng ngắn gọn, phụ thuộc ngữ cảnh cha."
+  },
+  "1135": {
+    "row_id": 1135,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Từ đệm tán đồng ngắn gọn, phụ thuộc hoàn toàn vào bình luận cha."
+  },
+  "1146": {
+    "row_id": 1146,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Tag tên bạn bè rủ đi xem phim, phụ thuộc vào ngữ cảnh và không có đánh giá nội dung độc lập."
+  },
+  "1214": {
+    "row_id": 1214,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Tag tên rủ rê lên lịch đi xem, không đánh giá phim."
+  },
+  "1222": {
+    "row_id": 1222,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Reply nhắc bạn xem lịch chiếu, không mang tính đánh giá độc lập về phim."
+  },
+  "1277": {
+    "row_id": 1277,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "MEDIUM",
+    "reason": "Nội dung ngắn, mơ hồ, gắn với tên riêng và không đủ ngữ cảnh đánh giá phim."
+  },
+  "1335": {
+    "row_id": 1335,
+    "filter_status": "KEEP",
+    "sentiment": "Neutral",
+    "confidence_level": "HIGH",
+    "reason": "Nhận xét khách quan về lượng khán giả đông đúc khi đi xem phim mục tiêu."
+  },
+  "1348": {
+    "row_id": 1348,
+    "filter_status": "KEEP",
+    "sentiment": "Negative",
+    "confidence_level": "HIGH",
+    "reason": "Chê bai doanh thu ảo, mô típ phim phản ánh xã hội nhàm chán, có thái độ tiêu cực rõ ràng đối với phim."
+  },
+  "1375": {
+    "row_id": 1375,
+    "filter_status": "KEEP",
+    "sentiment": "Neutral",
+    "confidence_level": "HIGH",
+    "reason": "Bình luận mang tính chất thông tin hoặc dự đoán doanh thu khách quan, không thể hiện cảm xúc cá nhân rõ rệt."
+  },
+  "1390": {
+    "row_id": 1390,
+    "filter_status": "KEEP",
+    "sentiment": "Negative",
+    "confidence_level": "HIGH",
+    "reason": "Chê bai phim của Trấn Thành (hoặc phim mục tiêu) do hiệu ứng đám đông chứ thực chất không hay."
+  },
+  "1607": {
+    "row_id": 1607,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Nội dung vô nghĩa, chỉ mang tính tag bạn bè đùa cợt."
+  },
+  "1670": {
+    "row_id": 1670,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Nhận xét về page thay vì bàn luận trực tiếp về nội dung bộ phim."
+  },
+  "1719": {
+    "row_id": 1719,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "MEDIUM",
+    "reason": "Đề cập đến một đối tượng khác không rõ ràng (TCTK) và gắn với ngữ cảnh so sánh không đủ độc lập."
+  },
+  "1720": {
+    "row_id": 1720,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Reply tranh cãi cá nhân với người dùng khác, thiếu nhận xét độc lập về phim."
+  },
+  "1735": {
+    "row_id": 1735,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Bình luận mang tính trò chuyện cá nhân hoặc thắc mắc về tình tiết phụ không đại diện cho đánh giá tổng thể phim."
+  },
+  "1773": {
+    "row_id": 1773,
+    "filter_status": "KEEP",
+    "sentiment": "Negative",
+    "confidence_level": "HIGH",
+    "reason": "Đánh giá phim 'quá bình thường, ko hay', cảm thấy hụt hẫng vì kỳ vọng quá cao do seeding."
+  },
+  "1897": {
+    "row_id": 1897,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "HIGH",
+    "reason": "Bình luận đánh giá phim khá cuốn, rạp xem không rời mắt, thuộc top ổn, dù có nhắc sạn nhỏ nhưng nhìn chung là khen."
+  },
+  "1949": {
+    "row_id": 1949,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Câu hỏi cụt lủn, trò chuyện cá nhân không liên quan đến đánh giá phim."
+  },
+  "2020": {
+    "row_id": 2020,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "MEDIUM",
+    "reason": "Nói về Admin của trang và nghi vấn seeding cho phim khác, không đánh giá phim mục tiêu."
+  },
+  "2126": {
+    "row_id": 2126,
+    "filter_status": "KEEP",
+    "sentiment": "Negative",
+    "confidence_level": "HIGH",
+    "reason": "So sánh thua kém phim khác, chê hình ảnh không đẹp, âm thanh lộn xộn, tình tiết thừa và ảo."
+  },
+  "2133": {
+    "row_id": 2133,
+    "filter_status": "KEEP",
+    "sentiment": "Negative",
+    "confidence_level": "HIGH",
+    "reason": "Phản hồi chỉ trích thái độ của một bộ phận khán giả cực đoan, mang sắc thái công kích tranh cãi."
+  },
+  "2152": {
+    "row_id": 2152,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Tag tên rủ rê đi xem phim, không chứa đánh giá nội dung phim."
+  },
+  "2164": {
+    "row_id": 2164,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "HIGH",
+    "reason": "Khen ngợi dàn diễn viên tên tuổi và chất lượng phim, thể hiện sự an tâm và hài lòng."
+  },
+  "2228": {
+    "row_id": 2228,
+    "filter_status": "KEEP",
+    "sentiment": "Negative",
+    "confidence_level": "HIGH",
+    "reason": "Chê trách hành động của nhân vật trong phim quá ngớ ngẩn và bốc đồng gây tức tối cho người xem, phản ánh sự không hài lòng với kịch bản/phát triển nhân vật."
+  },
+  "2284": {
+    "row_id": 2284,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Là một reply cụt lủn nhắc tên người dùng và 'ok a', phụ thuộc ngữ cảnh cha và không đủ ý nghĩa đánh giá phim độc lập."
+  },
+  "2297": {
+    "row_id": 2297,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Câu hỏi trò chuyện cá nhân giữa người dùng ('...mà a coi chưa') không thể hiện nội dung đánh giá phim độc lập rõ ràng."
+  },
+  "2320": {
+    "row_id": 2320,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Reply giao tiếp cá nhân ('Rio Thảo ok bạn'), không mang thông tin đánh giá phim."
+  },
+  "2326": {
+    "row_id": 2326,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "MEDIUM",
+    "reason": "Biểu cảm 'Nghe nói ghê lắm kkk' thể hiện sự hào hứng, tò mò tích cực đối với yếu tố giật gân/đáng sợ của phim."
+  },
+  "2331": {
+    "row_id": 2331,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Trò chuyện tag tên cá nhân không liên quan đến đánh giá phim."
+  },
+  "2338": {
+    "row_id": 2338,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Tương tác cá nhân giữa người dùng ('đề e thử ạ'), không chứa thông tin đánh giá phim."
+  },
+  "2358": {
+    "row_id": 2358,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Câu hỏi rủ rê/hỏi han cá nhân ('xem chưa c'), không bàn về nội dung phim."
+  },
+  "2378": {
+    "row_id": 2378,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Chia sẻ thông tin cá nhân ngắn gọn 'Chưa xem chị ơi', không đủ đánh giá phim độc lập."
+  },
+  "2387": {
+    "row_id": 2387,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Reply cá nhân hẹn hò xem phim, không chứa ý kiến đánh giá phim."
+  },
+  "2394": {
+    "row_id": 2394,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Chia sẻ cá nhân 'Chj chưa xem nhé', không có nội dung đánh giá phim."
+  },
+  "2415": {
+    "row_id": 2415,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Reply đồng tình ngắn gọn ('đúng thật') phụ thuộc hoàn toàn vào bình luận cha."
+  },
+  "2421": {
+    "row_id": 2421,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "MEDIUM",
+    "reason": "Bình luận mô tả hành động kịch tính trong phim ('đấm suốt phim') với sắc thái thích thú, hào hứng với pha hành động."
+  },
+  "2455": {
+    "row_id": 2455,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Tag tên rủ đi xem phim, không có nội dung bình luận về phim."
+  },
+  "2726": {
+    "row_id": 2726,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Bình luận phàn nàn về giao diện Facebook/tính năng thả cảm xúc thay vì bàn về phim."
+  },
+  "2769": {
+    "row_id": 2769,
+    "filter_status": "KEEP",
+    "sentiment": "Negative",
+    "confidence_level": "HIGH",
+    "reason": "Phân tích chi tiết và chê bai logic kịch bản, sự phát triển tình tiết và hành động của nhân vật trong phim là vô nghĩa, tào lao."
+  },
+  "2795": {
+    "row_id": 2795,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Reply đồng tình cụt lủn ('Bùi Thu đúng vậy!'), phụ thuộc hoàn toàn vào bình luận cha để hiểu ý."
+  },
+  "2898": {
+    "row_id": 2898,
+    "filter_status": "KEEP",
+    "sentiment": "Negative",
+    "confidence_level": "HIGH",
+    "reason": "Góp ý chê bai điểm chưa hợp lý trong kịch bản và sự thiếu sót chiều sâu tâm lý nhân vật của phim."
+  },
+  "2911": {
+    "row_id": 2911,
+    "filter_status": "KEEP",
+    "sentiment": "Neutral",
+    "confidence_level": "HIGH",
+    "reason": "Đưa ra nhận định khách quan về thời lượng và định dạng truyền tải của câu chuyện phim mà không mang thái độ khen chê rõ rệt."
+  },
+  "2913": {
+    "row_id": 2913,
+    "filter_status": "REVIEW",
+    "sentiment": null,
+    "confidence_level": "MEDIUM",
+    "reason": "Bình luận ngắn chứa tiếng cười và câu nói đùa không rõ đang khen hay chê hay chỉ trò chuyện ngoài lề."
+  },
+  "2976": {
+    "row_id": 2976,
+    "filter_status": "KEEP",
+    "sentiment": "Negative",
+    "confidence_level": "HIGH",
+    "reason": "Phân tích cụ thể các điểm yếu về kịch bản, cao trào và logic của phim, thể hiện rõ thái độ chê bai, thất vọng."
+  },
+  "3050": {
+    "row_id": 3050,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Đây là reply phụ thuộc hoàn toàn vào bình luận cha để hiểu ý, không có ý nghĩa độc lập."
+  },
+  "3301": {
+    "row_id": 3301,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Reply dạng hỏi câu hỏi ngắn, phụ thuộc ngữ cảnh bình luận cha."
+  },
+  "3337": {
+    "row_id": 3337,
+    "filter_status": "KEEP",
+    "sentiment": "Negative",
+    "confidence_level": "HIGH",
+    "reason": "Nội dung chê bai rõ ràng kịch bản và diễn biến phim vô lý, nhận xét phim nhảm và rước bực vào người."
+  },
+  "3339": {
+    "row_id": 3339,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "HIGH",
+    "reason": "Khen ngợi cảnh hành động ổn và kịch tính, kèm theo góp ý nhỏ nhưng thái độ chung là đánh giá tốt."
+  },
+  "3345": {
+    "row_id": 3345,
+    "filter_status": "KEEP",
+    "sentiment": "Negative",
+    "confidence_level": "HIGH",
+    "reason": "Sử dụng từ ngữ thô tục để chê bai bộ phim rất nặng nề."
+  },
+  "3362": {
+    "row_id": 3362,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Reply nhắc đến một bộ phim khác và rủ rê người khác xem phim khác, không liên quan trực tiếp đến đánh giá phim mục tiêu."
+  },
+  "3396": {
+    "row_id": 3396,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Chỉ nhận xét ngoại hình của diễn viên ngoài đời (đẹp trai) mà không đánh giá diễn xuất hay bộ phim."
+  },
+  "3428": {
+    "row_id": 3428,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "HIGH",
+    "reason": "Review chi tiết và đánh giá cao tính thực tế cũng như giá trị tuyên truyền của phim từ trải nghiệm thực tế."
+  },
+  "3434": {
+    "row_id": 3434,
+    "filter_status": "KEEP",
+    "sentiment": "Negative",
+    "confidence_level": "HIGH",
+    "reason": "Góp ý và phàn nàn về việc cốt truyện bỏ ngỏ, không khai thác sâu các nhân vật, thể hiện sự chưa hài lòng."
+  },
+  "3469": {
+    "row_id": 3469,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Reply thảo luận so sánh phim Việt và phim Hàn chung chung, thiếu lập luận độc lập gắn với phim mục tiêu."
+  },
+  "3591": {
+    "row_id": 3591,
+    "filter_status": "KEEP",
+    "sentiment": "Negative",
+    "confidence_level": "HIGH",
+    "reason": "Bình luận bức xúc, chê bai phim dở, không nên xem và nhét nhiều tình tiết vô lý."
+  },
+  "3616": {
+    "row_id": 3616,
+    "filter_status": "KEEP",
+    "sentiment": "Negative",
+    "confidence_level": "HIGH",
+    "reason": "Phân tích kỹ lưỡng điểm trừ kịch bản và cách xử lý nhân vật chưa tốt, mang sắc thái chê bai/góp ý tiêu cực rõ rệt."
+  },
+  "3641": {
+    "row_id": 3641,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "HIGH",
+    "reason": "Thể hiện sự hào hứng và mong muốn đi xem phim ngay lập tức."
+  },
+  "3683": {
+    "row_id": 3683,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Nội dung quảng cáo bán vé, kèm số điện thoại Zalo, mang tính chất spam."
+  },
+  "3703": {
+    "row_id": 3703,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "MEDIUM",
+    "reason": "Nhận định nội dung phim cuốn hút dựa trên phản hồi số đông."
+  },
+  "3733": {
+    "row_id": 3733,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Trao đổi cá nhân về việc đặt vé, rạp chiếu giữa những người dùng, không đánh giá nội dung phim."
+  },
+  "3752": {
+    "row_id": 3752,
+    "filter_status": "REMOVE",
+    "sentiment": null,
+    "confidence_level": "HIGH",
+    "reason": "Hỏi chỗ ngồi xem phim và đặt vé, không bàn về nội dung phim."
+  },
+  "3763": {
+    "row_id": 3763,
+    "filter_status": "KEEP",
+    "sentiment": "Positive",
+    "confidence_level": "HIGH",
+    "reason": "Tiếp thu đánh giá tốt từ người khác và thể hiện sự mong đợi phim hay."
+  }
+}
