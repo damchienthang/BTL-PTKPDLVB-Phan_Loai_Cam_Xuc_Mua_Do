@@ -76,8 +76,6 @@ TEENCODE_DICT: Dict[str, str] = {
     "okay": "tốt",
     "chán": "chán",
     "te": "tệ",
-    "do": "dở",
-    "cấn": "gượng gạo",
     "nhảm": "nhảm nhí",
     "flop": "thất bại",
     "hot": "nổi bật",
@@ -131,7 +129,6 @@ TEENCODE_DICT: Dict[str, str] = {
     "vcl": "rất",
     "vch": "rất",
     "vđ": "rất",
-    "vai": "vãi",
     "vailon": "rất",
     "cmn": "luôn",
     "cmnl": "luôn",
@@ -167,71 +164,68 @@ ENTITY_DICT: Dict[str, str] = {
     "hai anh kore": "hải_anh_kore",
     "ngọc trân": "ngọc_trân",
     "ngoc tran": "ngọc_trân",
+    # Thuật ngữ phim ảnh hay bị tách từ sai
+    "phân cảnh": "phân_cảnh",
+    "phan canh": "phân_cảnh",
+    "vai diễn": "vai_diễn",
+    "vai dien": "vai_diễn",
+    "gay cấn": "gay_cấn",
+    "gay can": "gay_cấn",
+    "cảm giác": "cảm_giác",
+    "cam giac": "cảm_giác",
+    "thực tế": "thực_tế",
+    "thuc te": "thực_tế",
 }
 
 # ==============================================
-# 3. BẢNG ÁNH XẠ EMOJI SANG NHÃN TỪ NGỮ CẢM XÚC
+# 3. BẢNG ÁNH XẠ EMOJI TOÀN DIỆN (124 EMOJI DATASET)
 # ==============================================
 EMOJI_DICT: Dict[str, str] = {
     # Tích cực / Yêu thích / Khen
-    "❤️": " emoji_yeu_thich ",
-    "💖": " emoji_yeu_thich ",
-    "😍": " emoji_yeu_thich ",
-    "🥰": " emoji_yeu_thich ",
-    "😘": " emoji_yeu_thich ",
-    "👍": " emoji_khen ",
-    "👏": " emoji_khen ",
-    "🔥": " emoji_tuyet_voi ",
-    "💯": " emoji_tuyet_doi ",
-    "⭐": " emoji_ngoi_sao ",
-    "✨": " emoji_toa_sang ",
-    "🤩": " emoji_nguong_mo ",
-    "😁": " emoji_vui ",
-    "😄": " emoji_vui ",
-    "😃": " emoji_vui ",
-    "😀": " emoji_vui ",
-    "😊": " emoji_vui ",
-    "🙂": " emoji_vui ",
-    "😆": " emoji_cuoi ",
-    "🤣": " emoji_cuoi_to ",
-    "😂": " emoji_cuoi_ra_nuoc_mat ",
-    # Tiêu cực / Chê / Thất vọng
-    "👎": " emoji_che ",
-    "😡": " emoji_tuc_gian ",
-    "😠": " emoji_tuc_gian ",
-    "🤬": " emoji_chui_the ",
-    "🤮": " emoji_kinh_tom ",
-    "🤢": " emoji_kinh_tom ",
-    "💩": " emoji_te_hai ",
-    "😭": " emoji_khoc ",
-    "😢": " emoji_buon ",
-    "😞": " emoji_that_vong ",
-    "😔": " emoji_that_vong ",
-    "😒": " emoji_kho_chiu ",
-    "🙄": " emoji_ngao_ngan ",
-    "😴": " emoji_buon_ngu ",
-    "🥱": " emoji_ngap_chan ",
-    # Bất ngờ / Trung tính / Tò mò
-    "🤔": " emoji_suy_nghi ",
-    "🧐": " emoji_to_mo ",
-    "😱": " emoji_soc ",
-    "😳": " emoji_ngac_nhien ",
-    "😮": " emoji_bat_ngo ",
-    "❓": " emoji_dau_hoi ",
-    "❗": " emoji_dau_cham_than ",
+    "❤️": " emoji_yeu_thich ", "💖": " emoji_yeu_thich ", "💕": " emoji_yeu_thich ", "🤍": " emoji_yeu_thich ",
+    "🧡": " emoji_yeu_thich ", "❣": " emoji_yeu_thich ", "❤": " emoji_yeu_thich ", "🫶": " emoji_yeu_thich ",
+    "😍": " emoji_yeu_thich ", "🥰": " emoji_yeu_thich ", "😘": " emoji_yeu_thich ", "🤩": " emoji_nguong_mo ",
+    "🤤": " emoji_thich ", "👍": " emoji_khen ", "👏": " emoji_khen ", "👌": " emoji_khen ",
+    "✌": " emoji_khen ", "💪": " emoji_khen ", "👑": " emoji_khen ", "☝": " emoji_khen ",
+    "🔥": " emoji_tuyet_voi ", "💯": " emoji_tuyet_doi ", "⭐": " emoji_ngoi_sao ", "✨": " emoji_toa_sang ",
+    "💥": " emoji_tuyet_voi ", "🎉": " emoji_tuyet_voi ",
+    "😁": " emoji_vui ", "😄": " emoji_vui ", "😃": " emoji_vui ", "😀": " emoji_vui ",
+    "😊": " emoji_vui ", "🙂": " emoji_vui ", "😉": " emoji_vui ", "😋": " emoji_vui ",
+    "😌": " emoji_vui ", "😎": " emoji_vui ", "🥳": " emoji_vui ",
+    "😆": " emoji_cuoi ", "🤣": " emoji_cuoi_to ", "😂": " emoji_cuoi_ra_nuoc_mat ", "🤪": " emoji_cuoi_treu ",
+    "🤭": " emoji_cuoi_ngai ", "🙃": " emoji_vui ", "😏": " emoji_cuoi ",
+    # Tiêu cực / Chê / Thất vọng / Buồn
+    "👎": " emoji_che ", "😡": " emoji_tuc_gian ", "😠": " emoji_tuc_gian ", "🤬": " emoji_chui_the ",
+    "🤮": " emoji_kinh_tom ", "🤢": " emoji_kinh_tom ", "💩": " emoji_te_hai ",
+    "😭": " emoji_khoc ", "😢": " emoji_buon ", "😥": " emoji_buon ", "😞": " emoji_that_vong ",
+    "😔": " emoji_that_vong ", "😒": " emoji_kho_chiu ", "🙄": " emoji_ngao_ngan ",
+    "😴": " emoji_buon_ngu ", "🥱": " emoji_ngap_chan ", "🥺": " emoji_xuc_dong ", "🥹": " emoji_xuc_dong ",
+    "🥲": " emoji_cuoi_trong_nuoc_mat ", "🤦": " emoji_ngao_ngan ", "🤷": " emoji_bo_tay ", "🤡": " emoji_he ",
+    "😕": " emoji_that_vong ", "😖": " emoji_kho_chiu ", "😵": " emoji_choang ", "🥴": " emoji_choang ",
+    "🥵": " emoji_kho_chiu ", "🫠": " emoji_that_vong ",
+    # Ngạc nhiên / Bất ngờ / Suy nghĩ
+    "🤔": " emoji_suy_nghi ", "🧐": " emoji_to_mo ", "😱": " emoji_soc ", "😳": " emoji_ngac_nhien ",
+    "😮": " emoji_bat_ngo ", "😰": " emoji_lo_lang ", "😬": " emoji_ngai ", "🤫": " emoji_im_lang ",
+    "🫢": " emoji_bat_ngo ", "🫣": " emoji_ngai ", "🫡": " emoji_chao ", "👀": " emoji_nhin ",
+    "🍿": " emoji_bap_rang ", "🎬": " emoji_xem_phim ", "🎥": " emoji_xem_phim ", "🎟": " emoji_ve_xem_phim ",
+    "❓": " emoji_dau_hoi ", "❗": " emoji_dau_cham_than ",
 }
 
 # ==============================================================================
-# 3. DANH SÁCH TỪ PHỦ ĐỊNH (NEGATION WORDS)
+# 4. DANH SÁCH TỪ PHỦ ĐỊNH TIỀN TỐ (PREFIX NEGATION WORDS)
+# (Chỉ chứa các từ phủ định đứng trước vị từ; tuyệt đối không chứa 'đâu', 'thiếu', 'kém')
 # ==============================================================================
 NEGATION_WORDS: Set[str] = {
     "không",
-    "chẳng",
-    "chả",
     "chưa",
-    "đâu",
-    "kém",
-    "thiếu",
+    "chẳng",
+}
+
+# Các từ và ký tự cấm gắn vào sau từ phủ định
+INVALID_NEGATION_TARGETS: Set[str] = {
+    "á", "à", "ơi", "nhỉ", "nhé", "nha", "ha", "hả", "đấy", "đâu", "nè", "thế", "vậy", "sao", "chứ", "hở",
+    "tôi", "mình", "tao", "anh", "em", "chị", "bạn", "người", "họ", "chúng_tôi", "nó", "mày",
+    "và", "hoặc", "nhưng", "mà", "ở", "tại", "của", "cho", "để", "vì", "do",
 }
 
 # ==============================================================================
@@ -361,10 +355,12 @@ class VietnameseCommentPreprocessor:
     @staticmethod
     def remove_elongated_chars(text: str) -> str:
         """
-        Chuẩn hóa từ kéo dài cảm xúc.
+        Chuẩn hóa từ kéo dài cảm xúc và tiếng cười.
         Ví dụ: 'phimmm hayyyy quáaaa' -> 'phim hay quá'
-        Quy tắc: ký tự lặp >= 3 lần sẽ rút gọn về 1 hoặc 2 lần tùy ngữ cảnh.
+               'kkkk', 'hahaha' -> 'emoji_cuoi' (tránh kkk biến thành 'không')
         """
+        # Chuẩn hóa các dạng tiếng cười teencode trước khi rút gọn ký tự
+        text = re.sub(r"\b(k{2,}|(ha){2,}|(hi){2,}|(he){2,}|(ka){2,})\b", " emoji_cuoi ", text, flags=re.IGNORECASE)
         return re.sub(r"([a-zA-ZÀ-ỹ])\1{2,}", r"\1", text)
 
     @staticmethod
@@ -390,9 +386,8 @@ class VietnameseCommentPreprocessor:
     @staticmethod
     def attach_negation(text: str) -> str:
         """
-        Nối từ phủ định với từ đi liền kề sau nó để tránh mất ngữ nghĩa trong mô hình Bag-of-Words / TF-IDF.
-        Ví dụ: 'phim không hay' -> 'phim không_hay'
-               'diễn xuất chưa đạt' -> 'diễn xuất chưa_đạt'
+        Nối từ phủ định tiền tố (không, chưa, chẳng) với từ đi liền kề sau nó.
+        Tuyệt đối không ghép cứng vào emoji, dấu câu, trợ từ hoặc đại từ.
         """
         words = text.split()
         n = len(words)
@@ -402,8 +397,12 @@ class VietnameseCommentPreprocessor:
             word = words[i]
             if word in NEGATION_WORDS and i + 1 < n:
                 next_word = words[i + 1]
-                # Bỏ qua nếu từ tiếp theo là dấu câu
-                if next_word not in {",", ".", "!", "?", ";"}:
+                # Không nối nếu từ sau là emoji, trợ từ, đại từ, hoặc dấu câu
+                if (
+                    not next_word.startswith("emoji_")
+                    and next_word not in INVALID_NEGATION_TARGETS
+                    and not re.match(r"^[^\w\s]+$", next_word)
+                ):
                     result.append(f"{word}_{next_word}")
                     i += 2
                     continue
@@ -477,6 +476,9 @@ class VietnameseCommentPreprocessor:
         # 11. Bỏ stopwords (nếu bật)
         if self.remove_stopwords:
             text = self.filter_stopwords(text)
+
+        # 12. Loại bỏ triệt để mọi dấu câu còn sót lại (chỉ giữ từ ngữ, số và dấu gạch dưới '_')
+        text = re.sub(r"[^\w\s_]", " ", text)
 
         # Chuẩn hóa khoảng trắng lần cuối
         text = self.whitespace_regex.sub(" ", text).strip()
