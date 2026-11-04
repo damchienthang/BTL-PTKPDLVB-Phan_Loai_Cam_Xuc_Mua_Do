@@ -1,12 +1,16 @@
 """
-Module Tiền Xử Lý Dữ Liệu Bình Luận Tiếng Việt (Vietnamese Social Media Comment Preprocessor)
-Dành cho bài toán phân loại cảm xúc (Sentiment Analysis) về phim ảnh.
+Module Tiền Xử Lý Dữ Liệu Bình Luận Tiếng Việt (Vietnamese Comment Preprocessor) v3
+Hỗ trợ xuất song song:
+  1. Text_PhoBERT: Giữ nguyên cấu trúc tự nhiên, giữ từ dừng, giữ dấu câu & điểm số (7/10),
+                   chuyển emoji & emoticon sang từ ngữ cảm xúc tiếng Việt tương ứng.
+  2. Text_TFIDF: Tách từ ghép (PyVi), gắn từ phủ định (không_hay), loại bỏ hư từ (stopwords),
+                 giữ điểm số dạng token đặc trưng (diem_7_tren_10).
 """
 
 import html
 import re
 import unicodedata
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional, Set, Tuple
 
 try:
     from pyvi import ViTokenizer
@@ -15,173 +19,39 @@ except ImportError:
 
 
 # ==============================================================================
-# 1. BẢNG TỪ ĐIỂN CHUẨN HÓA TEENCODE & TỪ VIẾT TẮT MẠNG XÃ HỘI
+# 1. BẢNG TỪ ĐIỂN CHUẨN HÓA EMOTICON VĂN BẢN (Text Emoticons)
 # ==============================================================================
-TEENCODE_DICT: Dict[str, str] = {
-    # Phủ định
-    "ko": "không",
-    "k": "không",
-    "kh": "không",
-    "khong": "không",
-    "hong": "không",
-    "hông": "không",
-    "chank": "chẳng",
-    "cha": "chả",
-    "chua": "chưa",
-    # Đại từ & xưng hô
-    "mik": "mình",
-    "m": "mình",
-    "mk": "mình",
-    "t": "tôi",
-    "to": "tôi",
-    "b": "bạn",
-    "bn": "bạn",
-    "ng": "người",
-    "ngta": "người ta",
-    "mn": "mọi người",
-    "ae": "anh em",
-    "c": "chị",
-    "a": "anh",
-    "e": "em",
-    "ad": "admin",
-    # Từ ngữ thường gặp trong phim ảnh & giải trí
-    "film": "phim",
-    "fim": "phim",
-    "movie": "phim",
-    "act": "diễn xuất",
-    "actor": "diễn viên",
-    "dv": "diễn viên",
-    "nv": "nhân vật",
-    "rap": "rạp",
-    "cgv": "rạp",
-    "bhd": "rạp",
-    "lotte": "rạp",
-    "trailer": "đoạn giới thiệu",
-    "spoiler": "tiết lộ nội dung",
-    "spoil": "tiết lộ nội dung",
-    "review": "đánh giá",
-    "rv": "đánh giá",
-    "rate": "đánh giá",
-    # Đánh giá & cảm xúc
-    "dink": "đỉnh",
-    "đỉnk": "đỉnh",
-    "dinh": "đỉnh",
-    "cuon": "cuốn",
-    "chay": "cháy",
-    "phe": "phê",
-    "hayyy": "hay",
-    "ok": "tốt",
-    "oke": "tốt",
-    "oki": "tốt",
-    "okay": "tốt",
-    "chán": "chán",
-    "te": "tệ",
-    "nhảm": "nhảm nhí",
-    "flop": "thất bại",
-    "hot": "nổi bật",
-    # Trợ từ, liên từ & từ thông dụng
-    "dc": "được",
-    "đc": "được",
-    "duoc": "được",
-    "dk": "được",
-    "vs": "với",
-    "voi": "với",
-    "cx": "cũng",
-    "cug": "cũng",
-    "cung": "cũng",
-    "r": "rồi",
-    "roi": "rồi",
-    "rui": "rồi",
-    "ntn": "như thế nào",
-    "sao": "sao",
-    "thg": "thường",
-    "thgian": "thời gian",
-    "tg": "thời gian",
-    "bh": "bây giờ",
-    "bjo": "bây giờ",
-    "h": "giờ",
-    "j": "gì",
-    "gi": "gì",
-    "wa": "quá",
-    "qua": "quá",
-    "nhiu": "nhiều",
-    "nhieu": "nhiều",
-    "chut": "chút",
-    "ty": "tí",
-    "ti": "tí",
-    "nhug": "nhưng",
-    "nhung": "nhưng",
-    "ma": "mà",
-    "lun": "luôn",
-    "luon": "luôn",
-    "thui": "thôi",
-    "thoii": "thôi",
-    "nhe": "nhé",
-    "nha": "nha",
-    "nheee": "nhé",
-    "tks": "cảm ơn",
-    "thanks": "cảm ơn",
-    "thank": "cảm ơn",
-    "cam on": "cảm ơn",
-    "cảm ơn": "cảm ơn",
-    # Từ cảm thán / nói tục viết tắt (chuẩn hóa về ngữ cảnh cảm thán)
-    "vl": "rất",
-    "vcl": "rất",
-    "vch": "rất",
-    "vđ": "rất",
-    "vailon": "rất",
-    "cmn": "luôn",
-    "cmnl": "luôn",
-    "omg": "trời ơi",
+EMOTICON_DICT: Dict[str, str] = {
+    ":)))": " emoji_cuoi_to ",
+    ":))": " emoji_cuoi_to ",
+    ":)": " emoji_vui ",
+    ":-)": " emoji_vui ",
+    "=)))": " emoji_cuoi_to ",
+    "=))": " emoji_cuoi_to ",
+    "=)": " emoji_vui ",
+    ":D": " emoji_cuoi ",
+    ":d": " emoji_cuoi ",
+    ":P": " emoji_cuoi_treu ",
+    ":p": " emoji_cuoi_treu ",
+    ":(": " emoji_buon ",
+    ":-( ": " emoji_buon ",
+    ":'(": " emoji_khoc ",
+    ":'-( ": " emoji_khoc ",
+    "T_T": " emoji_khoc ",
+    "T.T": " emoji_khoc ",
+    "@@": " emoji_choang ",
+    "-.-": " emoji_kho_chiu ",
+    "-_-": " emoji_kho_chiu ",
+    "xd": " emoji_cuoi_to ",
+    "xD": " emoji_cuoi_to ",
+    "XD": " emoji_cuoi_to ",
 }
 
 # ==============================================================================
-# 2. BẢNG TỪ ĐIỂN THỰC THỂ PHIM & DIỄN VIÊN (NAMED ENTITY NORMALIZATION)
+# 2. BẢNG ÁNH XẠ EMOJI UNICODE
 # ==============================================================================
-ENTITY_DICT: Dict[str, str] = {
-    # Tên phim
-    "trại buôn người": "trại_buôn_người",
-    "trai buon nguoi": "trại_buôn_người",
-    "thiên đường máu": "thiên_đường_máu",
-    "thien duong mau": "thiên_đường_máu",
-    # Diễn viên & Nhân vật
-    "quách ngọc ngoan": "quách_ngọc_ngoan",
-    "quach ngoc ngoan": "quách_ngọc_ngoan",
-    "quách ngọc tuyên": "quách_ngọc_tuyên",
-    "quach ngoc tuyen": "quách_ngọc_tuyên",
-    "quách ngọc": "quách_ngọc",
-    "quach ngoc": "quách_ngọc",
-    "qn tuyên": "quách_ngọc_tuyên",
-    "qntuyen": "quách_ngọc_tuyên",
-    "qn ngoan": "quách_ngọc_ngoan",
-    "qnngoan": "quách_ngọc_ngoan",
-    "hoàng kim ngọc": "hoàng_kim_ngọc",
-    "hoang kim ngoc": "hoàng_kim_ngọc",
-    "kim ngọc": "kim_ngọc",
-    "võ thành tâm": "võ_thành_tâm",
-    "vo thanh tam": "võ_thành_tâm",
-    "hải anh kore": "hải_anh_kore",
-    "hai anh kore": "hải_anh_kore",
-    "ngọc trân": "ngọc_trân",
-    "ngoc tran": "ngọc_trân",
-    # Thuật ngữ phim ảnh hay bị tách từ sai
-    "phân cảnh": "phân_cảnh",
-    "phan canh": "phân_cảnh",
-    "vai diễn": "vai_diễn",
-    "vai dien": "vai_diễn",
-    "gay cấn": "gay_cấn",
-    "gay can": "gay_cấn",
-    "cảm giác": "cảm_giác",
-    "cam giac": "cảm_giác",
-    "thực tế": "thực_tế",
-    "thuc te": "thực_tế",
-}
-
-# ==============================================
-# 3. BẢNG ÁNH XẠ EMOJI TOÀN DIỆN (124 EMOJI DATASET)
-# ==============================================
 EMOJI_DICT: Dict[str, str] = {
-    # Tích cực / Yêu thích / Khen
+    # Tích cực / Khen / Yêu thích
     "❤️": " emoji_yeu_thich ", "💖": " emoji_yeu_thich ", "💕": " emoji_yeu_thich ", "🤍": " emoji_yeu_thich ",
     "🧡": " emoji_yeu_thich ", "❣": " emoji_yeu_thich ", "❤": " emoji_yeu_thich ", "🫶": " emoji_yeu_thich ",
     "😍": " emoji_yeu_thich ", "🥰": " emoji_yeu_thich ", "😘": " emoji_yeu_thich ", "🤩": " emoji_nguong_mo ",
@@ -194,7 +64,7 @@ EMOJI_DICT: Dict[str, str] = {
     "😌": " emoji_vui ", "😎": " emoji_vui ", "🥳": " emoji_vui ",
     "😆": " emoji_cuoi ", "🤣": " emoji_cuoi_to ", "😂": " emoji_cuoi_ra_nuoc_mat ", "🤪": " emoji_cuoi_treu ",
     "🤭": " emoji_cuoi_ngai ", "🙃": " emoji_vui ", "😏": " emoji_cuoi ",
-    # Tiêu cực / Chê / Thất vọng / Buồn
+    # Tiêu cực / Chê / Buồn
     "👎": " emoji_che ", "😡": " emoji_tuc_gian ", "😠": " emoji_tuc_gian ", "🤬": " emoji_chui_the ",
     "🤮": " emoji_kinh_tom ", "🤢": " emoji_kinh_tom ", "💩": " emoji_te_hai ",
     "😭": " emoji_khoc ", "😢": " emoji_buon ", "😥": " emoji_buon ", "😞": " emoji_that_vong ",
@@ -203,7 +73,7 @@ EMOJI_DICT: Dict[str, str] = {
     "🥲": " emoji_cuoi_trong_nuoc_mat ", "🤦": " emoji_ngao_ngan ", "🤷": " emoji_bo_tay ", "🤡": " emoji_he ",
     "😕": " emoji_that_vong ", "😖": " emoji_kho_chiu ", "😵": " emoji_choang ", "🥴": " emoji_choang ",
     "🥵": " emoji_kho_chiu ", "🫠": " emoji_that_vong ",
-    # Ngạc nhiên / Bất ngờ / Suy nghĩ
+    # Ngạc nhiên / Thắc mắc
     "🤔": " emoji_suy_nghi ", "🧐": " emoji_to_mo ", "😱": " emoji_soc ", "😳": " emoji_ngac_nhien ",
     "😮": " emoji_bat_ngo ", "😰": " emoji_lo_lang ", "😬": " emoji_ngai ", "🤫": " emoji_im_lang ",
     "🫢": " emoji_bat_ngo ", "🫣": " emoji_ngai ", "🫡": " emoji_chao ", "👀": " emoji_nhin ",
@@ -212,330 +82,271 @@ EMOJI_DICT: Dict[str, str] = {
 }
 
 # ==============================================================================
-# 4. DANH SÁCH TỪ PHỦ ĐỊNH TIỀN TỐ (PREFIX NEGATION WORDS)
-# (Chỉ chứa các từ phủ định đứng trước vị từ; tuyệt đối không chứa 'đâu', 'thiếu', 'kém')
+# 3. BẢNG TỪ ĐIỂN CHUẨN HÓA TEENCODE & VIẾT TẮT TOÀN DIỆN
 # ==============================================================================
-NEGATION_WORDS: Set[str] = {
-    "không",
-    "chưa",
-    "chẳng",
+TEENCODE_WORD_BOUNDARIES: List[Tuple[str, str]] = [
+    # Cụm từ nhiều từ / trường hợp đặc biệt (ưu tiên khớp trước)
+    (r"\b(chứ\s+)?(ko|k|kh|không)\s+p\b", "không phải"),
+    (r"\bko\s+phai\b|\bk\s+phai\b", "không phải"),
+    (r"\bđc\s+k\b|\bdc\s+k\b|\bđc\s+ko\b|\bdc\s+ko\b", "được không"),
+    (r"\bcam\s+on\b|\btks\b|\bthanks\b|\bthank\b", "cảm ơn"),
+    (r"\bko\s+sao\b|\bk\s+sao\b", "không sao"),
+    (r"\bnhu\s+the\s+nao\b|\bntn\b", "như thế nào"),
+    (r"\bthoi\s+gian\b|\bthgian\b|\btg\b", "thời gian"),
+    (r"\bnguoi\s+ta\b|\bngta\b", "người ta"),
+    (r"\bmoi\s+nguoi\b|\bmn\b", "mọi người"),
+    (r"\banh\s+em\b|\bae\b", "anh em"),
+    (r"\btiet\s+lo\b|\bspoil\b|\bspoiler\b", "tiết lộ nội dung"),
+    (r"\btrailer\b", "đoạn giới thiệu"),
+    (r"\breview\b|\brv\b", "đánh giá"),
+    (r"\bnham\s+nhi\b|\bnham\b", "nhảm"),
+    (r"\btuyet\s+voi\b|\bdink\b|\bđỉnk\b|\bdinh\b", "đỉnh"),
+    (r"\bthat\s+bai\b|\bflop\b", "thất bại"),
+    (r"\bnoi\s+bat\b|\bhot\b", "nổi bật"),
+    
+    # Từ ngữ cảm thán tục viết tắt (chuẩn hóa ngữ cảnh)
+    (r"\b(dở|tệ|chán|xấu|kém)\s+(vl|vcl|vch|vđ|vailon)\b", r"rất \1"),
+    (r"\b(hay|cuốn|đỉnh|đẹp|xuất sắc|cháy)\s+(vl|vcl|vch|vđ|vailon)\b", r"rất \1"),
+    (r"\b(vl|vcl|vch|vđ|vailon)\b", "rất"),
+    (r"\bcmnl\b|\bcmn\b", "luôn"),
+    (r"\bomg\b", "trời ơi"),
+
+    # Phủ định
+    (r"\b(ko|k|kh|khong|hong|hông)\b", "không"),
+    (r"\bchank\b", "chẳng"),
+    (r"\bchua\b", "chưa"),
+
+    # Đại từ xưng hô
+    (r"\btui\b|\bto\b", "tôi"),
+    (r"\bmik\b|\bmk\b", "mình"),
+    (r"\bng\b", "người"),
+    (r"\bad\b", "admin"),
+
+    # Động từ & trợ từ thông dụng
+    (r"\b(đc|dc|dx|đk|duoc)\b", "được"),
+    (r"\b(nhìu|nhiu|nhieu)\b", "nhiều"),
+    (r"\b(r|roi|rui)\b", "rồi"),
+    (r"\b(trc|truoc)\b", "trước"),
+    (r"\b(v|z)\b", "vậy"),
+    (r"\bms\b", "mới"),
+    (r"\b(nc|nch)\b", "nói chuyện"),
+    (r"\b(ak|ah)\b", "à"),
+    (r"\b(cx|cug|cung)\b", "cũng"),
+    (r"\b(vs|voi)\b", "với"),
+    (r"\b(bh|bjo)\b", "bây giờ"),
+    (r"\b(j|gi)\b", "gì"),
+    (r"\bwa\b", "quá"),
+    (r"\b(chut|ty|ti)\b", "tí"),
+    (r"\b(nhug|nhung)\b", "nhưng"),
+    (r"\b(lun|luon)\b", "luôn"),
+    (r"\b(thui|thoii)\b", "thôi"),
+    (r"\b(nhe|nha|nheee)\b", "nha"),
+    (r"\b(film|fim|movie)\b", "phim"),
+    (r"\b(act|actor|dv)\b", "diễn viên"),
+    (r"\bnv\b", "nhân vật"),
+    (r"\b(rap|cgv|bhd|lotte)\b", "rạp"),
+    (r"\b(ok|oke|oki|okay)\b", "tốt"),
+    (r"\bcuon\b", "cuốn"),
+    (r"\bchay\b", "cháy"),
+    (r"\bphe\b", "phê"),
+    (r"\bnthe\b", "như thế"),
+]
+
+# ==============================================================================
+# 4. BẢNG THỰC THỂ PHIM & ĐIỂM SỐ
+# ==============================================================================
+ENTITY_DICT: Dict[str, str] = {
+    "trại buôn người": "trại_buôn_người",
+    "trai buon nguoi": "trại_buôn_người",
+    "thiên đường máu": "thiên_đường_máu",
+    "thien duong mau": "thiên_đường_máu",
+    "quách ngọc ngoan": "quách_ngọc_ngoan",
+    "quach ngoc ngoan": "quách_ngọc_ngoan",
+    "quách ngọc tuyên": "quách_ngọc_tuyên",
+    "quach ngoc tuyen": "quách_ngọc_tuyên",
+    "hoàng kim ngọc": "hoàng_kim_ngọc",
+    "hoang kim ngoc": "hoàng_kim_ngọc",
+    "kim ngọc": "kim_ngọc",
+    "võ thành tâm": "võ_thành_tâm",
+    "vo thanh tam": "võ_thành_tâm",
+    "hải anh kore": "hải_anh_kore",
+    "ngọc trân": "ngọc_trân",
+    "steven nguyễn": "steven_nguyễn",
+    "steven nguyen": "steven_nguyễn",
+    "hộ linh tráng sĩ": "hộ_linh_tráng_sĩ",
+    "như quỳnh": "như_quỳnh",
+    "minh kiên": "minh_kiên",
+    "phân cảnh": "phân_cảnh",
+    "vai diễn": "vai_diễn",
+    "gay cấn": "gay_cấn",
+    "cảm giác": "cảm_giác",
+    "thực tế": "thực_tế",
+    "tình tiết": "tình_tiết",
+    "chân thật": "chân_thật",
 }
 
-# Các từ và ký tự cấm gắn vào sau từ phủ định
+# Từ phủ định tiền tố
+NEGATION_WORDS: Set[str] = {"không", "chưa", "chẳng"}
+
 INVALID_NEGATION_TARGETS: Set[str] = {
     "á", "à", "ơi", "nhỉ", "nhé", "nha", "ha", "hả", "đấy", "đâu", "nè", "thế", "vậy", "sao", "chứ", "hở",
     "tôi", "mình", "tao", "anh", "em", "chị", "bạn", "người", "họ", "chúng_tôi", "nó", "mày",
     "và", "hoặc", "nhưng", "mà", "ở", "tại", "của", "cho", "để", "vì", "do",
 }
 
-# ==============================================================================
-# 4. DANH SÁCH STOPWORDS AN TOÀN CHO PHÂN LOẠI CẢM XÚC
-# (Tuyệt đối không chứa từ cảm xúc như 'hay', 'tốt' và từ phủ định)
-# ==============================================================================
-BASIC_STOPWORDS: Set[str] = {
-    "thì",
-    "là",
-    "mà",
-    "ở",
-    "tại",
-    "của",
-    "cho",
-    "bởi",
-    "do",
-    "và",
-    "hoặc",
-    "này",
-    "đó",
-    "kia",
-    "ấy",
-    "vậy",
-    "thế",
-    "ạ",
-    "ơi",
-    "nè",
-    "nhé",
-    "nha",
-    "ha",
-    "hả",
-    "đấy",
-    "đây",
+# Stopwords an toàn cho TF-IDF (tuyệt đối không xóa từ phủ định hay từ mang cảm xúc)
+TFIDF_STOPWORDS: Set[str] = {
+    "thì", "là", "mà", "ở", "tại", "của", "cho", "bởi", "do",
+    "và", "hoặc", "này", "đó", "kia", "ấy", "vậy", "thế",
+    "ạ", "ơi", "nè", "nhé", "nha", "ha", "hả", "đấy",
 }
 
 
 # ==============================================================================
-# 5. CLASS CHÍNH: TIỀN XỬ LÝ BÌNH LUẬN (VietnameseCommentPreprocessor)
+# 5. CLASS TIỀN XỬ LÝ CHÍNH
 # ==============================================================================
 class VietnameseCommentPreprocessor:
-    """
-    Bộ tiền xử lý văn bản chuyên biệt cho bình luận mạng xã hội tiếng Việt.
-    Hỗ trợ chuẩn hóa Unicode, teencode, emoji, từ kéo dài, phủ định và tách từ.
-    """
-
-    def __init__(
-        self,
-        lower: bool = True,
-        remove_urls: bool = True,
-        remove_mentions: bool = True,
-        normalize_teencode: bool = True,
-        normalize_entities: bool = True,
-        handle_emoji_mode: str = "translate",  # 'translate', 'remove', hoặc 'keep'
-        normalize_elongated_chars: bool = True,
-        handle_negation: bool = True,
-        segment_words: bool = True,
-        remove_stopwords: bool = False,
-    ):
-        self.lower = lower
-        self.remove_urls = remove_urls
-        self.remove_mentions = remove_mentions
-        self.normalize_teencode = normalize_teencode
-        self.normalize_entities = normalize_entities
-        self.handle_emoji_mode = handle_emoji_mode
-        self.normalize_elongated_chars = normalize_elongated_chars
-        self.handle_negation = handle_negation
-        self.segment_words = segment_words
-        self.remove_stopwords = remove_stopwords
-
-        # Regex tiền biên dịch để tối ưu hiệu năng
-        self.url_regex = re.compile(
-            r"https?://\S+|www\.\S+|ftp://\S+", re.IGNORECASE
-        )
+    def __init__(self):
+        self.url_regex = re.compile(r"https?://\S+|www\.\S+|ftp://\S+", re.IGNORECASE)
         self.mention_regex = re.compile(r"@[\w\._-]+", re.IGNORECASE)
         self.phone_regex = re.compile(r"\b0\d{9,10}\b")
         self.html_tag_regex = re.compile(r"<.*?>")
-        self.special_char_regex = re.compile(
-            r"[^\w\s\.,!\?_-]"
-        )  # Giữ lại một số dấu câu cảm xúc
         self.whitespace_regex = re.compile(r"\s+")
 
     @staticmethod
     def normalize_unicode(text: str) -> str:
-        """
-        Chuẩn hóa Unicode về dạng dựng sẵn NFC (tránh lỗi tổ hợp NFD).
-        """
         if not isinstance(text, str):
             return ""
         return unicodedata.normalize("NFC", text)
 
     def clean_noise(self, text: str) -> str:
-        """
-        Loại bỏ các thành phần rác: HTML tags, URLs, Mentions (@), số điện thoại.
-        """
-        # Giải mã các ký tự HTML (ví dụ: &amp;, &quot;)
         text = html.unescape(text)
-
-        # Xóa HTML tag
         text = self.html_tag_regex.sub(" ", text)
-
-        # Xóa URL
-        if self.remove_urls:
-            text = self.url_regex.sub(" ", text)
-
-        # Xóa mention (@tag)
-        if self.remove_mentions:
-            text = self.mention_regex.sub(" ", text)
-
-        # Xóa số điện thoại rác
+        text = self.url_regex.sub(" ", text)
+        text = self.mention_regex.sub(" ", text)
         text = self.phone_regex.sub(" ", text)
-
-        return text
-
-    def process_emojis(self, text: str) -> str:
-        """
-        Xử lý emoji: Dịch sang từ cảm xúc tương ứng hoặc loại bỏ.
-        """
-        if self.handle_emoji_mode == "translate":
-            for emoji, translation in EMOJI_DICT.items():
-                if emoji in text:
-                    text = text.replace(emoji, translation)
-        elif self.handle_emoji_mode == "remove":
-            for emoji in EMOJI_DICT.keys():
-                text = text.replace(emoji, " ")
         return text
 
     @staticmethod
-    def remove_elongated_chars(text: str) -> str:
-        """
-        Chuẩn hóa từ kéo dài cảm xúc và tiếng cười.
-        Ví dụ: 'phimmm hayyyy quáaaa' -> 'phim hay quá'
-               'kkkk', 'hahaha' -> 'emoji_cuoi' (tránh kkk biến thành 'không')
-        """
-        # Chuẩn hóa các dạng tiếng cười teencode trước khi rút gọn ký tự
+    def replace_emoticons(text: str) -> str:
+        for emo, rep in sorted(EMOTICON_DICT.items(), key=lambda x: len(x[0]), reverse=True):
+            text = text.replace(emo, rep)
+        return text
+
+    @staticmethod
+    def replace_emojis(text: str) -> str:
+        for emo, rep in EMOJI_DICT.items():
+            if emo in text:
+                text = text.replace(emo, rep)
+        return text
+
+    @staticmethod
+    def normalize_elongated(text: str) -> str:
+        # Tiếng cười: kkk, hahah, hihi
         text = re.sub(r"\b(k{2,}|(ha){2,}|(hi){2,}|(he){2,}|(ka){2,})\b", " emoji_cuoi ", text, flags=re.IGNORECASE)
+        # Rút gọn ký tự lặp >= 3 lần (hayyyy -> hay)
         return re.sub(r"([a-zA-ZÀ-ỹ])\1{2,}", r"\1", text)
 
     @staticmethod
-    def replace_teencode(text: str) -> str:
-        """
-        Ánh xạ teencode và từ viết tắt sang dạng tiếng Việt chuẩn.
-        """
-        tokens = text.split()
-        normalized_tokens = [TEENCODE_DICT.get(tok, tok) for tok in tokens]
-        return " ".join(normalized_tokens)
+    def normalize_score(text: str) -> str:
+        # Giữ điểm số: 7/10, 8.5/10, 9/10, 10/10
+        def score_repl(match):
+            val = match.group(1).replace(".", "_")
+            total = match.group(2)
+            return f" diem_{val}_tren_{total} "
 
-    @staticmethod
-    def replace_entities(text: str) -> str:
-        """
-        Chuẩn hóa tên thực thể phim ảnh và diễn viên thành dạng từ ghép cố định.
-        Ví dụ: 'quách ngọc ngoan' -> 'quách_ngọc_ngoan', 'trại buôn người' -> 'trại_buôn_người'
-        """
-        for ent_key, ent_val in ENTITY_DICT.items():
-            pattern = re.compile(rf"\b{re.escape(ent_key)}\b", re.IGNORECASE)
-            text = pattern.sub(ent_val, text)
+        text = re.sub(r"\b(\d+(?:\.\d+)?)\s*/\s*(10|100)\b", score_repl, text)
         return text
 
     @staticmethod
-    def attach_negation(text: str) -> str:
+    def replace_teencode(text: str) -> str:
+        # Đệm khoảng trắng quanh dấu câu cơ bản trước để tránh dính từ (vd: "thật.ko" -> "thật . ko")
+        t = re.sub(r"([,\.!?;:])", r" \1 ", text)
+        for pattern, replacement in TEENCODE_WORD_BOUNDARIES:
+            t = re.sub(pattern, replacement, t, flags=re.IGNORECASE)
+        return t
+
+    @staticmethod
+    def attach_negation_in_tokens(tokens_with_punct: List[str]) -> List[str]:
         """
-        Nối từ phủ định tiền tố (không, chưa, chẳng) với từ đi liền kề sau nó.
-        Tuyệt đối không ghép cứng vào emoji, dấu câu, trợ từ hoặc đại từ.
+        Nối từ phủ định tiền tố (không, chưa, chẳng) với từ ngay sau nó,
+        NHƯNG CHỈ NỐI NẾU KHÔNG CÓ DẤU CÂU PHÂN TÁCH Ở GIỮA.
+        Ví dụ: ['không', ',', 'má'] -> KHÔNG NỐI
+               ['không', 'hay'] -> 'không_hay'
         """
-        words = text.split()
-        n = len(words)
+        puncts = {",", ".", "!", "?", ";", ":", "-", "...", "—", "–"}
         result = []
+        n = len(tokens_with_punct)
         i = 0
         while i < n:
-            word = words[i]
-            if word in NEGATION_WORDS and i + 1 < n:
-                next_word = words[i + 1]
-                # Không nối nếu từ sau là emoji, trợ từ, đại từ, hoặc dấu câu
+            tok = tokens_with_punct[i]
+            if tok in NEGATION_WORDS and i + 1 < n:
+                next_tok = tokens_with_punct[i + 1]
+                # Nếu từ tiếp theo là dấu câu -> từ phủ định này đứng cuối vế, tuyệt đối không nối
+                if next_tok in puncts:
+                    result.append(tok)
+                    i += 1
+                    continue
+                # Kiểm tra các điều kiện an toàn khác
                 if (
-                    not next_word.startswith("emoji_")
-                    and next_word not in INVALID_NEGATION_TARGETS
-                    and not re.match(r"^[^\w\s]+$", next_word)
+                    not next_tok.startswith("emoji_")
+                    and not next_tok.startswith("diem_")
+                    and next_tok not in INVALID_NEGATION_TARGETS
+                    and not re.match(r"^[^\w\s]+$", next_tok)
                 ):
-                    result.append(f"{word}_{next_word}")
+                    result.append(f"{tok}_{next_tok}")
                     i += 2
                     continue
-            result.append(word)
+            result.append(tok)
             i += 1
-        return " ".join(result)
+        return result
 
-    def tokenize_vietnamese(self, text: str) -> str:
-        """
-        Tách từ tiếng Việt (Word Segmentation) sử dụng thư viện pyvi.
-        Ví dụ: 'bộ phim rất cảm động' -> 'bộ_phim rất cảm_động'
-        """
-        if ViTokenizer is not None:
-            return ViTokenizer.tokenize(text)
-        return text
-
-    def filter_stopwords(self, text: str) -> str:
-        """
-        Loại bỏ các từ hư từ (stopwords) không mang giá trị cảm xúc.
-        """
-        tokens = text.split()
-        filtered = [t for t in tokens if t not in BASIC_STOPWORDS]
-        return " ".join(filtered)
-
-    def preprocess(self, text: str) -> str:
-        """
-        Pipeline tiền xử lý toàn diện cho một chuỗi bình luận.
-        """
-        if not isinstance(text, str) or not text.strip():
+    def preprocess_phobert(self, text: str) -> str:
+        if not text or not str(text).strip():
             return ""
 
-        # 1. Chuẩn hóa bảng mã Unicode NFC
-        text = self.normalize_unicode(text)
+        t = self.normalize_unicode(str(text))
+        t = self.clean_noise(t)
+        t = self.replace_emoticons(t)
+        t = self.replace_emojis(t)
+        t = self.normalize_elongated(t)
+        t = self.normalize_score(t)
+        t = self.replace_teencode(t)
 
-        # 2. Xóa URL, tag, HTML rác
-        text = self.clean_noise(text)
+        t = t.lower()
+        t = self.whitespace_regex.sub(" ", t).strip()
+        return t
 
-        # 3. Xử lý Emoji (dịch hoặc xóa)
-        text = self.process_emojis(text)
+    def preprocess_tfidf(self, text: str) -> str:
+        if not text or not str(text).strip():
+            return ""
 
-        # 4. Viết thường (nếu bật)
-        if self.lower:
-            text = text.lower()
+        t = self.preprocess_phobert(text)
 
-        # 5. Xử lý từ kéo dài (ví dụ: haaaayyyy -> hay)
-        if self.normalize_elongated_chars:
-            text = self.remove_elongated_chars(text)
+        # Chuẩn hóa thực thể
+        for ent_k, ent_v in ENTITY_DICT.items():
+            pattern = re.compile(rf"\b{re.escape(ent_k)}\b", re.IGNORECASE)
+            t = pattern.sub(ent_v, t)
 
-        # 6. Chuẩn hóa teencode & từ viết tắt
-        if self.normalize_teencode:
-            text = self.replace_teencode(text)
+        # Tách từ tiếng Việt bằng PyVi trước khi xóa dấu câu
+        if ViTokenizer is not None:
+            t = ViTokenizer.tokenize(t)
 
-        # 6.1. Chuẩn hóa thực thể tên riêng phim và diễn viên
-        if self.normalize_entities:
-            text = self.replace_entities(text)
+        # Tokenize có giữ dấu câu để gắn từ phủ định an toàn
+        tokens_with_punct = re.findall(r"[\w_]+|[,\.!?;:]", t)
+        attached_tokens = self.attach_negation_in_tokens(tokens_with_punct)
 
-        # 7. Xóa các ký tự đặc biệt thừa nhưng giữ dấu cách và từ
-        text = self.special_char_regex.sub(" ", text)
+        # Xóa dấu câu sau khi đã xử lý phủ định an toàn
+        puncts = {",", ".", "!", "?", ";", ":"}
+        clean_tokens = [tok for tok in attached_tokens if tok not in puncts]
 
-        # 8. Chuẩn hóa khoảng trắng
-        text = self.whitespace_regex.sub(" ", text).strip()
-
-        # 9. Tách từ tiếng Việt (Word Segmentation)
-        if self.segment_words:
-            text = self.tokenize_vietnamese(text)
-
-        # 10. Gắn từ phủ định (Negation Handling)
-        if self.handle_negation:
-            text = self.attach_negation(text)
-
-        # 11. Bỏ stopwords (nếu bật)
-        if self.remove_stopwords:
-            text = self.filter_stopwords(text)
-
-        # 12. Loại bỏ triệt để mọi dấu câu còn sót lại (chỉ giữ từ ngữ, số và dấu gạch dưới '_')
-        text = re.sub(r"[^\w\s_]", " ", text)
+        # Loại bỏ stopwords
+        final_tokens = [tok for tok in clean_tokens if tok not in TFIDF_STOPWORDS]
+        t = " ".join(final_tokens)
 
         # Chuẩn hóa khoảng trắng lần cuối
-        text = self.whitespace_regex.sub(" ", text).strip()
+        t = self.whitespace_regex.sub(" ", t).strip()
+        return t
 
-        return text
-
-    def preprocess_batch(self, texts: List[str]) -> List[str]:
-        """Tiền xử lý danh sách bình luận."""
-        return [self.preprocess(t) for t in texts]
-
-
-# ==============================================================================
-# 6. HÀM HỖ TRỢ XỬ LÝ PANDAS DATAFRAME
-# ==============================================================================
-def preprocess_dataframe(
-    df,
-    text_column: str = "Nội dung",
-    output_column: str = "Nội dung tiền xử lý",
-    preprocessor: Optional[VietnameseCommentPreprocessor] = None,
-):
-    """
-    Hàm tiện ích áp dụng tiền xử lý lên một cột trong DataFrame.
-    (Hàm này CHƯA được gọi tự động - sẵn sàng khi bạn muốn kích hoạt).
-    """
-    if preprocessor is None:
-        preprocessor = VietnameseCommentPreprocessor()
-
-    df_copy = df.copy()
-    df_copy[output_column] = df_copy[text_column].apply(
-        lambda x: preprocessor.preprocess(str(x or ""))
-    )
-    return df_copy
-
-
-# ==============================================================================
-# 7. VÍ DỤ MINH HỌA (DEMO MINH HỌA - CHỈ CHẠY KHI GỌI TRỰC TIẾP FILE NÀY)
-# ==============================================================================
-if __name__ == "__main__":
-    # Minh họa test thử trên vài câu mẫu độc lập (KHÔNG đụng vào dữ liệu thật)
-    demo_samples = [
-        "Phimmm này xem cuốn vcl lun á mn ơiii 😍❤️❤️❤️ 10/10",
-        "Diễn viên diễn đơ, kịch bản chán òm ko đáng tiền vé tí nào!! 😡👎",
-        "phim ko hay như kỳ vọng, đoạn kết hơi cấn và hụt hẫng",
-        "@NguyễnVănA https://facebook.com/link link rác nha mn",
-    ]
-
-    p = VietnameseCommentPreprocessor(
-        lower=True,
-        normalize_teencode=True,
-        handle_emoji_mode="translate",
-        handle_negation=True,
-        segment_words=True,
-    )
-
-    print("--- DEMO MINH HỌA TIỀN XỬ LÝ VĂN BẢN (CHƯA ÁP DỤNG LÊN DỮ LIỆU) ---")
-    for raw in demo_samples:
-        clean = p.preprocess(raw)
-        print(f"\n[Gốc]  : {raw}")
-        print(f"[Xử lý]: {clean}")
-
+    def preprocess(self, text: str) -> str:
+        return self.preprocess_tfidf(text)
