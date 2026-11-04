@@ -1,0 +1,20 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Editor & Temporary files
+.vscode/
+.idea/
+~$*
+*.tmp
+
+# Phần làm sạch của thành viên khác (không đẩy lên repo nhiệm vụ 2)
+src/preprocessing.py
+
