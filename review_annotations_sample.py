@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -21,16 +22,11 @@ if sys.platform == "win32":
 ROOT_DIR = Path(__file__).resolve().parent
 load_dotenv(ROOT_DIR / ".env")
 
-_input_candidates = [
-    ROOT_DIR / "tat_ca_binh_luan_da_gan_nhan.xlsx",
-    ROOT_DIR / "all_comments_annotated.xlsx",
-]
-INPUT_FILE = next((p for p in _input_candidates if p.exists()), _input_candidates[0])
-OUTPUT_FILE = ROOT_DIR / "tat_ca_binh_luan_da_duyet_v2.xlsx"
-CHECKPOINT_FULL = ROOT_DIR / "diem_kiem_soat_duyet_v2.json"
-CHECKPOINT_SAMPLE = ROOT_DIR / "diem_kiem_soat_duyet_mau_100.json"
+INPUT_FILE = ROOT_DIR / "all_comments_annotated.xlsx"
+OUTPUT_FILE = ROOT_DIR / "all_comments_reviewed_v2.xlsx"
+CHECKPOINT_FILE = ROOT_DIR / "checkpoint_review_sample_100.json"
 TARGET_MOVIE = "Trại buôn người"
-BATCH_SIZE = 30
+BATCH_SIZE = 20
 
 
 # ==============================================================================
@@ -102,12 +98,79 @@ class KeyManager:
 
 
 # ==============================================================================
-# 3. Prompt Rà Soát Chất Lượng Dữ Liệu
+# 3. Lấy mẫu 100 dòng đại diện và tập trung vào các ca biên dễ sai
+# ==============================================================================
+def select_audit_sample(df: pd.DataFrame) -> pd.DataFrame:
+    df["row_id"] = df.index + 2  # Số dòng thực tế trong Excel gốc
+    selected_indices = set()
+
+    # 1. 25 Reply ngắn đang KEEP (nguy cơ cao phụ thuộc ngữ cảnh cha)
+    short_replies = df[
+        (df["Loại"].astype(str).str.lower() == "reply")
+        & (df["filter_status"] == "KEEP")
+        & (df["Nội dung"].astype(str).str.split().str.len() <= 6)
+    ]
+    for idx in short_replies.sample(n=min(25, len(short_replies)), random_state=42).index:
+        selected_indices.add(idx)
+
+    # 2. 20 dòng REMOVE nhưng có từ khóa phim ảnh (nguy cơ loại nhầm)
+    movie_kw = r"(?:phim|xem|rạp|diễn|kịch bản|hay|dở|tệ|cuốn|đỉnh)"
+    remove_with_kw = df[
+        (df["filter_status"] == "REMOVE")
+        & (df["Nội dung"].astype(str).str.contains(movie_kw, case=False, regex=True))
+        & (~df.index.isin(selected_indices))
+    ]
+    for idx in remove_with_kw.sample(n=min(20, len(remove_with_kw)), random_state=42).index:
+        selected_indices.add(idx)
+
+    # 3. 15 dòng Negative có nhắc đến nhân vật phản diện / cảm xúc cốt truyện
+    villain_kw = r"(?:ác|thằng|lão|ghét|sợ|chết|phản diện|đáng sợ|độc ác)"
+    neg_villain = df[
+        (df["filter_status"] == "KEEP")
+        & (df["sentiment"] == "Negative")
+        & (df["Nội dung"].astype(str).str.contains(villain_kw, case=False, regex=True))
+        & (~df.index.isin(selected_indices))
+    ]
+    for idx in neg_villain.sample(n=min(15, len(neg_villain)), random_state=42).index:
+        selected_indices.add(idx)
+
+    # 4. 15 dòng Neutral (kiểm tra xem có phải hỏi thông tin phim hay chat ngoài lề)
+    neutral_comments = df[
+        (df["filter_status"] == "KEEP")
+        & (df["sentiment"] == "Neutral")
+        & (~df.index.isin(selected_indices))
+    ]
+    for idx in neutral_comments.sample(n=min(15, len(neutral_comments)), random_state=42).index:
+        selected_indices.add(idx)
+
+    # 5. 10 dòng Positive khen ngoại hình / người (kiểm tra khen người hay khen diễn xuất)
+    beauty_kw = r"(?:đẹp trai|xinh|gái|bác|chú|body|mê|u mê)"
+    pos_person = df[
+        (df["filter_status"] == "KEEP")
+        & (df["sentiment"] == "Positive")
+        & (df["Nội dung"].astype(str).str.contains(beauty_kw, case=False, regex=True))
+        & (~df.index.isin(selected_indices))
+    ]
+    for idx in pos_person.sample(n=min(10, len(pos_person)), random_state=42).index:
+        selected_indices.add(idx)
+
+    # 6. Bổ sung ngẫu nhiên cho đủ 100 dòng để đảm bảo tính đại diện
+    remaining_needed = 100 - len(selected_indices)
+    general_pool = df[~df.index.isin(selected_indices)]
+    for idx in general_pool.sample(n=remaining_needed, random_state=42).index:
+        selected_indices.add(idx)
+
+    sample_df = df.loc[sorted(list(selected_indices))].copy().reset_index(drop=True)
+    return sample_df
+
+
+# ==============================================================================
+# 4. Prompt Chuyên Sâu Rà Soát Chất Lượng Dữ Liệu
 # ==============================================================================
 def build_review_prompt(batch_items: List[Dict[str, Any]]) -> str:
     prompt = f"""Bạn là chuyên gia NLP Senior và Data Annotation Auditor kiểm soát chất lượng dữ liệu cho bài toán phân loại cảm xúc bình luận Facebook về bộ phim "{TARGET_MOVIE}".
 
-BẠN ĐANG RÀ SOÁT LẠI NHÃN CŨ ĐỂ PHÁT HIỆN VÀ SỬA LỖI THEO CÁC NGUYÊN TẮC BẮT BUỘC SAU:
+BẠN ĐANG RÀ SOÁT LẠI NHÃN CŨ DO MÔ HÌNH TRƯỚC ĐÓ ĐÃ GÁN ĐỂ PHÁT HIỆN VÀ SỬA LỖI THEO CÁC NGUYÊN TẮC BẮT BUỘC SAU:
 
 ### NGUYÊN TẮC CỐT LÕI:
 "Giữ bình luận có thể xác định được đối tượng là bộ phim mục tiêu và xác định được cảm xúc từ CHÍNH NỘI DUNG BÌNH LUẬN ĐỘC LẬP, KHÔNG CẦN SUY RA CẢM XÚC TỪ BÌNH LUẬN CHA."
@@ -125,14 +188,14 @@ BẠN ĐANG RÀ SOÁT LẠI NHÃN CŨ ĐỂ PHÁT HIỆN VÀ SỬA LỖI THEO C�
   - Nội dung vô nghĩa, chỉ emoji không thể diễn giải.
   - Trò chuyện riêng tư giữa người dùng không liên quan đến phim.
   - Chỉ bàn về bộ phim khác.
-  - Chỉ nhận xét ngoại hình, đời tư, ngoài đời của diễn viên mà KHÔNG đánh giá diễn xuất hay bộ phim.
+  - Chỉ nhận xét ngoại hình, đời tư, ngoài đời của diễn viên mà KHÔNG đánh giá diễn xuất hay bộ phim (ví dụ: "chú này ngoài đời giàu lắm", "chị này xinh gái thế").
   - [CỰC KỲ QUAN TRỌNG ĐỐI VỚI REPLY]: Loại BỎ TẤT CẢ các Reply phụ thuộc hoàn toàn vào bình luận cha để hiểu ý kiến:
     + "Chuẩn luôn" -> REMOVE
     + "Tôi cũng nghĩ vậy" -> REMOVE
     + "Không đồng ý" -> REMOVE
     + "2 em mà?" -> REMOVE
     + "Chốt kèo" -> REMOVE
-    + "Ukm" / "Dạ" / "Đúng rồi" / "ok" -> REMOVE
+    + "Ukm" / "Dạ" / "Đúng rồi" -> REMOVE
   - [LƯU Ý ĐẶC BIỆT VỀ NHÂN VẬT]: KHÔNG ĐƯỢC tự động gán Negative chỉ vì bình luận nói một nhân vật trong phim là người ác, đê tiện, độc ác hay đáng sợ (ví dụ: "lão này đóng phản diện đạt ghê, nhìn ác vãi" -> là khen diễn xuất -> KEEP, Positive; "ông trùm ác dã man" -> nhận xét nhân vật chứ KHÔNG chê phim).
 * REVIEW:
   - Không rõ đang đánh giá phim hay đánh giá một người ngoài đời.
@@ -164,7 +227,7 @@ DANH SÁCH BÌNH LUẬN CẦN RÀ SOÁT:
 
 
 # ==============================================================================
-# 4. Gọi API với Retry và Key Rotation
+# 5. Gọi API với Retry và Key Rotation
 # ==============================================================================
 def review_batch_with_retry(
     key_manager: KeyManager,
@@ -202,13 +265,7 @@ def review_batch_with_retry(
                 time.sleep(2 * attempt)
                 continue
 
-            tokens = {
-                "prompt_tokens": getattr(response.usage_metadata, "prompt_token_count", 0),
-                "candidates_tokens": getattr(response.usage_metadata, "candidates_token_count", 0),
-                "total_tokens": getattr(response.usage_metadata, "total_token_count", 0),
-            } if getattr(response, "usage_metadata", None) else {}
-
-            return batch_res.annotations, tokens
+            return batch_res.annotations
 
         except Exception as e:
             err_str = str(e)
@@ -222,30 +279,30 @@ def review_batch_with_retry(
                     time.sleep(1)
                     continue
                 else:
-                    return None, {}
+                    return None
 
             if attempt == max_retries:
                 print(f"Đã thử {max_retries} lần không thành công cho batch này.")
-                return None, {}
+                return None
 
             wait_time = 3 * attempt
             print(f"Chờ {wait_time}s trước khi retry...")
             time.sleep(wait_time)
 
-    return None, {}
+    return None
 
 
 # ==============================================================================
-# 5. Xuất File Excel all_comments_reviewed_v2.xlsx
+# 6. Xuất File Excel all_comments_reviewed_v2.xlsx
 # ==============================================================================
-def export_reviewed_excel(df_all: pd.DataFrame, review_dict: Dict[int, Dict[str, Any]], output_path: Path):
+def export_reviewed_excel(sample_df: pd.DataFrame, review_dict: Dict[int, Dict[str, Any]], output_path: Path):
     print("\n--- Đang tạo và định dạng file Excel all_comments_reviewed_v2.xlsx ---")
 
     all_reviewed_rows = []
     change_log_rows = []
     human_review_rows = []
 
-    for _, row in df_all.iterrows():
+    for _, row in sample_df.iterrows():
         r_id = int(row["row_id"])
         raw_text = str(row.get("Nội dung", "") or "")
         c_type = str(row.get("Loại", "") or "")
@@ -325,8 +382,7 @@ def export_reviewed_excel(df_all: pd.DataFrame, review_dict: Dict[int, Dict[str,
 
     # Sheet 4: SUMMARY (Thống kê tổng hợp)
     summary_data = [
-        {"Chỉ số": "Tổng số bình luận trong toàn bộ dataset", "Số lượng": len(df_all_reviewed), "Tỷ lệ": "100.0%"},
-        {"Chỉ số": "Số dòng đã được rà soát thực tế", "Số lượng": len(review_dict), "Tỷ lệ": f"{len(review_dict)/len(df_all_reviewed)*100:.1f}%"},
+        {"Chỉ số": "Tổng số bình luận rà soát trong mẫu", "Số lượng": len(df_all_reviewed), "Tỷ lệ": "100.0%"},
         {"Chỉ số": "Số dòng giữ lại (KEEP)", "Số lượng": (df_all_reviewed["Final Status"] == "KEEP").sum(), "Tỷ lệ": f"{(df_all_reviewed['Final Status'] == 'KEEP').sum()/len(df_all_reviewed)*100:.1f}%"},
         {"Chỉ số": "Số dòng loại bỏ (REMOVE)", "Số lượng": (df_all_reviewed["Final Status"] == "REMOVE").sum(), "Tỷ lệ": f"{(df_all_reviewed['Final Status'] == 'REMOVE').sum()/len(df_all_reviewed)*100:.1f}%"},
         {"Chỉ số": "Số dòng cần người xem lại (REVIEW)", "Số lượng": (df_all_reviewed["Final Status"] == "REVIEW").sum(), "Tỷ lệ": f"{(df_all_reviewed['Final Status'] == 'REVIEW').sum()/len(df_all_reviewed)*100:.1f}%"},
@@ -394,11 +450,60 @@ def export_reviewed_excel(df_all: pd.DataFrame, review_dict: Dict[int, Dict[str,
 
 
 # ==============================================================================
-# 6. Main
+# 7. Báo cáo thống kê chi tiết
+# ==============================================================================
+def print_audit_report(sample_df: pd.DataFrame, df_change_log: pd.DataFrame, df_human_review: pd.DataFrame):
+    print("\n" + "=" * 80)
+    print("BÁO CÁO KẾT QUẢ RÀ SOÁT & HIỆU CHỈNH MẪU 100 BÌNH LUẬN (PHIM 'TRẠI BUÔN NGƯỜI')")
+    print("=" * 80)
+
+    keep_to_remove = df_change_log[df_change_log["Change Type"] == "KEEP -> REMOVE"]
+    remove_to_keep = df_change_log[df_change_log["Change Type"] == "REMOVE -> KEEP"]
+    to_review = df_change_log[df_change_log["New Status"] == "REVIEW"]
+    sentiment_changes = df_change_log[df_change_log["Change Type"].str.contains("Sentiment:")]
+
+    print(f"1. Tổng số dòng rà soát: {len(sample_df)} bình luận (chọn lọc từ các ca biên dễ sai và mẫu ngẫu nhiên)")
+    print(f"2. Tổng số dòng được hiệu chỉnh nhãn: {len(df_change_log)} / {len(sample_df)} ({len(df_change_log)/len(sample_df)*100:.1f}%)")
+    print(f"   - Số dòng đề xuất đổi KEEP -> REMOVE: {len(keep_to_remove)}")
+    print(f"   - Số dòng đề xuất đổi REMOVE -> KEEP: {len(remove_to_keep)}")
+    print(f"   - Số dòng chuyển sang REVIEW:        {len(to_review)}")
+    print(f"   - Số dòng đổi nhãn Sentiment:        {len(sentiment_changes)}")
+    print(f"3. Số dòng cần con người kiểm tra (Sheet HUMAN_REVIEW): {len(df_human_review)}")
+
+    print("\n4. VÍ DỤ CỤ THỂ VÀ LÝ DO ĐIỀU CHỈNH:")
+    
+    if len(keep_to_remove) > 0:
+        print("\n--- [A] VÍ DỤ ĐỔI TỪ KEEP -> REMOVE (Reply phụ thuộc ngữ cảnh cha, không tự đứng độc lập):")
+        for _, row in keep_to_remove.head(4).iterrows():
+            print(f"  * [Row {row['Row ID']}] ({row['Loại']}) \"{row['Nội dung RAW']}\"")
+            print(f"    -> Nhãn cũ: {row['Old Status']} ({row['Old Sentiment']}) | Nhãn mới: {row['New Status']}")
+            print(f"    -> Lý do: {row['Reason']}")
+
+    if len(remove_to_keep) > 0:
+        print("\n--- [B] VÍ DỤ ĐỔI TỪ REMOVE -> KEEP (Cứu bình luận đánh giá phim bị loại nhầm):")
+        for _, row in remove_to_keep.head(4).iterrows():
+            print(f"  * [Row {row['Row ID']}] ({row['Loại']}) \"{row['Nội dung RAW']}\"")
+            print(f"    -> Nhãn cũ: {row['Old Status']} | Nhãn mới: {row['New Status']} ({row['New Sentiment']})")
+            print(f"    -> Lý do: {row['Reason']}")
+
+    if len(sentiment_changes) > 0:
+        print("\n--- [C] VÍ DỤ ĐỔI NHÃN CẢM XÚC (Sửa nhầm lẫn cảm xúc nhân vật với đánh giá phim):")
+        for _, row in sentiment_changes.head(4).iterrows():
+            print(f"  * [Row {row['Row ID']}] ({row['Loại']}) \"{row['Nội dung RAW']}\"")
+            print(f"    -> Cảm xúc cũ: {row['Old Sentiment']} | Cảm xúc mới: {row['New Sentiment']}")
+            print(f"    -> Lý do: {row['Reason']}")
+
+    print("\n" + "=" * 80)
+    print(f"Đã lưu kết quả hoàn chỉnh vào file: {OUTPUT_FILE}")
+    print("=" * 80 + "\n")
+
+
+# ==============================================================================
+# 8. Main
 # ==============================================================================
 def main():
     print("=" * 80)
-    print("CHẠY RÀ SOÁT VÀ HIỆU CHỈNH TOÀN BỘ 3.776 BÌNH LUẬN (BATCH SIZE = 30)")
+    print("RÀ SOÁT VÀ HIỆU CHỈNH DATASET 100 BÌNH LUẬN (CHẠY THỬ TRƯỚC)")
     print("=" * 80)
 
     if not INPUT_FILE.exists():
@@ -406,11 +511,13 @@ def main():
         return 1
 
     df_full = pd.read_excel(INPUT_FILE, sheet_name="ALL_ANNOTATED")
-    df_full["row_id"] = df_full.index + 2
-    total_rows = len(df_full)
-    print(f"Đã đọc file gốc: {INPUT_FILE} ({total_rows:,} dòng).")
+    print(f"Đã đọc file gốc: {INPUT_FILE} ({len(df_full):,} dòng).")
 
-    # Khởi tạo KeyManager
+    # 1. Trích xuất mẫu 100 dòng
+    sample_df = select_audit_sample(df_full)
+    print(f"Đã chọn mẫu 100 dòng (Row IDs từ {sample_df['row_id'].min()} đến {sample_df['row_id'].max()}).")
+
+    # 2. Khởi tạo KeyManager
     raw_keys_env = os.environ.get("GEMINI_API_KEYS", "") or os.environ.get("GEMINI_API_KEY", "")
     key_list = [k.strip() for k in raw_keys_env.replace("\n", ",").split(",") if k.strip()]
     if not key_list:
@@ -419,52 +526,22 @@ def main():
 
     key_manager = KeyManager(key_list)
     model_name = "gemini-flash-lite-latest"
-    print(f"Mô hình sử dụng: {model_name} | Batch size: {BATCH_SIZE} | Tổng số key: {len(key_manager.keys)}")
+    print(f"Mô hình sử dụng: {model_name} | Batch size: {BATCH_SIZE}")
 
-    # Nạp checkpoint
+    # 3. Đọc checkpoint nếu có
     review_dict: Dict[int, Dict[str, Any]] = {}
-    if CHECKPOINT_FULL.exists():
+    if CHECKPOINT_FILE.exists():
         try:
-            with open(CHECKPOINT_FULL, "r", encoding="utf-8") as f:
+            with open(CHECKPOINT_FILE, "r", encoding="utf-8") as f:
                 saved = json.load(f)
                 review_dict = {int(k): v for k, v in saved.items()}
-            print(f"Tìm thấy checkpoint full: đã xử lý trước đó {len(review_dict):,}/{total_rows:,} dòng.")
+            print(f"Tìm thấy checkpoint: đã xử lý {len(review_dict)}/100 dòng.")
         except Exception as e:
-            print(f"Lỗi đọc checkpoint full: {e}")
-    elif CHECKPOINT_SAMPLE.exists():
-        try:
-            with open(CHECKPOINT_SAMPLE, "r", encoding="utf-8") as f:
-                saved = json.load(f)
-                review_dict = {int(k): v for k, v in saved.items()}
-            print(f"Kế thừa từ checkpoint mẫu 100 dòng: {len(review_dict)} dòng.")
-        except Exception as e:
-            print(f"Lỗi đọc checkpoint mẫu: {e}")
+            print(f"Lỗi đọc checkpoint: {e}")
 
-    # Xử lý trước các dòng trống nội dung -> REMOVE
-    empty_count = 0
-    for _, row in df_full.iterrows():
-        r_id = int(row["row_id"])
-        text = str(row.get("Nội dung", "") or "").strip()
-        if not text and r_id not in review_dict:
-            review_dict[r_id] = {
-                "row_id": r_id,
-                "filter_status": "REMOVE",
-                "sentiment": None,
-                "confidence_level": "HIGH",
-                "reason": "Bình luận trống hoặc chỉ có sticker/hình ảnh",
-            }
-            empty_count += 1
-    if empty_count > 0:
-        print(f"Đã tự động xác định {empty_count} bình luận trống -> REMOVE.")
-
-    # Chuẩn bị danh sách cần gọi API
-    items_list = df_full.to_dict(orient="records")
-    items_to_process = [item for item in items_list if int(item["row_id"]) not in review_dict]
-    print(f"Số lượng bình luận còn lại cần gọi API: {len(items_to_process):,} / {total_rows:,}")
-
-    total_api_calls = 0
-    total_tokens = 0
-    start_time = time.time()
+    # 4. Chạy từng batch rà soát
+    items_to_process = [r.to_dict() for _, r in sample_df.iterrows() if int(r["row_id"]) not in review_dict]
+    print(f"Số dòng cần gọi API rà soát: {len(items_to_process)} / 100")
 
     total_batches = (len(items_to_process) + BATCH_SIZE - 1) // BATCH_SIZE if items_to_process else 0
 
@@ -474,41 +551,29 @@ def main():
         t0 = time.time()
         print(f"\n[Batch {batch_num}/{total_batches}] Rà soát {len(batch)} dòng (Row {batch[0]['row_id']} -> {batch[-1]['row_id']})...", end="", flush=True)
 
-        annotations, tokens = review_batch_with_retry(key_manager, model_name, batch)
+        annotations = review_batch_with_retry(key_manager, model_name, batch)
         if annotations is None:
-            print(f"\n[CẢNH BÁO] Không thể hoàn thành batch {batch_num}. Lưu checkpoint hiện tại và tạm dừng.")
+            print(f"\n[CẢNH BÁO] Không thể hoàn thành batch {batch_num}. Tạm dừng.")
             break
-
-        total_api_calls += 1
-        b_tok = tokens.get("total_tokens", 0)
-        total_tokens += b_tok
 
         for ann in annotations:
             review_dict[ann.row_id] = ann.model_dump()
 
-        # Lưu checkpoint sau mỗi batch
-        with open(CHECKPOINT_FULL, "w", encoding="utf-8") as f:
+        # Lưu checkpoint
+        with open(CHECKPOINT_FILE, "w", encoding="utf-8") as f:
             json.dump(review_dict, f, ensure_ascii=False, indent=2)
 
         t1 = time.time()
-        print(f" Xong ({t1 - t0:.2f}s, {b_tok} tokens) -> Tiến độ: {len(review_dict)}/{total_rows} ({len(review_dict)/total_rows*100:.1f}%)")
+        print(f" Xong ({t1 - t0:.2f}s) -> Tiến độ: {len(review_dict)}/100")
         time.sleep(1.5)
 
-    elapsed = time.time() - start_time
-    print(f"\nHoàn thành rà soát {len(review_dict)}/{total_rows} dòng trong {elapsed:.2f}s. Tổng token: {total_tokens:,}")
+    print(f"\nĐã hoàn thành rà soát {len(review_dict)}/100 dòng.")
 
-    # Xuất file Excel
-    df_all_reviewed, df_change_log, df_human_review, df_summary = export_reviewed_excel(df_full, review_dict, OUTPUT_FILE)
+    # 5. Xuất Excel
+    df_all_reviewed, df_change_log, df_human_review, df_summary = export_reviewed_excel(sample_df, review_dict, OUTPUT_FILE)
 
-    print("\n" + "=" * 80)
-    print("BÁO CÁO TỔNG KẾT RÀ SOÁT TOÀN BỘ DATASET:")
-    print("=" * 80)
-    print(f"1. Tổng số dòng trong dataset: {total_rows:,} bình luận")
-    print(f"2. Đã rà soát thực tế: {len(review_dict):,} ({len(review_dict)/total_rows*100:.1f}%)")
-    print(f"3. Tổng số dòng được điều chỉnh nhãn: {len(df_change_log):,} / {len(review_dict):,} ({len(df_change_log)/len(review_dict)*100:.1f}%)")
-    print(f"4. Số dòng cần kiểm tra thủ công (HUMAN_REVIEW): {len(df_human_review):,}")
-    print(f"5. File kết quả Excel hoàn chỉnh: {OUTPUT_FILE}")
-    print("=" * 80 + "\n")
+    # 6. Báo cáo kết quả
+    print_audit_report(sample_df, df_change_log, df_human_review)
     return 0
 
 

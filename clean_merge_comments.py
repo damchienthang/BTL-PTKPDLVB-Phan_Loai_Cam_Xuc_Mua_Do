@@ -7,7 +7,7 @@ from openpyxl.worksheet.datavalidation import DataValidation
 
 ROOT = Path(__file__).resolve().parent
 INPUT_DIR = ROOT / "data" / "simple_post"
-OUTPUT_FILE = ROOT / "du_lieu_goc.xlsx"
+OUTPUT_FILE = ROOT / "simple_post_comments_merged.xlsx"
 PART_OUTPUT_TEMPLATE = "simple_post_comments_phan_{part}.xlsx"
 STATUS_COLUMN = "Trạng thái"
 LABEL_COLUMN = "Nhãn"

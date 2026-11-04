@@ -23,7 +23,7 @@ if sys.platform == "win32":
     except Exception:
         pass
 
-from tien_xu_ly_binh_luan import VietnameseCommentPreprocessor, ENTITY_DICT
+from preprocess_comments import VietnameseCommentPreprocessor, ENTITY_DICT
 
 ROOT_DIR = Path(__file__).resolve().parent
 FILE_ALL_REVIEWED = ROOT_DIR / "all_comments_reviewed_v2.xlsx"

@@ -16,12 +16,8 @@ if sys.platform == "win32":
         pass
 
 ROOT_DIR = Path(__file__).resolve().parent
-_input_candidates = [
-    ROOT_DIR / "du_lieu_sach_da_sua.xlsx",
-    ROOT_DIR / "final_labeled_fixed.xlsx",
-]
-INPUT_FILE = next((p for p in _input_candidates if p.exists()), _input_candidates[0])
-OUTPUT_FILE = ROOT_DIR / "du_lieu_sach_cuoi_v2.xlsx"
+INPUT_FILE = ROOT_DIR / "final_labeled_fixed.xlsx"
+OUTPUT_FILE = ROOT_DIR / "final_labeled_clean_v2.xlsx"
 
 
 def style_worksheet(ws, cols_count: int, row_count: int, col_widths: dict):
@@ -54,7 +50,7 @@ def style_worksheet(ws, cols_count: int, row_count: int, col_widths: dict):
 
 def main():
     print("=" * 80)
-    print("BẮT ĐẦU XỬ LÝ DỮ LIỆU TẠO FILE 'du_lieu_sach_cuoi_v2.xlsx'")
+    print("BẮT ĐẦU XỬ LÝ DỮ LIỆU TẠO FILE 'final_labeled_clean_v2.xlsx'")
     print("=" * 80)
 
     if not INPUT_FILE.exists():
@@ -219,9 +215,9 @@ def main():
     print(" -> Đã hoàn tất thay thế Regex word boundary và cụm từ cố định.")
 
     # --------------------------------------------------------------------------
-    # BƯỚC 5: XUẤT FILE 'du_lieu_sach_cuoi_v2.xlsx'
+    # BƯỚC 5: XUẤT FILE 'final_labeled_clean_v2.xlsx'
     # --------------------------------------------------------------------------
-    print("\n--- BƯỚC 5: Xuất file mới 'du_lieu_sach_cuoi_v2.xlsx' ---")
+    print("\n--- BƯỚC 5: Xuất file mới 'final_labeled_clean_v2.xlsx' ---")
 
     # Sắp xếp theo Comment ID tăng dần
     df_final = df_final.sort_values("Comment ID").reset_index(drop=True)

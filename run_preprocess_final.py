@@ -12,7 +12,7 @@ if sys.platform == "win32":
     except Exception:
         pass
 
-from tien_xu_ly_binh_luan import VietnameseCommentPreprocessor, ENTITY_DICT
+from preprocess_comments import VietnameseCommentPreprocessor, ENTITY_DICT
 
 ROOT_DIR = Path(__file__).resolve().parent
 TARGET_FILE = ROOT_DIR / "final_labeled.xlsx"
