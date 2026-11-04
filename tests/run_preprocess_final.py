@@ -12,12 +12,13 @@ if sys.platform == "win32":
     except Exception:
         pass
 
-from preprocess_comments import VietnameseCommentPreprocessor, ENTITY_DICT
+ROOT_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT_DIR))
 
-ROOT_DIR = Path(__file__).resolve().parent
-TARGET_FILE = ROOT_DIR / "final_labeled.xlsx"
-BACKUP_FILE = ROOT_DIR / "final_labeled_backup.xlsx"
-ANNOTATED_FILE = ROOT_DIR / "all_comments_annotated.xlsx"
+from preprocess_comments import VietnameseCommentPreprocessor, ENTITY_DICT
+TARGET_FILE = ROOT_DIR / "final_labeled.xlsx" if (ROOT_DIR / "final_labeled.xlsx").exists() else ROOT_DIR / "archive" / "final_labeled.xlsx"
+BACKUP_FILE = ROOT_DIR / "final_labeled_backup.xlsx" if (ROOT_DIR / "final_labeled_backup.xlsx").exists() else ROOT_DIR / "archive" / "final_labeled_backup.xlsx"
+ANNOTATED_FILE = ROOT_DIR / "all_comments_annotated.xlsx" if (ROOT_DIR / "all_comments_annotated.xlsx").exists() else ROOT_DIR / "archive" / "all_comments_annotated.xlsx"
 
 
 def load_author_names() -> list:

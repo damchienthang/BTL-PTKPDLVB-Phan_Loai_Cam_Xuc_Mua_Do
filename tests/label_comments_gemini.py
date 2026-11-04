@@ -19,7 +19,7 @@ if sys.platform == "win32":
         pass
 
 # Load biến môi trường từ .env nếu có
-ROOT_DIR = Path(__file__).resolve().parent
+ROOT_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(ROOT_DIR / ".env")
 
 RAW_DATA_PATH = ROOT_DIR / "simple_post_comments_merged.xlsx"
