@@ -16,6 +16,7 @@ ROOT_DIR = Path(__file__).resolve().parent
 
 # Tìm file LLM đã rà soát
 file_llm_candidates = [
+    ROOT_DIR / "tat_ca_binh_luan_da_duyet_v2.xlsx",
     ROOT_DIR / "all_comments_reviewed_v2(1).xlsx",
     ROOT_DIR / "all_comments_reviewed_v2.xlsx",
 ]
@@ -23,12 +24,13 @@ FILE_LLM = next((p for p in file_llm_candidates if p.exists()), None)
 
 # Tìm file QC Checklist do con người kiểm tra
 file_qc_candidates = [
+    ROOT_DIR / "danh_sach_kiem_tra_nhan.xlsx",
     ROOT_DIR / "Danh_sach_kiem_tra_nhan_truoc_thu_6.xlsx",
     ROOT_DIR / "Danh_sach_kiem_tra_nhan.xlsx",
 ]
 FILE_QC = next((p for p in file_qc_candidates if p.exists()), None)
 
-OUTPUT_FILE = ROOT_DIR / "final_labeled.xlsx"
+OUTPUT_FILE = ROOT_DIR / "du_lieu_sach_cu.xlsx"
 
 
 def validate_files():

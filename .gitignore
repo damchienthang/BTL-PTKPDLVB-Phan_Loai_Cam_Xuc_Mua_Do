@@ -33,15 +33,21 @@ output_llm_test/
 
 # Checkpoint json files
 checkpoint_*.json
+diem_kiem_soat_*.json
 
-# Intermediate Excel datasets (Only simple_post_comments_merged.xlsx & final_labeled_clean_v2.xlsx are tracked)
+# Intermediate Excel datasets (Only du_lieu_goc.xlsx & du_lieu_sach_cuoi_v2.xlsx are tracked)
 all_comments_annotated.xlsx
 all_comments_reviewed*.xlsx
 Danh_sach_kiem_tra_nhan*.xlsx
-final_labeled.xlsx
-final_labeled_backup.xlsx
-final_labeled_fixed.xlsx
-final_labeled_no_stopwords.xlsx
+danh_sach_kiem_tra_nhan*.xlsx
+final_labeled*.xlsx
 removed_comments.xlsx
 sample_100_raw.xlsx
-simple_post_comments_phan_*.xlsx
+simple_post_comments_*.xlsx
+tat_ca_binh_luan_*.xlsx
+du_lieu_sach_cu.xlsx
+du_lieu_sach_sao_luu.xlsx
+du_lieu_sach_da_sua.xlsx
+du_lieu_sach_khong_tu_dung.xlsx
+du_lieu_loai_bo.xlsx
+mau_100_tho.xlsx

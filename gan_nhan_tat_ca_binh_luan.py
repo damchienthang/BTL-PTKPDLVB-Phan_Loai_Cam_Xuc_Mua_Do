@@ -21,9 +21,13 @@ if sys.platform == "win32":
 ROOT_DIR = Path(__file__).resolve().parent
 load_dotenv(ROOT_DIR / ".env")
 
-RAW_DATA_PATH = ROOT_DIR / "simple_post_comments_merged.xlsx"
-OUTPUT_PATH = ROOT_DIR / "all_comments_annotated.xlsx"
-CHECKPOINT_PATH = ROOT_DIR / "checkpoint_all_annotations.json"
+_raw_candidates = [
+    ROOT_DIR / "du_lieu_goc.xlsx",
+    ROOT_DIR / "simple_post_comments_merged.xlsx",
+]
+RAW_DATA_PATH = next((p for p in _raw_candidates if p.exists()), _raw_candidates[0])
+OUTPUT_PATH = ROOT_DIR / "tat_ca_binh_luan_da_gan_nhan.xlsx"
+CHECKPOINT_PATH = ROOT_DIR / "diem_kiem_soat_gan_nhan.json"
 TARGET_MOVIE = "Trại buôn người"
 BATCH_SIZE = 30
 

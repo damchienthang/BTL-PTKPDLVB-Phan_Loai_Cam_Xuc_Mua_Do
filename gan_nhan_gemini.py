@@ -22,7 +22,11 @@ if sys.platform == "win32":
 ROOT_DIR = Path(__file__).resolve().parent
 load_dotenv(ROOT_DIR / ".env")
 
-RAW_DATA_PATH = ROOT_DIR / "simple_post_comments_merged.xlsx"
+_raw_candidates = [
+    ROOT_DIR / "du_lieu_goc.xlsx",
+    ROOT_DIR / "simple_post_comments_merged.xlsx",
+]
+RAW_DATA_PATH = next((p for p in _raw_candidates if p.exists()), _raw_candidates[0])
 OUTPUT_DIR = ROOT_DIR / "output_llm_test"
 SAMPLE_RAW_PATH = OUTPUT_DIR / "sample_100_raw.xlsx"
 SAMPLE_ANNOTATED_PATH = OUTPUT_DIR / "sample_100_annotated.xlsx"
