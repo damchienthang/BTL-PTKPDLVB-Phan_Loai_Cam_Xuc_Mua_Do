@@ -16,7 +16,11 @@ if sys.platform == "win32":
         pass
 
 ROOT_DIR = Path(__file__).resolve().parent
-INPUT_FILE = ROOT_DIR / "final_labeled_fixed.xlsx"
+_candidates = [
+    ROOT_DIR / "final_labeled_fixed.xlsx",
+    ROOT_DIR / "archive" / "final_labeled_fixed.xlsx",
+]
+INPUT_FILE = next((p for p in _candidates if p.exists()), _candidates[0])
 OUTPUT_FILE = ROOT_DIR / "final_labeled_clean_v2.xlsx"
 
 

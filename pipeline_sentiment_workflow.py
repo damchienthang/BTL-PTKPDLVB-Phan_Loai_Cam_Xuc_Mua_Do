@@ -26,9 +26,9 @@ if sys.platform == "win32":
 from preprocess_comments import VietnameseCommentPreprocessor, ENTITY_DICT
 
 ROOT_DIR = Path(__file__).resolve().parent
-FILE_ALL_REVIEWED = ROOT_DIR / "all_comments_reviewed_v2.xlsx"
-FILE_QC = ROOT_DIR / "Danh_sach_kiem_tra_nhan.xlsx"
-FILE_ANNOTATED = ROOT_DIR / "all_comments_annotated.xlsx"
+FILE_ALL_REVIEWED = ROOT_DIR / "all_comments_reviewed_v2.xlsx" if (ROOT_DIR / "all_comments_reviewed_v2.xlsx").exists() else ROOT_DIR / "archive" / "all_comments_reviewed_v2.xlsx"
+FILE_QC = ROOT_DIR / "Danh_sach_kiem_tra_nhan.xlsx" if (ROOT_DIR / "Danh_sach_kiem_tra_nhan.xlsx").exists() else ROOT_DIR / "archive" / "Danh_sach_kiem_tra_nhan.xlsx"
+FILE_ANNOTATED = ROOT_DIR / "all_comments_annotated.xlsx" if (ROOT_DIR / "all_comments_annotated.xlsx").exists() else ROOT_DIR / "archive" / "all_comments_annotated.xlsx"
 
 OUTPUT_FINAL = ROOT_DIR / "final_labeled.xlsx"
 OUTPUT_REMOVED = ROOT_DIR / "removed_comments.xlsx"
