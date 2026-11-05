@@ -26,7 +26,7 @@ def main():
     print("=" * 65)
 
     # -------------------------------------------------------------
-    # BƯỚC 1: ĐỌC DỮ LIỆU ĐÃ LÀM SẠCH (BẢN CHUẨN V3 DUY NHẤT)
+    # BƯỚC 1: ĐỌC DỮ LIỆU ĐÃ LÀM SẠCH
     # -------------------------------------------------------------
     data_path = os.path.join("Data", "final_labeled_clean_v3.xlsx")
 
@@ -66,7 +66,7 @@ def main():
     print(f"  * Độ thưa của ma trận đặc trưng: {sparsity:.2f}% (dạng ma trận nén CSR)")
 
     # -------------------------------------------------------------
-    # BƯỚC 3: TOP ĐẶC TRƯNG TIÊU BIỂU (DÙNG ĐỂ CHIẾU SLIDE THUYẾT TRÌNH)
+    # BƯỚC 3: TOP ĐẶC TRƯNG TIÊU BIỂU
     # -------------------------------------------------------------
     print("\n[Bước 3] Top 15 đặc trưng có trọng số TF-IDF trung bình cao nhất:")
     mean_scores = np.asarray(X_tfidf.mean(axis=0)).flatten()
@@ -75,7 +75,7 @@ def main():
         print(f"   {rank:2d}. {vocab[idx]:20s} : {mean_scores[idx]:.4f}")
 
     # -------------------------------------------------------------
-    # BƯỚC 4: VÍ DỤ MINH HỌA TRỰC QUAN (ĐỂ GIẢNG GIẢI TRÊN BỤNG THUYẾT TRÌNH)
+    # BƯỚC 4: VÍ DỤ MINH HỌA TRỰC QUAN
     # -------------------------------------------------------------
     print("\n[Bước 4] Ví dụ trực quan: Cách 1 bình luận chuyển thành véc-tơ số:")
     sample_idx = 0
@@ -88,12 +88,12 @@ def main():
         print(f"      + Từ: '{vocab[col]}' -> Trọng số TF-IDF: {val:.4f}")
 
     # -------------------------------------------------------------
-    # BƯỚC 5: LƯU SẢN PHẨM BÀN GIAO CHO HIẾU & DOANH
+    # BƯỚC 5: LƯU FILE
     # -------------------------------------------------------------
     output_dir = os.path.join("Data", "vectorized")
     os.makedirs(output_dir, exist_ok=True)
 
-    # 1. Gói dữ liệu hoàn chỉnh để Hiếu và Doanh dùng trực tiếp
+    # 1. Gói dữ liệu hoàn chỉnh
     deliverable = {
         'comment_ids': np.array(comment_ids),
         'texts': np.array(texts, dtype=str),
@@ -108,7 +108,7 @@ def main():
     # 2. Lưu riêng vectorizer để dùng cho việc phân loại câu mới
     joblib.dump(vectorizer, os.path.join(output_dir, "tfidf_vectorizer.joblib"))
 
-    # 3. Xuất bảng ma trận mẫu (20 câu đầu x 10 từ đầu) ra Excel để dễ dàng đưa vào Slide
+    # 3. Xuất bảng ma trận mẫu (20 câu đầu x 10 từ đầu)
     sample_matrix_df = pd.DataFrame(
         X_tfidf[:20, top_indices[:10]].toarray(),
         columns=[vocab[i] for i in top_indices[:10]]
