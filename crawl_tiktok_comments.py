@@ -236,7 +236,7 @@ class TikTokCommentScraper:
         return unique_comments
 
 
-def save_to_files(comments: List[Dict], video_id: str, output_dir: Path) -> Tuple[Path, Path]:
+def save_to_files(comments: List[Dict], video_id: str, output_dir: Path) -> Tuple[Path, Optional[Path]]:
     """Lưu danh sách bình luận vào định dạng CSV và Excel chuẩn dự án."""
     output_dir.mkdir(parents=True, exist_ok=True)
     count = len(comments)
@@ -250,9 +250,16 @@ def save_to_files(comments: List[Dict], video_id: str, output_dir: Path) -> Tupl
     df = pd.DataFrame(comments)
     # Lưu CSV UTF-8 with BOM (utf-8-sig) để mở trên Excel không bị lỗi phông tiếng Việt
     df.to_csv(csv_path, index=False, encoding="utf-8-sig")
-    df.to_excel(excel_path, index=False, engine="openpyxl")
 
-    return csv_path, excel_path
+    saved_excel = excel_path
+    try:
+        df.to_excel(excel_path, index=False, engine="openpyxl")
+    except (ImportError, ModuleNotFoundError):
+        saved_excel = None
+    except Exception:
+        saved_excel = None
+
+    return csv_path, saved_excel
 
 
 def main():
@@ -297,7 +304,10 @@ def main():
     print(" KẾT QUẢ ĐÃ LƯU VÀO THƯ MỤC RAW CỦA DỰ ÁN:")
     print("=" * 70)
     print(f"1. Tệp CSV  : {csv_path}")
-    print(f"2. Tệp Excel: {excel_path}")
+    if excel_path:
+        print(f"2. Tệp Excel: {excel_path}")
+    else:
+        print("2. Tệp Excel: (Chưa cài thư viện openpyxl, tệp CSV đã sẵn sàng sử dụng)")
     print("\n[MẸO] Bạn có thể chạy ngay lệnh sau để gộp vào tập dữ liệu lớn của dự án:")
     print("      python merge_tiktok_comments.py")
 
