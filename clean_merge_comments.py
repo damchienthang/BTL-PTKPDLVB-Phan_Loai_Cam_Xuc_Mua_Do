@@ -7,6 +7,7 @@ from openpyxl.worksheet.datavalidation import DataValidation
 
 ROOT = Path(__file__).resolve().parent
 _candidates_input = [
+    ROOT / "tools" / "data" / "simple_post",
     ROOT / "data" / "facebook" / "raw" / "simple_post",
     ROOT / "data" / "simple_post",
     ROOT / "archive" / "data" / "simple_post",
@@ -128,9 +129,21 @@ def write_split_workbooks(data):
 
 
 def main():
-    files = sorted(INPUT_DIR.rglob("*.json"))
+    files = []
+    seen_stems = set()
+    for directory in _candidates_input:
+        if directory.exists():
+            for f in sorted(directory.rglob("*.json")):
+                if f.stem not in seen_stems:
+                    seen_stems.add(f.stem)
+                    files.append(f)
+
     if not files:
-        raise FileNotFoundError(f"Không tìm thấy file JSON trong: {INPUT_DIR}")
+        raise FileNotFoundError(f"Không tìm thấy file JSON nào trong các thư mục: {[str(d) for d in _candidates_input]}")
+
+    print(f"Tìm thấy {len(files)} file bài viết JSON từ các nguồn:")
+    for f in files:
+        print(f"  -> {f.parent.name}/{f.name}")
 
     all_data = load_data(files)
     write_workbook(all_data, OUTPUT_FILE)
