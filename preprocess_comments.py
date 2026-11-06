@@ -302,6 +302,17 @@ class VietnameseCommentPreprocessor:
         return result
 
     def preprocess_phobert(self, text: str) -> str:
+        """
+        Tiền xử lý chuẩn hóa cho PhoBERT (Word-level Language Model):
+        - Chuẩn hóa Unicode NFC.
+        - Xóa URL, tag, mention rác.
+        - Chuyển Emoticon & Emoji sang mô tả cảm xúc tiếng Việt.
+        - Chuẩn hóa teencode & viết tắt.
+        - Viết thường (lower).
+        - Chuẩn hóa thực thể phim (ENTITY_DICT).
+        - TÁCH TỪ TIẾNG VIỆT (Word Segmentation nối dấu gạch dưới `_` bằng PyVi) - Bắt buộc cho PhoBERT.
+        - GIỮ NGUYÊN dấu câu ngữ pháp (. , ! ?) và từ dừng (stopwords) để bảo tồn attention context.
+        """
         if not text or not str(text).strip():
             return ""
 
@@ -315,29 +326,39 @@ class VietnameseCommentPreprocessor:
 
         t = t.lower()
         t = self.whitespace_regex.sub(" ", t).strip()
-        return t
-
-    def preprocess_tfidf(self, text: str) -> str:
-        if not text or not str(text).strip():
-            return ""
-
-        t = self.preprocess_phobert(text)
 
         # Chuẩn hóa thực thể
         for ent_k, ent_v in ENTITY_DICT.items():
             pattern = re.compile(rf"\b{re.escape(ent_k)}\b", re.IGNORECASE)
             t = pattern.sub(ent_v, t)
 
-        # Tách từ tiếng Việt bằng PyVi trước khi xóa dấu câu
+        # Tách từ tiếng Việt bằng PyVi (nối `_` giữa các từ ghép, giữ nguyên dấu câu)
         if ViTokenizer is not None:
             t = ViTokenizer.tokenize(t)
 
-        # Tokenize có giữ dấu câu để gắn từ phủ định an toàn
+        t = self.whitespace_regex.sub(" ", t).strip()
+        return t
+
+    def preprocess_tfidf(self, text: str) -> str:
+        """
+        Tiền xử lý cho TF-IDF / Naive Bayes / SVM:
+        - Kế thừa toàn bộ từ bước PhoBERT (đã tách từ ghép `_`).
+        - Xử lý gắn từ phủ định (không_hay, chưa_từng).
+        - XÓA BỎ DẤU CÂU (chỉ giữ lại từ ngữ, số và ký tự nối `_`).
+        - LOẠI BỎ TỪ DỪNG (stopwords) để tránh làm loãng ma trận thưa.
+        """
+        if not text or not str(text).strip():
+            return ""
+
+        # Lấy bản đã chuẩn hóa và tách từ từ bước PhoBERT
+        t = self.preprocess_phobert(text)
+
+        # Tokenize có giữ dấu câu tạm thời để gắn từ phủ định an toàn (không nối xuyên dấu câu)
         tokens_with_punct = re.findall(r"[\w_]+|[,\.!?;:]", t)
         attached_tokens = self.attach_negation_in_tokens(tokens_with_punct)
 
-        # Xóa dấu câu sau khi đã xử lý phủ định an toàn
-        puncts = {",", ".", "!", "?", ";", ":"}
+        # Xóa sạch dấu câu
+        puncts = {",", ".", "!", "?", ";", ":", "-", "...", "—", "–"}
         clean_tokens = [tok for tok in attached_tokens if tok not in puncts]
 
         # Loại bỏ stopwords
