@@ -1,0 +1,57 @@
+{
+  "built_at": "2026-11-05 22:43:45 EST",
+  "mapping": {
+    "Enjoyment": "Positive",
+    "Sadness": "Negative",
+    "Fear": "Negative",
+    "Anger": "Negative",
+    "Disgust": "Negative",
+    "Other": "Neutral"
+  },
+  "dropped_emotion": "Surprise",
+  "report": {
+    "raw": {
+      "test_v2": 1312,
+      "pool_vsmec": 5306,
+      "pool_vsfc": 11426
+    },
+    "test_v2_removed_film_overlap": 0,
+    "pool_vsmec_removed": 12,
+    "pool_vsfc_removed": 71
+  },
+  "counts": {
+    "test_v2": {
+      "Negative": 634,
+      "Positive": 407,
+      "Neutral": 270
+    },
+    "pool_vsmec": {
+      "Negative": 2720,
+      "Positive": 1554,
+      "Neutral": 1020
+    },
+    "pool_vsfc": {
+      "Positive": 5580,
+      "Negative": 5324,
+      "Neutral": 451
+    },
+    "film_dev": {
+      "Positive": 1091,
+      "Neutral": 392,
+      "Negative": 317
+    }
+  },
+  "n": {
+    "test_v2": 1311,
+    "pool_vsmec": 5294,
+    "pool_vsfc": 11355,
+    "label_fixes": 8
+  },
+  "sha256": {
+    "film_clean_v2.csv": "1b547d75f7c5b7ec974c9e170171369b73209cba477a8a0acabc3aa7bbb643f2",
+    "label_fixes_train.csv": "a893da630e968fbe88927e75b07ed4c04dc2bf86164bb73398d4436b8f0e9b55",
+    "pool_vsfc.csv": "ba1598cd988925cdbe5e50671c9efd4b45720dcabe80f5da6c7b488a6be30b25",
+    "pool_vsmec.csv": "199b251d67408c386cfdc77e66ecdc599ba29098621b11490332b6c367e8d14b",
+    "test_v2.csv": "fc6770dea3e7676937b4ae4f6dcb1756485eb0c536f0a1897669331294986b95"
+  }
+}

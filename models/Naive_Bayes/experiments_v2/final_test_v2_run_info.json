@@ -1,0 +1,14 @@
+{
+  "at": "2026-11-06 00:16:18 EST",
+  "git_commit": "7a78a4c0152b9581a6296e77c426676d64e4ad86",
+  "python": "3.9.21",
+  "numpy": "2.0.2",
+  "scipy": "1.13.1",
+  "sklearn": "1.6.1",
+  "pandas": "2.3.3",
+  "hostname": "a0319.ten.osc.edu",
+  "slurm_job_id": "8359566",
+  "seed": 42,
+  "candidates_sha256": "590a46684fd6dc2fa00eed509a614a245d4437d7dbc62b3781e4757e7205c4a1",
+  "bootstrap_B": 10000
+}

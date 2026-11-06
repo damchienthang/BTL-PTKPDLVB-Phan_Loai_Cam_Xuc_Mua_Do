@@ -1,0 +1,48 @@
+{
+  "at": "2026-11-06 00:16:42 EST",
+  "git_commit": "7a78a4c0152b9581a6296e77c426676d64e4ad86",
+  "python": "3.9.21",
+  "numpy": "2.0.2",
+  "scipy": "1.13.1",
+  "sklearn": "1.6.1",
+  "pandas": "2.3.3",
+  "hostname": "a0319.ten.osc.edu",
+  "slurm_job_id": "8359566",
+  "seed": 42,
+  "configs": {
+    "BoW_val": {
+      "kind": "bow",
+      "max_order": 2,
+      "min_df": 2,
+      "alpha": 0.5,
+      "fit_prior": false
+    },
+    "TFIDF_val": {
+      "kind": "tfidf",
+      "max_order": 2,
+      "min_df": 2,
+      "alpha": 0.01,
+      "fit_prior": false
+    },
+    "BoW_cv": {
+      "kind": "bow",
+      "max_order": 2,
+      "min_df": 2,
+      "alpha": 0.3,
+      "fit_prior": false
+    },
+    "TFIDF_cv": {
+      "kind": "tfidf",
+      "max_order": 2,
+      "min_df": 3,
+      "alpha": 0.1,
+      "fit_prior": false
+    }
+  },
+  "selection_scores": {
+    "BoW_val": 0.6040856789453043,
+    "TFIDF_val": 0.6146723400992852,
+    "BoW_cv": 0.607030722884229,
+    "TFIDF_cv": 0.6134911824909163
+  }
+}
