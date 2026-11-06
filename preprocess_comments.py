@@ -17,10 +17,7 @@ try:
 except ImportError:
     ViTokenizer = None
 
-
-# ==============================================================================
 # 1. BẢNG TỪ ĐIỂN CHUẨN HÓA EMOTICON VĂN BẢN (Text Emoticons)
-# ==============================================================================
 EMOTICON_DICT: Dict[str, str] = {
     ":)))": " emoji_cuoi_to ",
     ":))": " emoji_cuoi_to ",
@@ -47,9 +44,7 @@ EMOTICON_DICT: Dict[str, str] = {
     "XD": " emoji_cuoi_to ",
 }
 
-# ==============================================================================
 # 2. BẢNG ÁNH XẠ EMOJI UNICODE
-# ==============================================================================
 EMOJI_DICT: Dict[str, str] = {
     # Tích cực / Khen / Yêu thích
     "❤️": " emoji_yeu_thich ", "💖": " emoji_yeu_thich ", "💕": " emoji_yeu_thich ", "🤍": " emoji_yeu_thich ",
@@ -81,9 +76,7 @@ EMOJI_DICT: Dict[str, str] = {
     "❓": " emoji_dau_hoi ", "❗": " emoji_dau_cham_than ",
 }
 
-# ==============================================================================
 # 3. BẢNG TỪ ĐIỂN CHUẨN HÓA TEENCODE & VIẾT TẮT TOÀN DIỆN
-# ==============================================================================
 TEENCODE_WORD_BOUNDARIES: List[Tuple[str, str]] = [
     # Cụm từ nhiều từ / trường hợp đặc biệt (ưu tiên khớp trước)
     (r"\b(chứ\s+)?(ko|k|kh|không)\s+p\b", "không phải"),
@@ -152,9 +145,7 @@ TEENCODE_WORD_BOUNDARIES: List[Tuple[str, str]] = [
     (r"\bnthe\b", "như thế"),
 ]
 
-# ==============================================================================
 # 4. BẢNG THỰC THỂ PHIM & ĐIỂM SỐ
-# ==============================================================================
 ENTITY_DICT: Dict[str, str] = {
     "trại buôn người": "trại_buôn_người",
     "trai buon nguoi": "trại_buôn_người",
@@ -202,9 +193,7 @@ TFIDF_STOPWORDS: Set[str] = {
 }
 
 
-# ==============================================================================
 # 5. CLASS TIỀN XỬ LÝ CHÍNH
-# ==============================================================================
 class VietnameseCommentPreprocessor:
     def __init__(self):
         self.url_regex = re.compile(r"https?://\S+|www\.\S+|ftp://\S+", re.IGNORECASE)

@@ -1,43 +1,63 @@
-# Virtual environment
+# ==========================================
+# Python & Môi trường ảo
+# ==========================================
 .venv/
 env/
 venv/
 ENV/
-
-# Sensitive environment variables and credentials
-.env
-*.env
-
-# Python cache
 __pycache__/
 *.py[cod]
 *$py.class
 
-# Binaries and executables
-*.exe
-tools/*.exe
+# ==========================================
+# Cấu hình bảo mật & Token API
+# ==========================================
+.env
+*.env
 
-# Temporary Excel lock files
-~$*.xlsx
-~$*.xls
-
-# OS and IDE files
+# ==========================================
+# Tệp hệ thống & IDE
+# ==========================================
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
+*.suo
+*.user
 
-# Ignore intermediate Facebook data, crawler json logs and images
-data/facebook/intermediate/
-data/facebook/raw/simple_post/
-data/facebook/raw/simple_post_excel/
-data/facebook/raw/simple_post_comments_phan_*.xlsx
+# ==========================================
+# Tệp nhị phân và khóa tạm của Microsoft Office
+# ==========================================
+*.exe
+tools/*.exe
+~$*.xlsx
+~$*.xls
+~$*.docx
 
-# Checkpoint json files
-checkpoint_*.json
-
-# Any leftover legacy archive or duplicate test outputs
+# ==========================================
+# Báo cáo đánh giá cá nhân / Tệp rác
+# ==========================================
+Đánh giá*.docx
 archive/
 output_llm_test/
 simple_post_excel/
 du_lieu_*.xlsx
+checkpoint_*.json
+
+# Dữ liệu bảng tính và text data ở thư mục gốc nếu có
+*.xlsx
+*.xls
+*.csv
+
+# ==========================================
+# TOÀN BỘ DỮ LIỆU TRONG THƯ MỤC DATA
+# Giữ lại cây thư mục trống bằng .gitkeep
+# ==========================================
+data/**
+!data/**/
+!data/**/.gitkeep
+
+# Thư mục tools giữ lại .gitkeep
+tools/**
+!tools/**/
+!tools/**/.gitkeep
