@@ -22,8 +22,8 @@ if sys.platform == "win32":
 ROOT_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(ROOT_DIR / ".env")
 
-RAW_DATA_PATH = ROOT_DIR / "simple_post_comments_merged.xlsx"
-OUTPUT_DIR = ROOT_DIR / "output_llm_test"
+RAW_DATA_PATH = ROOT_DIR / "data" / "facebook" / "raw" / "simple_post_comments_merged.xlsx"
+OUTPUT_DIR = ROOT_DIR / "data" / "facebook" / "intermediate" / "output_llm_test"
 SAMPLE_RAW_PATH = OUTPUT_DIR / "sample_100_raw.xlsx"
 SAMPLE_ANNOTATED_PATH = OUTPUT_DIR / "sample_100_annotated.xlsx"
 CHECKPOINT_PATH = OUTPUT_DIR / "checkpoint_annotations.json"

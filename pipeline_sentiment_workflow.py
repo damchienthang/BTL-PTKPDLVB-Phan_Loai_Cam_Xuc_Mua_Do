@@ -26,12 +26,20 @@ if sys.platform == "win32":
 from preprocess_comments import VietnameseCommentPreprocessor, ENTITY_DICT
 
 ROOT_DIR = Path(__file__).resolve().parent
-FILE_ALL_REVIEWED = ROOT_DIR / "all_comments_reviewed_v2.xlsx" if (ROOT_DIR / "all_comments_reviewed_v2.xlsx").exists() else ROOT_DIR / "archive" / "all_comments_reviewed_v2.xlsx"
-FILE_QC = ROOT_DIR / "Danh_sach_kiem_tra_nhan.xlsx" if (ROOT_DIR / "Danh_sach_kiem_tra_nhan.xlsx").exists() else ROOT_DIR / "archive" / "Danh_sach_kiem_tra_nhan.xlsx"
-FILE_ANNOTATED = ROOT_DIR / "all_comments_annotated.xlsx" if (ROOT_DIR / "all_comments_annotated.xlsx").exists() else ROOT_DIR / "archive" / "all_comments_annotated.xlsx"
+_inter_dir = ROOT_DIR / "data" / "facebook" / "intermediate"
+_proc_dir = ROOT_DIR / "data" / "facebook" / "processed"
 
-OUTPUT_FINAL = ROOT_DIR / "final_labeled.xlsx"
-OUTPUT_REMOVED = ROOT_DIR / "removed_comments.xlsx"
+_rev_candidates = [_inter_dir / "all_comments_reviewed_v2.xlsx", ROOT_DIR / "all_comments_reviewed_v2.xlsx"]
+FILE_ALL_REVIEWED = next((p for p in _rev_candidates if p.exists()), _rev_candidates[0])
+
+_qc_candidates = [_inter_dir / "Danh_sach_kiem_tra_nhan.xlsx", ROOT_DIR / "Danh_sach_kiem_tra_nhan.xlsx"]
+FILE_QC = next((p for p in _qc_candidates if p.exists()), _qc_candidates[0])
+
+_ann_candidates = [_inter_dir / "all_comments_annotated.xlsx", ROOT_DIR / "all_comments_annotated.xlsx"]
+FILE_ANNOTATED = next((p for p in _ann_candidates if p.exists()), _ann_candidates[0])
+
+OUTPUT_FINAL = _proc_dir / "final_labeled.xlsx"
+OUTPUT_REMOVED = _proc_dir / "removed_comments.xlsx"
 
 # Danh sách bổ sung các tên người dùng được tag ở đầu Reply (được trích xuất từ dữ liệu thực tế)
 EXTRA_TAG_NAMES = [

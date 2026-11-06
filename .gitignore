@@ -15,6 +15,7 @@ __pycache__/
 
 # Binaries and executables
 *.exe
+tools/*.exe
 
 # Temporary Excel lock files
 ~$*.xlsx
@@ -26,22 +27,17 @@ Thumbs.db
 .idea/
 .vscode/
 
-# Archive folder (contains raw crawler files, checkpoints, and intermediate datasets)
-archive/
-data/
-simple_post_excel/
-output_llm_test/
-du_lieu_*.xlsx
+# Ignore intermediate Facebook data, crawler json logs and images
+data/facebook/intermediate/
+data/facebook/raw/simple_post/
+data/facebook/raw/simple_post_excel/
+data/facebook/raw/simple_post_comments_phan_*.xlsx
 
 # Checkpoint json files
 checkpoint_*.json
 
-# Intermediate Excel datasets (Only simple_post_comments_merged.xlsx & final_labeled_clean_v2.xlsx are tracked)
-all_comments_annotated.xlsx
-all_comments_reviewed*.xlsx
-Danh_sach_kiem_tra_nhan*.xlsx
-final_labeled*.xlsx
-!final_labeled_clean_v2.xlsx
-removed_comments.xlsx
-sample_100_raw.xlsx
-simple_post_comments_phan_*.xlsx
+# Any leftover legacy archive or duplicate test outputs
+archive/
+output_llm_test/
+simple_post_excel/
+du_lieu_*.xlsx

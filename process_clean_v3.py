@@ -28,8 +28,10 @@ sys.path.insert(0, str(ROOT_DIR))
 
 from preprocess_comments import VietnameseCommentPreprocessor
 
-INPUT_FILE = ROOT_DIR / "final_labeled_clean_v2.xlsx"
-OUTPUT_FILE = ROOT_DIR / "final_labeled_clean_v3.xlsx"
+_proc_dir = ROOT_DIR / "data" / "facebook" / "processed"
+_in_cand = [_proc_dir / "final_labeled_clean_v2.xlsx", ROOT_DIR / "final_labeled_clean_v2.xlsx"]
+INPUT_FILE = next((p for p in _in_cand if p.exists()), _in_cand[0])
+OUTPUT_FILE = _proc_dir / "final_labeled_clean_v3.xlsx"
 
 
 def style_worksheet(ws, cols_count: int, row_count: int, col_widths: dict):
@@ -177,9 +179,10 @@ def main():
     print(f"\n[THÀNH CÔNG] Đã lưu file v3 tại: {OUTPUT_FILE}")
 
     # Đồng thời cập nhật luôn file final_labeled_clean_v2.xlsx để giữ tên chuẩn nếu muốn
-    wb.save(ROOT_DIR / "final_labeled_clean_v2.xlsx")
-    print(f"[THÀNH CÔNG] Đã đồng bộ cập nhật hoàn chỉnh vào file: {ROOT_DIR / 'final_labeled_clean_v2.xlsx'}")
+    wb.save(_proc_dir / "final_labeled_clean_v2.xlsx")
+    print(f"[THÀNH CÔNG] Đã đồng bộ cập nhật hoàn chỉnh vào file: {_proc_dir / 'final_labeled_clean_v2.xlsx'}")
 
 
 if __name__ == "__main__":
     main()
+

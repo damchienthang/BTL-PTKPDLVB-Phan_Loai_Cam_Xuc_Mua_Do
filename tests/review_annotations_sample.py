@@ -22,9 +22,10 @@ if sys.platform == "win32":
 ROOT_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(ROOT_DIR / ".env")
 
-INPUT_FILE = ROOT_DIR / "all_comments_annotated.xlsx" if (ROOT_DIR / "all_comments_annotated.xlsx").exists() else ROOT_DIR / "archive" / "all_comments_annotated.xlsx"
-OUTPUT_FILE = ROOT_DIR / "all_comments_reviewed_v2.xlsx"
-CHECKPOINT_FILE = ROOT_DIR / "checkpoint_review_sample_100.json"
+_inter_dir = ROOT_DIR / "data" / "facebook" / "intermediate"
+INPUT_FILE = _inter_dir / "all_comments_annotated.xlsx"
+OUTPUT_FILE = _inter_dir / "all_comments_reviewed_v2.xlsx"
+CHECKPOINT_FILE = _inter_dir / "checkpoint_review_sample_100.json"
 TARGET_MOVIE = "Trại buôn người"
 BATCH_SIZE = 20
 
