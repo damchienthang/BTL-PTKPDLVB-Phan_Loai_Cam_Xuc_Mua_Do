@@ -159,3 +159,4 @@ python process_clean_v3.py
    - Khắc phục: Đóng tệp Excel trước khi chạy lại lệnh, hoặc script sẽ tự động tạo tệp dự phòng có đuôi `*_new.xlsx`.
 2. **Lỗi hiển thị tiếng Việt trên Terminal Windows**:
    - Script đã được tích hợp `sys.stdout.reconfigure(encoding="utf-8")`. Nếu cần, bạn có thể gõ lệnh `chcp 65001` trên CMD/PowerShell trước khi chạy.
+
