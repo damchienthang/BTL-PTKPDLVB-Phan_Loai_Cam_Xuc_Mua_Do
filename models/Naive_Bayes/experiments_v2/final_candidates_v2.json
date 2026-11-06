@@ -1,0 +1,60 @@
+{
+  "at": "2026-11-06 00:15:38 EST",
+  "git_commit": "7a78a4c0152b9581a6296e77c426676d64e4ad86",
+  "python": "3.9.21",
+  "numpy": "2.0.2",
+  "scipy": "1.13.1",
+  "sklearn": "1.6.1",
+  "pandas": "2.3.3",
+  "hostname": "a0319.ten.osc.edu",
+  "slurm_job_id": "8359566",
+  "seed": 42,
+  "locked_at": "2026-11-06 00:15:38 EST",
+  "note": "khóa trước khi mở test-v2; xem experiment_plan_v3.md",
+  "R0v2": {
+    "max_order": 2,
+    "min_df": 2,
+    "alpha": 0.01,
+    "fit_prior": false,
+    "balanced": false
+  },
+  "NB_v2": {
+    "variant": "V2",
+    "balanced": true,
+    "cv_score_on_outer_folds": 0.6446792821127421,
+    "max_order": 2,
+    "min_df": 1,
+    "fit_prior": false,
+    "alpha": 0.1
+  },
+  "LR_v2": {
+    "variant": "LR1",
+    "cv_score_on_outer_folds": 0.6408214612484254,
+    "max_order": 2,
+    "min_df": 1,
+    "C": 1,
+    "class_weight": "balanced"
+  },
+  "Hybrid_v2": {
+    "variant": "HV2",
+    "w_nb": 0.5,
+    "grid_scores": {
+      "0.0": 0.6415609162182776,
+      "0.25": 0.6483761732927527,
+      "0.5": 0.6496520568983083,
+      "0.75": 0.6439671866513924,
+      "1.0": 0.6410959136648644
+    }
+  },
+  "Bert_v2": {
+    "variant": "PE",
+    "base": "P1",
+    "use_pool": false,
+    "seed": 42,
+    "cv_scores": {
+      "P1": 0.6753968259490014,
+      "P2": 0.6727419147161455,
+      "PE": 0.6978317144613434
+    }
+  }
+}

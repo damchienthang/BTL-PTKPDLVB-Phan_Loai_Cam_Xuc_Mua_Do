@@ -1,0 +1,21 @@
+{
+  "seed": 42,
+  "repeats": 5,
+  "outer_folds": 5,
+  "inner_folds": 3,
+  "bootstrap_B": 5000,
+  "git_commit": "7a78a4c0152b9581a6296e77c426676d64e4ad86",
+  "python": "3.9.21",
+  "torch": "2.8.0+cu128",
+  "numpy": "2.0.2",
+  "scipy": "1.13.1",
+  "sklearn": "1.6.1",
+  "pandas": "2.3.3",
+  "gpu": "NVIDIA A100-PCIE-40GB",
+  "n_cpu_affinity": 8,
+  "omp_num_threads": "1",
+  "slurm_job_id": "8353928",
+  "hostname": "a0138.ten.osc.edu",
+  "n_dev": 1800,
+  "n_groups_dev": 1748
+}

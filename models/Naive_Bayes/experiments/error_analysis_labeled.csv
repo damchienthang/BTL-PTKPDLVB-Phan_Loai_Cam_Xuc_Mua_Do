@@ -1,0 +1,31 @@
+﻿comment_id,final_label,pred,conf,clean_text_che_ten,nguyen_nhan,ghi_chu
+3575,Negative,Neutral,0.639,<TÊN> mấy chục ngàn tiếng bỏ ra cho cả đi_lại nữa tiếng chơi game nhà ngon choét,an_y_mia_mai,"So thời gian xem phim với chơi game, chê ngầm"
+2918,Negative,Neutral,0.38,kím lại thiên_đường máu xem hay hơn bạn,so_sanh_phim_khac,Khuyên xem phim khác 'hay hơn'
+3496,Negative,Neutral,0.741,quan_trọng ai xem squid game sẽ thấy nó nhái rõ luôn trăm sạn chưa khó_chịu bằng nhái,so_sanh_phim_khac,Chê nhái một phim khác
+534,Negative,Neutral,0.807,tiếc_nhỉ đang tính rủ con đi coi luôn,thieu_ngu_canh,'Tiếc nhỉ' phụ thuộc bình luận trước
+3558,Negative,Neutral,0.445,số đúng nói về lừa_đảo không biết thủ_đoạn lừa_đảo như_thế_nào để tránh_đùng cả đám lên xe chở đi lúc phát_hiện lừa,an_y_mia_mai,Chê kịch bản không xây dựng thủ đoạn lừa
+3231,Negative,Positive,0.401,chắc hay cũng thấy hay có_vẻ xem xong không được thỏa_mãn có hụt hẫng_sơ với mong_đợi thôi tôi không đi xem nữa híc,hon_hop,Vừa 'hay' vừa 'hụt hẫng'
+1238,Negative,Positive,0.57,phải xem đánh_giá đii mất niềm tin quá,thieu_ngu_canh,'mất niềm tin' chỉ rõ khi biết đối tượng
+2906,Negative,Positive,0.402,anh thấy không ăn_thua xem rivew chút cũng bthuong,phu_dinh,'ko ăn thua' là thành ngữ phủ định
+3564,Negative,Positive,0.768,quan_điểm tôi không xem phim việt dù nó có được khen như nào cảm_thấy phí tiền,phu_dinh,'không xem... dù được khen'
+3505,Negative,Positive,0.498,phim tốt về cảm_xúc căng_thẳng nhưng_mà nhiều nhân_vật iq thấp éo_chịu nổi luôn,hon_hop,'Phim tốt' đi kèm chê nhân vật
+3010,Neutral,Negative,0.501,em cũng thấy đoạn đàn bò cấn_cấn,nhan_mo_ho,'cấn cấn' có thể là Negative
+154,Neutral,Negative,0.67,tính đi xem đọc khúc đầu bà làm hoang_mang ba,nhan_mo_ho,'hoang mang' có thể là Negative
+2856,Neutral,Negative,0.512,vâng chuyện bạn nói vẫn tốt theo phim còn vụ_việc trong tbn có thật cửa_khẩu con voi hơn người nhảy sông bỏ trốn được người_dân cứu ngay cả ,tranh_luan_doi_tuong,"Tranh luận về sự thật, không đánh giá phim"
+2722,Neutral,Negative,0.412,xin phép không_thể tiếp bình_luận kiểu chê tự làm phim đi thử trải_nghiệm lừa sang đi rồi hẵng về chê phim tự làm biên_kịch đi tôi chấm như ,nhan_mo_ho,Ngầm chê 'chấm còn thoáng tay'
+781,Neutral,Negative,0.333,chừng lào_chiếu,tin_hieu_it,Câu hỏi ngắn có từ hiếm 'lào'
+2614,Neutral,Positive,0.375,khen_chê đủ cả thôi_thì vé phim có thôi bằng_cốc nước đi xem cũng được chứ sao,hon_hop,'Khen chê đủ cả'
+1485,Neutral,Positive,0.635,muốn vượt mai tbn phải hạ xuống,thieu_ngu_canh,"Cần biết 'mai', 'TBN' và phân loại tuổi"
+2442,Neutral,Positive,0.402,cgv mình mua toàn kve,tin_hieu_it,"Thông tin giá vé, ít từ cảm xúc"
+2422,Neutral,Positive,0.674,đánh combat ít chủ_yếu đánh người hành_hạ nhiều coi giải_trí ít_kì vọng bạn mình vừa coi về,hon_hop,Mô tả kèm lời khuyên
+3750,Neutral,Positive,0.633,<TÊN> cám_ơn nhá cười,ngoai_chu_de,"Lời cảm ơn, có 'cám ơn' gần lớp Positive"
+1692,Positive,Negative,0.783,quá đúng luôn ạ_chê lựa phim dỡ coi_bày đặt mất kiên_nhẫn,tranh_luan_doi_tuong,"Bênh phim bằng cách mắng người chê; 'chê', 'dở' kéo về Negative"
+873,Positive,Negative,0.519,gòi gòi chơi luôn,tin_hieu_it,"Teencode ngắn, nhãn khó xác minh"
+331,Positive,Negative,0.748,thiên đường_máu hay nh không bằng phim nay đâu,so_sanh_phim_khac,'phim khác hay nhưng không bằng phim này'
+2104,Positive,Negative,0.434,nta ghi rõ phút mày bận mắc đéo j_cố đi xem phim để kêu mất kiên_nhẫn,tranh_luan_doi_tuong,"Công kích người chê, tức là bênh phim"
+3254,Positive,Negative,0.39,cảnh_sát chìm chỉ thê thôi xong rất họ rồi còn đâu phải hòa dòg người còn che_giấu thân_phận nằm vùng tiêp chứ cái_tiếc film duy_nhất công_a,hon_hop,Bài dài vừa bênh vừa tiếc
+686,Positive,Neutral,0.643,xem luôn cho nóng để xem marvell,nhan_mo_ho,"Ý định đi xem, có thể là Neutral"
+3459,Positive,Neutral,0.465,người tham_gia ẩn_danh_thiên đường_máu không có cửa ss với phim,so_sanh_phim_khac,'phim khác không có cửa so với phim này'
+1889,Positive,Neutral,0.397,bạn phải hiểu điều phần_lớn người phải liều_mạng kiếm tiền con mẹ người_thân cho_nên phim có nhiều cảnh về tình_cảm mẹ_con,nhan_mo_ho,"Giải thích nội dung, có thể là Neutral"
+2364,Positive,Neutral,0.495,biết ngay cô xem rồi cảm_ơn cô để chị xem,nhan_mo_ho,Cảm ơn và ý định đi xem
+2994,Positive,Neutral,0.585,cảnh mẹ_con chị không khóc đúng rồi chị xem trên tiktok rồi cảm_xúc đâu nữa khóc chứ_em đi coi bữa gần như bọn con gái nguyên_rạp đều khóc_ý,thieu_ngu_canh,"Phản hồi người khác, 'không khóc' thật ra là khen"

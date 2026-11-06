@@ -1,0 +1,66 @@
+﻿comment_id,split,nhom_kiem_toan,clean_text_che_ten,final_label,nb_pred,nb_conf,lr_pred,lr_conf,de_xuat,nhan_de_xuat,ly_do
+467,train,NB và LogReg,thiệt mấy cảnh bác chủ_quan xx cắt đi cho cháu xem,Negative,Neutral,0.981,Neutral,0.749,mơ hồ - nhóm quyết,Neutral,"Góp ý nên cắt cảnh, không chê phim rõ ràng"
+1238,train,NB và LogReg,phải xem đánh_giá đii mất niềm tin quá,Negative,Positive,0.829,Positive,0.739,giữ,,'mất niềm tin quá' là chê; mô hình thiếu tín hiệu
+2234,train,NB và LogReg,tôi lạy lôi chị làm gì thg áp_bức có giỏi võ_đâu đánh hay,Negative,Positive,0.729,Positive,0.746,mơ hồ - nhóm quyết,Neutral,"Công kích ý kiến người khác, không đánh giá phim rõ ràng"
+2289,train,NB và LogReg,bình_thường em oi_y phim thiên_đường máu phim kỉ_xảo nhiều hơn thôi bạo_lực lm xem khó thở_ý,Negative,Neutral,0.829,Neutral,0.717,giữ,,'bình thường' và 'khó thở' nghiêng về chê
+2632,train,NB và LogReg,nhà đi chứ nghe ngừ ta chê đi tốn tiền,Negative,Positive,0.963,Positive,0.884,giữ,,Khuyên ở nhà vì sợ tốn tiền
+2814,train,NB và LogReg,đèo moẹ thông_điệp đấy chưa cần đi xem ai chẳng biết nội_dung ý_nghĩa nghe tên phim với giới_thiệu phim tự hiểu luôn rồi đi để cảm_nhận diễn xuất_tình_tiết cảnh,Negative,Positive,0.994,Positive,0.732,giữ,,Chửi và chê nội dung rõ ràng
+3052,train,NB và LogReg,cá_nhân mình thấy kết_hơi hẫng giá_mà thêm đoạn người được đưa về vn nữa có_lẽ hay hơn_nữa,Negative,Positive,0.984,Positive,0.795,giữ,,Chê phần kết hẫng
+3172,train,NB và LogReg,chê nhiều tự làm phim xem nói nghe ứa gan,Negative,Positive,0.981,Positive,0.915,đề xuất sửa,Positive,"Bênh phim, mắng người chê; các dòng cùng kiểu 1692 và 2104 đang là Positive"
+3527,train,NB và LogReg,cm làm gì cứ phải dựng lên thế tôi bỏ tiền đi xem tôi dell được chê phim vn tôi xem rất nhiều để ủng_hộ với tâm_lý không đòi_hỏi gì nhiều phim sạn nhiều rất khá,Negative,Positive,0.932,Positive,0.711,giữ,,Chê sạn nhiều rõ ràng
+105,train,NB và LogReg,hay lắm người,Neutral,Positive,0.931,Positive,0.962,giữ,,"Câu hỏi, RAW có 'hả'"
+264,train,nhóm trùng mâu thuẫn,hay lắm chị,Neutral,Positive,0.99,Positive,0.96,giữ,,Nhóm trùng mâu thuẫn: RAW 'Hay lắm hả chị' là câu hỏi; cleaning xóa 'hả' nên trùng với câu khen
+637,train,NB và LogReg,thấy page da so phim nào cũng khen hay,Neutral,Positive,0.836,Positive,0.729,giữ,,"Nhận xét về page, không đánh giá phim"
+1557,train,NB và LogReg,bộ phim được nhà_nước khuyến_khích đi xem,Neutral,Positive,0.943,Positive,0.77,giữ,,"Thông tin, không đánh giá"
+1583,train,nhóm trùng mâu thuẫn,hay lắm chị,Neutral,Positive,0.99,Positive,0.96,giữ,,Nhóm trùng mâu thuẫn: RAW có 'hả' nên là câu hỏi
+1589,train,NB và LogReg,đi coi rồi để mình tôi phi trâu lên tv,Neutral,Positive,0.908,Positive,0.842,giữ,,Trao đổi về việc đi xem
+1626,train,NB và LogReg,rủ anh coi đi,Neutral,Positive,0.909,Positive,0.761,giữ,,"Rủ đi xem, không đánh giá"
+1630,train,NB và LogReg,anh tính đi xem hăm,Neutral,Positive,0.893,Positive,0.73,giữ,,Câu hỏi
+1665,train,NB và LogReg,chắc đi coi quá hjx khi nào hết chiếu,Neutral,Positive,0.799,Positive,0.713,giữ,,Ý định đi xem
+1999,train,NB và LogReg,tựa thiên_đường máu,Neutral,Negative,0.948,Negative,0.797,giữ,,"So sánh tên/phong cách, không đánh giá"
+2422,train,NB và LogReg,đánh combat ít chủ_yếu đánh người hành_hạ nhiều coi giải_trí ít_kì vọng bạn mình vừa coi về,Neutral,Positive,0.933,Positive,0.723,giữ,,"Mô tả phim và lời khuyên, sắc thái lẫn lộn"
+2582,train,NB và LogReg,hay không cảm_xúc người xem thích đi coi thôi,Neutral,Positive,0.947,Positive,0.77,giữ,,"'tuỳ người', không tỏ thái độ"
+2619,train,NB và LogReg,nên đi trải_nghiệm hay dở_tùy người,Neutral,Positive,0.931,Positive,0.855,giữ,,'hay dở tuỳ người'
+3016,train,NB và LogReg,cùng suy_nghĩ mình chỉ chấm năm điểm,Neutral,Negative,0.994,Negative,0.894,mơ hồ - nhóm quyết,Negative,'chỉ chấm 5/10' có ý hạ thấp; cần quy tắc cho điểm số
+3252,train,NB và LogReg,chấm điểm bạn nhận_xét năm điểm,Neutral,Negative,0.956,Negative,0.786,mơ hồ - nhóm quyết,Neutral,5/10 không kèm từ đánh giá; cần quy tắc cho điểm số
+3391,train,NB và LogReg,xem giải_trí cũng ổn còn để có gì ấn_tượng hay đặc_sắc không,Neutral,Positive,0.723,Positive,0.86,giữ,,"Khen và chê đan xen, Neutral hợp lý"
+3484,train,NB và LogReg,ttcp share kêu nên đi coi chứ họ không có nói phim hay,Neutral,Positive,0.883,Positive,0.823,giữ,,Nhận xét về việc share phim
+3750,train,NB và LogReg,<TÊN> cám_ơn nhá cười,Neutral,Positive,0.966,Positive,0.741,giữ,,Không liên quan phim; Clean Text còn tên riêng
+417,train,NB và LogReg,đánh giá phim,Positive,Neutral,0.872,Neutral,0.717,giữ,,Clean Text là chuỗi giữ chỗ 'đánh giá phim' do tên dính chữ khiến cleaning mất 'hay đó'; nhãn đúng theo RAW
+632,train,NB và LogReg,còn tôi đang đợi chiếu để đi coi đuỹ iu dấu,Positive,Neutral,0.889,Neutral,0.72,đề xuất sửa,Neutral,Chỉ nói đang đợi chiếu; dòng cùng kiểu 1665 là Neutral
+1299,train,NB và LogReg,mới bữa vuýp cỡ,Positive,Neutral,0.905,Neutral,0.747,giữ,,Khen thành tích phim
+1456,train,NB và LogReg,bớt số cảnh quá nóng để cháu được xem tôi tin còn vượt hơn_nữa tầm tuổi đấy mới rất cần được giáo_dục bản_thân tôi cũng muốn cho con tôi đi xem để con cảnh tỉnh,Positive,Neutral,0.778,Neutral,0.854,giữ,,"Muốn cho con xem, nghiêng về khen"
+2186,train,NB và LogReg,lúc đánh nhau người có sức_mạnh địch ủa nó bình_thường sao xem phim nước_ngoài thấy bình_thường phim việt lại không chịu đâu nhiu khi tôi xem phim đánh vài toan,Positive,Negative,0.897,Negative,0.799,giữ,,Bênh phim Việt
+2220,train,NB và LogReg,ông quá khó tánh thôi_fim hay thế còn chê hay hơn tử_chiến trên không chắc tử_chiến trên không nam_thanh_sơn đóng xây_dựng rất củ chuối mang_tiếng đặc_nhiệm chủ,Positive,Negative,0.956,Negative,0.937,giữ,,'fim hay thế còn chê' là khen rõ
+2287,train,NB và LogReg,fim có cảnh nóng_đả lắm chị cười,Positive,Neutral,0.796,Neutral,0.865,giữ,,Giọng vui về cảnh phim
+2330,train,NB và LogReg,em mới xem qua thôi nghe cũng ớn chị,Positive,Neutral,0.794,Neutral,0.739,đề xuất sửa,Neutral,"'nghe cũng ớn', chưa xem kỹ, không có ý khen"
+2369,train,NB và LogReg,anh xem rồi nhug đoạn họ cứu được lúc anh vui lắm em anh,Positive,Neutral,0.938,Neutral,0.767,giữ,,'a vui lắm' khi xem
+2444,train,NB và LogReg,nó hơi ảo ảo_xíu nhma nó peak_vi ci_eo nó hài nó đã,Positive,Negative,0.796,Negative,0.834,giữ,,"'peak', 'nó hài nó đã' là khen"
+2828,train,NB và LogReg,giỏi thiệt chứ nói phát răm_rắp khỏi cần phiên_dịch luôn kiểu kiểu tôi biết tiếng như không thích nói đấy,Positive,Negative,0.851,Negative,0.7,mơ hồ - nhóm quyết,Negative,Giọng mỉa mai chi tiết phiên dịch trong phim
+2949,train,NB và LogReg,bạn nhận_xét chính_xác,Positive,Neutral,0.828,Neutral,0.875,đề xuất sửa,Neutral,Chỉ đồng ý với người khác; không rõ khen hay chê phim nếu thiếu ngữ cảnh
+3109,train,NB và LogReg,trong phim chỉ thấy không hay đoạn ôm_hôn thôi còn lại tuyệt_vời người,Positive,Negative,0.759,Negative,0.734,giữ,,Chê một đoạn nhưng 'còn lại tuyệt vời'
+3130,train,NB và LogReg,rất đúng với mình mình đã tưởng_tượng cảnh bắt lại sau khi chạy thoát đã nghĩ cảnh nam thấy mẹ quay lại còn thằng hôi cũng lý_do gì chứ không phải anh_em quay l,Positive,Negative,0.817,Negative,0.868,đề xuất sửa,Negative,"Liệt kê điểm vô lý của kịch bản, 'hết sức vô lý'"
+3255,train,NB và LogReg,bạn nói giống chị nghĩ trong phim,Positive,Neutral,0.825,Neutral,0.797,đề xuất sửa,Neutral,"Đồng tình với người khác, không đánh giá phim"
+3371,train,NB và LogReg,đang đánh hay nó chuyển qua tình_cảm phim_ổn rồi gáng cho quánh nhau với đánh cho tới số tới_bến chứ_ôm ôm ấp ấp quá nhiều nhân_vật từa lưa,Positive,Negative,0.837,Negative,0.833,mơ hồ - nhóm quyết,Neutral,Vừa 'phim ổn 80%' vừa chê đoạn tình cảm
+2644,train,chỉ LogReg,không nên nhất_là người diễn_viên tics làm mất hay cả bộ phim cảm_động đang đoạn hay cứ thè_lưỡi ra như con gà đang mổ thóc biết bệnh thật tự_dưng mất hay cả bộ,Negative,Positive,0.499,Positive,0.766,giữ,,"Khuyên không nên, chê diễn viên"
+3017,train,chỉ LogReg,sao giống suy_nghi cua mình thế_nhỉ chê_nha so gạch đá,Negative,Neutral,0.68,Neutral,0.745,giữ,,'Chê nha' rõ ràng
+3296,train,chỉ LogReg,xem như coin card tôi,Negative,Positive,0.407,Positive,0.79,mơ hồ - nhóm quyết,Neutral,Nội dung không rõ nghĩa
+1202,train,chỉ LogReg,vẻ phim hay tôi mới tuổi,Neutral,Neutral,0.549,Positive,0.769,giữ,,Nói về giới hạn tuổi
+2240,train,chỉ LogReg,đánh đấm_hơi nhiều nhiều cả siro,Neutral,Negative,0.642,Negative,0.798,mơ hồ - nhóm quyết,Negative,Chê nhẹ phim nhiều đánh đấm và máu
+2554,train,chỉ LogReg,cảnh nude nó ra sao người,Neutral,Negative,0.478,Negative,0.714,giữ,,Câu hỏi
+2602,train,chỉ LogReg,kỹ_xảo đánh đấm tốt đã mắt đã tai còn nội_dung tôi đi xem thấy xung_quanh người ta đoán được diễn_biến nào sẽ xảy ra,Neutral,Positive,0.667,Positive,0.788,giữ,,"Khen kỹ xảo, chê nội dung đoán được"
+190,train,chỉ LogReg,thực_tế tôi chưa xem nhưng_mà con_người sống chung va_chạm kiểu gì cũng có sét hơn_nữa nhiều phim nc ngoài cũng có cảnh không mục_đích câu view phản_ánh chân_th,Positive,Positive,0.744,Neutral,0.736,giữ,,Bênh phim dù chưa xem
+1613,train,chỉ LogReg,để em đi trải_nghiệm cười,Positive,Neutral,0.66,Neutral,0.771,đề xuất sửa,Neutral,"Ý định đi xem, không đánh giá"
+1889,train,chỉ LogReg,bạn phải hiểu điều phần_lớn người phải liều_mạng kiếm tiền con mẹ người_thân cho_nên phim có nhiều cảnh về tình_cảm mẹ_con,Positive,Neutral,0.637,Neutral,0.776,đề xuất sửa,Neutral,"Giải thích nội dung cho người khác, không tỏ thái độ"
+2172,train,chỉ LogReg,chất vãi_phim dở tôi đi bằng đầu,Positive,Negative,0.514,Negative,0.765,giữ,,Thành ngữ khen: 'phim dở t đi bằng đầu'
+2504,train,chỉ LogReg,nó màu y_chang thiên_đường_máu kiểu như quy_mô to hơn tđm nói_chung coi được,Positive,Negative,0.546,Negative,0.748,mơ hồ - nhóm quyết,Neutral,'1 màu' đi kèm 'coi được'
+2536,train,chỉ LogReg,điểm,Positive,Negative,0.563,Negative,0.744,giữ,,"RAW có điểm 8,7; cleaning xóa chữ số"
+2567,train,chỉ LogReg,điểm,Positive,Negative,0.563,Negative,0.744,giữ,,RAW có 7 điểm; cleaning xóa chữ số
+2581,train,chỉ LogReg,điểm,Positive,Negative,0.563,Negative,0.744,giữ,,RAW có 8 điểm; cleaning xóa chữ số
+3586,train,chỉ LogReg,điểm,Positive,Negative,0.563,Negative,0.744,giữ,,RAW có 7 điểm; cleaning xóa chữ số
+3003,train,chỉ LogReg,em cho mạnh_tay cười,Positive,Neutral,0.653,Neutral,0.769,giữ,,RAW có điểm 8; cleaning xóa chữ số
+3728,train,chỉ LogReg,đáng xem lắm nhiều đoạn vô_lý tí đánh_đấm kiểu nhìn nó không thật,Positive,Positive,0.679,Negative,0.708,giữ,,"'Đáng xem lắm', chê nhẹ"
+1431,train,nhóm trùng mâu thuẫn,hay lắm chị,Positive,,,,,giữ,,Nhóm trùng mâu thuẫn: RAW 'Hay lắm nha C' là khen
+2267,train,nhóm trùng mâu thuẫn,hay lắm chị,Positive,,,,,giữ,,Nhóm trùng mâu thuẫn: RAW 'Hay lắm chị ơi' là khen
+347,test,nhóm trùng mâu thuẫn (test),tôi thấy có mấy cảnh nó ms làm tăng tình_tiết chân_thật bộ phim chứ nhỉ vốn_dĩ ngoài thực_tế nạn_nhân cũng như thậm_chí còn tệ hơn nthe nhiều,Neutral,,,,,chỉ liệt kê - không sửa,,Cùng một người đăng cùng câu trả lời cho hai người khác nhau nhưng bị gán hai nhãn. Mọi mô hình chỉ dùng text chắc chắn sai ít nhất 1 trong 2 dòng. Sửa nhãn test sau khi đã chấm là contamination.
+414,test,nhóm trùng mâu thuẫn (test),tôi thấy có mấy cảnh nó ms làm tăng tình_tiết chân_thật bộ phim chứ nhỉ vốn_dĩ ngoài thực_tế nạn_nhân cũng như thậm_chí còn tệ hơn nthe nhiều,Positive,,,,,chỉ liệt kê - không sửa,,Cùng một người đăng cùng câu trả lời cho hai người khác nhau nhưng bị gán hai nhãn. Mọi mô hình chỉ dùng text chắc chắn sai ít nhất 1 trong 2 dòng. Sửa nhãn test sau khi đã chấm là contamination.

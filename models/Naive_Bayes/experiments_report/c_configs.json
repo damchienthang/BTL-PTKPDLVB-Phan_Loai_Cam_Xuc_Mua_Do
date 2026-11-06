@@ -1,0 +1,90 @@
+{
+  "at": "2026-11-06 00:18:49 EST",
+  "git_commit": "7a78a4c0152b9581a6296e77c426676d64e4ad86",
+  "python": "3.9.21",
+  "numpy": "2.0.2",
+  "scipy": "1.13.1",
+  "sklearn": "1.6.1",
+  "pandas": "2.3.3",
+  "hostname": "a0319.ten.osc.edu",
+  "slurm_job_id": "8359566",
+  "seed": 42,
+  "configs": {
+    "D|NB BoW": {
+      "config": {
+        "kind": "bow",
+        "max_order": 3,
+        "min_df": 2,
+        "sublinear": true,
+        "fit_prior": false,
+        "balanced": false,
+        "alpha": 0.3
+      },
+      "cv_macro_f1": 0.607589613353279
+    },
+    "D|NB TF-IDF": {
+      "config": {
+        "kind": "tfidf",
+        "max_order": 2,
+        "min_df": 1,
+        "sublinear": true,
+        "fit_prior": true,
+        "balanced": true,
+        "alpha": 0.3
+      },
+      "cv_macro_f1": 0.6252338254623264
+    },
+    "D|SVM BoW": {
+      "config": "Pipeline(steps=[('countvectorizer', CountVectorizer(ngram_range=(1, 2))),\n                ('onevsoneclassifier',\n                 OneVsOneClassifier(estimator=LinearSVC(C=0.03,\n                                                        class_weight='balanced',\n                                                        random_state=18)))])",
+      "published_macro_f1": 0.6147934637435395
+    },
+    "D|SVM TF-IDF": {
+      "config": "Pipeline(steps=[('tfidfvectorizer', TfidfVectorizer(ngram_range=(1, 2))),\n                ('onevsoneclassifier',\n                 OneVsOneClassifier(estimator=LinearSVC(C=0.3,\n                                                        class_weight='balanced',\n                                                        max_iter=10000,\n                                                        random_state=18)))])",
+      "published_macro_f1": 0.64693914003026
+    },
+    "H|NB BoW": {
+      "config": {
+        "kind": "bow",
+        "max_order": 2,
+        "min_df": 2,
+        "sublinear": true,
+        "fit_prior": true,
+        "balanced": true,
+        "alpha": 1.0
+      },
+      "cv_macro_f1": 0.6148167335321166
+    },
+    "H|NB TF-IDF": {
+      "config": {
+        "kind": "tfidf",
+        "max_order": 2,
+        "min_df": 1,
+        "sublinear": true,
+        "fit_prior": true,
+        "balanced": true,
+        "alpha": 0.3
+      },
+      "cv_macro_f1": 0.629089722367207
+    },
+    "H|SVM BoW": {
+      "config": {
+        "ngram": 2,
+        "min_df": 2,
+        "sublinear": false,
+        "c": 0.03,
+        "cw": "balanced"
+      },
+      "cv_macro_f1": 0.5966144135222468
+    },
+    "H|SVM TF-IDF": {
+      "config": {
+        "ngram": 2,
+        "min_df": 1,
+        "sublinear": true,
+        "c": 0.3,
+        "cw": "balanced"
+      },
+      "cv_macro_f1": 0.6239265502436637
+    }
+  }
+}

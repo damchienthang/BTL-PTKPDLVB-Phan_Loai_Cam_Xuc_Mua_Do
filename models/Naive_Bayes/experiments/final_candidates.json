@@ -1,0 +1,53 @@
+{
+  "locked_at": "2026-11-05 21:52:04 EST",
+  "git_commit": "7a78a4c0152b9581a6296e77c426676d64e4ad86",
+  "R0": {
+    "corpus": "clean",
+    "weighting": "tfidf",
+    "max_order": 2,
+    "min_df": 2,
+    "alpha": 0.01,
+    "fit_prior": false
+  },
+  "NB_best": {
+    "variant": "R1",
+    "corpus": "clean",
+    "weighting": "tfidf",
+    "max_order": 2,
+    "min_df": 3,
+    "alpha": 0.1,
+    "fit_prior": false,
+    "cv_score_on_outer_folds": 0.6134911824909162
+  },
+  "LogReg": {
+    "max_order": 2,
+    "min_df": 1,
+    "C": 1,
+    "class_weight": "balanced",
+    "cv_score_on_outer_folds": 0.6231286330710457
+  },
+  "Hybrid": {
+    "name": "E8a_softvote",
+    "method": "soft_vote",
+    "w_nb": 0.5,
+    "grid_scores": {
+      "0.0": 0.6193477941720025,
+      "0.25": 0.6265614966276795,
+      "0.5": 0.6287797209371766,
+      "0.75": 0.6223924965271534,
+      "1.0": 0.612802394656591
+    }
+  },
+  "Exploratory_X_old_bal": {
+    "variant": "X_old_bal",
+    "eligible_for_test": true,
+    "weights": "balanced",
+    "corpus": "old",
+    "weighting": "tfidf",
+    "max_order": 2,
+    "min_df": 1,
+    "alpha": 0.1,
+    "fit_prior": false,
+    "cv_score_on_outer_folds": 0.6420672304039244
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "candidates_sha256": "96e9fe6eccf85f104d0e850ca9a98839d50460315c6543ea9c054dcd4bada1ca",
+  "seed": 42,
+  "bootstrap_B": 10000,
+  "n_test": 287,
+  "n_groups_test": 271,
+  "git_commit": "7a78a4c0152b9581a6296e77c426676d64e4ad86",
+  "python": "3.9.21",
+  "torch": "2.8.0+cu128",
+  "numpy": "2.0.2",
+  "scipy": "1.13.1",
+  "sklearn": "1.6.1",
+  "gpu": "NVIDIA A100-PCIE-40GB",
+  "x_old_bal_included": true,
+  "scored_at": "2026-11-05 21:52:14 EST",
+  "repro_run": false
+}

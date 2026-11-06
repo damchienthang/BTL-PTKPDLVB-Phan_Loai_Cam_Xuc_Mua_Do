@@ -1,0 +1,91 @@
+{
+  "seed": 42,
+  "torch": "2.8.0+cu128",
+  "device": "cuda",
+  "split": {
+    "train": {
+      "size": 1491,
+      "Positive": 912,
+      "Neutral": 320,
+      "Negative": 259
+    },
+    "val": {
+      "size": 309,
+      "Positive": 179,
+      "Neutral": 72,
+      "Negative": 58
+    },
+    "test": {
+      "size": 287,
+      "Positive": 189,
+      "Negative": 52,
+      "Neutral": 46
+    }
+  },
+  "config": {
+    "ngram_range": [
+      1,
+      2
+    ],
+    "min_df": 2,
+    "alpha": 0.01,
+    "fit_prior": false,
+    "n_features": 4204
+  },
+  "val": {
+    "macro_f1": 0.6146723400992851,
+    "acc": 0.6957928802588997
+  },
+  "test": {
+    "macro_f1": 0.544034370853096,
+    "acc": 0.6759581881533101,
+    "macro_f1_ci95": [
+      0.47165739923923483,
+      0.611099315543146
+    ]
+  },
+  "top_features": {
+    "Negative": [
+      "thua",
+      "dở rất",
+      "dở_nha",
+      "nói_thẳng",
+      "phim rác",
+      "đường_máu hay",
+      "để tiền",
+      "nhái",
+      "phạm_thị_huệ_chi",
+      "phim thỏ",
+      "sickmyduck phim",
+      "sickmyduck"
+    ],
+    "Neutral": [
+      "không người",
+      "beta",
+      "chiếu chưa",
+      "ah",
+      "không ta",
+      "không bạn",
+      "hẹ",
+      "không bà",
+      "không chị",
+      "có bạn",
+      "ai biết",
+      "có phụ_đề"
+    ],
+    "Positive": [
+      "hay chị",
+      "đáng xem",
+      "hay rất",
+      "hay bạn",
+      "phải đi",
+      "xứng_đáng",
+      "mới coi",
+      "liền",
+      "về hay",
+      "hay đáng",
+      "mê",
+      "xem lần"
+    ]
+  }
+}
