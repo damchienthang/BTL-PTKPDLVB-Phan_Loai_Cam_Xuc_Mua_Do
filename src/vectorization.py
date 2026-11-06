@@ -1,6 +1,6 @@
 """
 Chương trình: Trích chọn đặc trưng & Vector hóa văn bản (TF-IDF)
-Dự án: Phân tích cảm xúc bình luận phim "Mưa đỏ" (Đề tài 3A)
+Dự án: Phân tích cảm xúc bình luận phim "Trại buôn người" (Đề tài 3A)
 Người thực hiện & Thuyết trình: Thắng (Nhiệm vụ 2)
 
 Mục tiêu:

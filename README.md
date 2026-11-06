@@ -1,12 +1,12 @@
 # NHIỆM VỤ 2: TRÍCH CHỌN ĐẶC TRƯNG & VECTOR HÓA DỮ LIỆU
-## Đề tài 3A: Phân tích cảm xúc bình luận phim "Mưa đỏ" trên Facebook
+## Đề tài 3A: Phân tích cảm xúc bình luận phim "Trại buôn người" trên Facebook
 **Môn học:** Phân tích và Khai phá dữ liệu văn bản  
 **Người thực hiện:** Đàm Chiến Thắng (Thắng) - GitHub: [@damchienthang](https://github.com/damchienthang)
 
 ---
 
 ## 🎯 Mục tiêu nhiệm vụ
-1. Tiếp nhận dữ liệu bình luận đã làm sạch và gán nhãn ($2.087$ mẫu).
+1. Tiếp nhận dữ liệu bình luận phim **"Trại buôn người"** đã làm sạch và gán nhãn ($2.087$ mẫu).
 2. Chuyển đổi toàn bộ văn bản thành ma trận véc-tơ số học bằng phương pháp **TF-IDF (Term Frequency - Inverse Document Frequency)** kết hợp Unigram & Bigram ($1\text{–}2\text{-gram}$).
 3. Bàn giao gói ma trận đặc trưng cho **Hiếu (Naive Bayes)** và **Doanh (SVM)** tự chia tập Train/Test và huấn luyện mô hình.
 4. Trực quan hóa phân bố đặc trưng và xuất bảng số liệu mẫu phục vụ thuyết trình báo cáo.

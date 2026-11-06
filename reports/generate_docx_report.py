@@ -121,7 +121,7 @@ def create_report():
         return p
 
     # TIÊU ĐỀ BÁO CÁO
-    add_title("BÁO CÁO NHIỆM VỤ THỰC HIỆN DỰ ÁN NLP (ĐỀ TÀI 3A)\nPHÂN TÍCH CẢM XÚC BÌNH LUẬN PHIM \"MƯA ĐỎ\"")
+    add_title("BÁO CÁO NHIỆM VỤ THỰC HIỆN DỰ ÁN NLP (ĐỀ TÀI 3A)\nPHÂN TÍCH CẢM XÚC BÌNH LUẬN PHIM \"TRẠI BUÔN NGƯỜI\"")
     add_subtitle("PHẦN NHIỆM VỤ 2: TRÍCH CHỌN ĐẶC TRƯNG & VECTOR HÓA DỮ LIỆU\nThành viên phụ trách: Thắng")
 
     # THÔNG TIN CHUNG
@@ -216,7 +216,7 @@ def create_report():
 
     add_heading_2("2.5. So sánh TF-IDF với Bag-of-Words và lý do lựa chọn cho Đề tài")
     p = doc.add_paragraph(
-        "Trong đề tài phân tích cảm xúc bình luận phim 'Mưa đỏ', chúng tôi lựa chọn TF-IDF (kết hợp n-gram 1-2) làm phương pháp trích chọn đặc trưng chủ đạo vì các ưu điểm vượt trội sau:\n"
+        "Trong đề tài phân tích cảm xúc bình luận phim 'Trại buôn người', chúng tôi lựa chọn TF-IDF (kết hợp n-gram 1-2) làm phương pháp trích chọn đặc trưng chủ đạo vì các ưu điểm vượt trội sau:\n"
         "1. Triệt tiêu nhiễu hiệu quả: Giảm trọng số của các từ ngữ xuất hiện quá phổ biến nhưng không mang tính khu biệt cảm xúc.\n"
         "2. Tương thích lý tưởng với Naive Bayes và SVM: Với Naive Bayes (MultinomialNB / ComplementNB), ma trận trọng số không âm phản ánh xác suất đặc trưng rất tốt. Với Linear SVM, không gian véc-tơ chuẩn hóa L2 của TF-IDF tạo ra siêu phẳng phân chia (separating hyperplane) tối ưu nhất trong không gian nhiều chiều.\n"
         "3. Tiết kiệm tài nguyên tính toán: So với các mô hình Word Embeddings phức tạp (như Word2Vec hay BERT) đòi hỏi hạ tầng GPU và dữ liệu hàng trăm nghìn mẫu, TF-IDF vận hành nhanh, minh bạch, có thể giải thích được đặc trưng (interpretable) và hoàn toàn phù hợp với quy mô hơn 2.000 mẫu dữ liệu thực tế thu thập từ Facebook."
@@ -351,7 +351,7 @@ def create_report():
 
     p_an1 = doc.add_paragraph(style='List Bullet')
     p_an1.add_run("Nhóm Positive (Tích cực): ").bold = True
-    p_an1.add_run("Chiếm ưu thế tuyệt đối bởi các từ khen ngợi chất lượng phim: 'hay' (trọng số cao nhất 0.0834), 'phim hay' (0.0294), 'xem', 'đi', 'coi', 'luôn', 'lắm', 'quá'. Điều này phản ánh rõ ràng sự hưởng ứng nhiệt tình của khán giả đối với tác phẩm 'Mưa đỏ'.")
+    p_an1.add_run("Chiếm ưu thế tuyệt đối bởi các từ khen ngợi chất lượng phim: 'hay' (trọng số cao nhất 0.0834), 'phim hay' (0.0294), 'xem', 'đi', 'coi', 'luôn', 'lắm', 'quá'. Điều này phản ánh rõ ràng sự hưởng ứng nhiệt tình của khán giả đối với tác phẩm 'Trại buôn người'.")
     p_an2 = doc.add_paragraph(style='List Bullet')
     p_an2.add_run("Nhóm Negative (Tiêu cực): ").bold = True
     p_an2.add_run("Xuất hiện các từ mang sắc thái thất vọng hoặc chê bai: 'dở' (0.0180), 'thiên_đường_máu' (phim cạnh tranh/so sánh tiêu cực), 'làm', 'nó', 'nhiều', 'thấy'. Các đặc trưng này phản ánh những bình luận chê kịch bản hoặc diễn xuất.")
