@@ -80,18 +80,6 @@ def style_worksheet(ws, cols_count: int, row_count: int, col_widths: dict):
             cell.border = border_thin
 
 
-def restore_prefix(current_text: str, prefix_to_add: str, known_prefixes: list) -> str:
-    """Khôi phục tiền tố tên riêng nếu bị thiếu."""
-    text = str(current_text or "").strip()
-    if text.startswith(prefix_to_add):
-        return text
-    for kp in known_prefixes:
-        if text.startswith(kp):
-            rem = text[len(kp):].strip()
-            return (prefix_to_add + rem).strip()
-    return (prefix_to_add + text).strip()
-
-
 def main():
     print("=" * 80)
     print("BẮT ĐẦU CHẠY PIPELINE TIỀN XỬ LÝ TOÀN DIỆN V3 (FACEBOOK DATASET)")
@@ -180,33 +168,11 @@ def main():
     tfidf_texts = []
 
     raw_col = "RAW Text" if "RAW Text" in df_final.columns else "Comment"
+    print(f"  -> Áp dụng tiền xử lý tự động đồng nhất cho toàn bộ {len(df_final):,} dòng...")
     for _, r in df_final.iterrows():
-        cid = r.get("Comment ID", None)
         raw = str(r[raw_col] or "").strip()
-
-        # Áp dụng tiền xử lý
-        pho = p.preprocess_phobert(raw)
-        tf = p.preprocess_tfidf(raw)
-
-        # Xử lý các tiền tố tên riêng theo Comment ID nếu có
-        if cid == 1334:
-            pho = restore_prefix(pho, "hộ_linh_tráng_sĩ ", ["hộ_linh_tráng_sĩ", "hộ linh tráng sĩ"])
-            tf = restore_prefix(tf, "hộ_linh_tráng_sĩ ", ["hộ_linh_tráng_sĩ", "hộ linh tráng sĩ"])
-        elif cid == 1602:
-            pho = restore_prefix(pho, "steven_nguyễn ", ["steven_nguyễn", "steven nguyen"])
-            tf = restore_prefix(tf, "steven_nguyễn ", ["steven_nguyễn", "steven nguyen"])
-        elif cid == 3086:
-            pho = restore_prefix(pho, "cô như_quỳnh ", ["cô_như_quỳnh ", "cô_như_quỳnh", "cô như quỳnh"])
-            tf = restore_prefix(tf, "cô như_quỳnh ", ["cô_như_quỳnh ", "cô_như_quỳnh", "cô như quỳnh"])
-        elif cid == 3211:
-            pho = restore_prefix(pho, "minh_kiên ", ["minh_kiên", "minh kiên"])
-            tf = restore_prefix(tf, "minh_kiên ", ["minh_kiên", "minh kiên"])
-        elif cid == 417:
-            pho = "hay"
-            tf = "hay"
-
-        phobert_texts.append(pho)
-        tfidf_texts.append(tf)
+        phobert_texts.append(p.preprocess_phobert(raw))
+        tfidf_texts.append(p.preprocess_tfidf(raw))
 
     df_final["Text_PhoBERT"] = phobert_texts
     df_final["Text_TFIDF"] = tfidf_texts
