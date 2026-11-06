@@ -38,6 +38,7 @@ tools/*.exe
 # Báo cáo đánh giá cá nhân / Tệp rác
 # ==========================================
 Đánh giá*.docx
+*.pdf
 archive/
 output_llm_test/
 simple_post_excel/
@@ -57,7 +58,8 @@ data/**
 !data/**/
 !data/**/.gitkeep
 
-# Thư mục tools giữ lại .gitkeep
-tools/**
+# Thư mục tools: bỏ qua exe nhị phân nặng, theo dõi script python và .gitkeep
+tools/*.exe
+!tools/*.py
 !tools/**/
 !tools/**/.gitkeep

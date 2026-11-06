@@ -28,6 +28,8 @@ if sys.platform == "win32":
         pass
 
 ROOT_DIR = Path(__file__).resolve().parent
+if ROOT_DIR.name == "tools":
+    ROOT_DIR = ROOT_DIR.parent
 DEFAULT_OUTPUT_DIR = ROOT_DIR / "data" / "tiktok" / "raw"
 
 DEFAULT_HEADERS = {
