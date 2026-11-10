@@ -103,9 +103,8 @@ def main():
     print(f"  -> FINAL_DATA ban đầu   : {len(df_final):,} dòng")
     print(f"  -> REMOVED_DATA ban đầu : {len(df_removed):,} dòng")
 
-    # --------------------------------------------------------------------------
+
     # BƯỚC 1: DI CHUYỂN CÂU QUÁ NGẮN & KHÔI PHỤC DÒNG CẦN THIẾT
-    # --------------------------------------------------------------------------
     print("\n--- BƯỚC 1: Lọc dữ liệu thô & Khôi phục mẫu đặc thù ---")
     # Khôi phục ID 1602 nếu đang nằm nhầm bên REMOVED_DATA
     if "Comment ID" in df_removed.columns and 1602 in df_removed["Comment ID"].values and 1602 not in df_final["Comment ID"].values:
@@ -143,12 +142,9 @@ def main():
     if "RAW Text" in df_removed.columns:
         df_removed["RAW Text"] = df_removed["RAW Text"].fillna("[Bình luận trống]")
 
-    # --------------------------------------------------------------------------
     # BƯỚC 2: KHÔI PHỤC TIỀN TỐ TÊN RIÊNG & ĐỒNG BỘ NHÃN MÂU THUẪN
-    # --------------------------------------------------------------------------
     print("\n--- BƯỚC 2: Khôi phục tiền tố tên riêng & Sửa nhãn mâu thuẫn ---")
     if "Comment ID" in df_final.columns and "RAW Text" in df_final.columns:
-        # Đồng bộ nhãn ID 347 (khen tình tiết chân thật -> Positive)
         idx_347 = df_final[df_final["Comment ID"] == 347].index
         if len(idx_347) > 0:
             df_final.loc[idx_347, "Final Label"] = "Positive"
@@ -158,9 +154,7 @@ def main():
         if "Final Label" not in df_final.columns and "Sentiment" in df_final.columns:
             df_final["Final Label"] = df_final["Sentiment"]
 
-    # --------------------------------------------------------------------------
     # BƯỚC 3: TIỀN XỬ LÝ NLP TOÀN DIỆN (CHUYÊN BIỆT CHO PHOBERT & TF-IDF)
-    # --------------------------------------------------------------------------
     print("\n--- BƯỚC 3: Tiền xử lý NLP tiếng Việt toàn diện (PhoBERT & TF-IDF) ---")
     p = VietnameseCommentPreprocessor()
 
@@ -178,9 +172,7 @@ def main():
     df_final["Text_TFIDF"] = tfidf_texts
     df_final["Clean Text"] = tfidf_texts
 
-    # --------------------------------------------------------------------------
     # BƯỚC 4: KHỬ TRÙNG LẶP TRÁNH DATA LEAKAGE KHI CHIA TẬP HUẤN LUYỆN
-    # --------------------------------------------------------------------------
     print("\n--- BƯỚC 4: Khử trùng lặp nội dung Clean Text (chống Data Leakage) ---")
     is_dup = df_final.duplicated(subset=["Clean Text"], keep="first")
     df_unique = df_final[~is_dup].copy()
@@ -203,9 +195,7 @@ def main():
         df_new_removed = pd.DataFrame(removed_records)
         df_removed = pd.concat([df_removed, df_new_removed], ignore_index=True)
 
-    # --------------------------------------------------------------------------
     # BƯỚC 5: XUẤT BẢN FILE DATASET HOÀN THIỆN
-    # --------------------------------------------------------------------------
     print("\n--- BƯỚC 5: Xuất bản dataset hoàn chỉnh và định dạng ---")
     df_unique = df_unique.sort_values("Comment ID").reset_index(drop=True)
     df_removed = df_removed.sort_values("Comment ID").reset_index(drop=True)

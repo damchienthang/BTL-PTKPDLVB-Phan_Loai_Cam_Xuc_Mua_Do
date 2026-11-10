@@ -162,14 +162,19 @@ class TikTokCommentScraper:
                 formatted_date = str(create_time)
 
         user_info = item.get("user") or {}
+        uid = str(user_info.get("uid") or user_info.get("id") or "")
         username = user_info.get("unique_id") or ""
         nickname = user_info.get("nickname") or ""
         likes = item.get("digg_count", 0)
         reply_total = item.get("reply_comment_total", 0)
+        user_url = f"https://www.tiktok.com/@{username}" if username else ""
+        is_author_liked = bool(item.get("is_author_digged", False))
+        is_pinned = bool(item.get("author_pin", False) or item.get("is_pinned", False))
 
         return {
             "comment_id": cid,
             "video_id": video_id,
+            "user_id": uid,
             "comment_text": text,
             "author_username": username,
             "author_nickname": nickname,
@@ -178,6 +183,9 @@ class TikTokCommentScraper:
             "create_time": formatted_date,
             "reply_to": reply_to,
             "comment_type": "Reply" if reply_to else "Comment",
+            "is_author_liked": is_author_liked,
+            "is_pinned": is_pinned,
+            "user_url": user_url,
         }
 
     def scrape_video_comments(

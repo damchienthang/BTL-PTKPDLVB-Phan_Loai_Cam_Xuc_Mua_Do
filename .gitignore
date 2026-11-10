@@ -60,7 +60,7 @@ data/**
 
 # Thư mục tools: bỏ qua exe nhị phân nặng, dữ liệu crawl tạm, theo dõi script python và .gitkeep
 tools/*.exe
+tools/data/
 tools/data/**
 !tools/*.py
-!tools/**/
 !tools/**/.gitkeep
