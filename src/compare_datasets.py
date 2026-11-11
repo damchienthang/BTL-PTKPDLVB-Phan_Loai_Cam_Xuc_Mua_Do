@@ -3,7 +3,6 @@ import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 if sys.stdout.encoding.lower() != 'utf-8':
@@ -14,10 +13,6 @@ plt.rcParams['axes.unicode_minus'] = False
 
 
 def main():
-    print("=" * 75)
-    print(" BÁO CÁO ĐỐI SÁNH DỮ LIỆU & ĐẶC TRƯNG: FACEBOOK vs TIKTOK")
-    print("=" * 75)
-
     path_fb = os.path.join("Data", "final_labeled_clean_v3.xlsx")
     path_tt = os.path.join("Data", "final_labeled_clean.xlsx")
 
@@ -33,38 +28,16 @@ def main():
     fb_labels = df_fb['Final Label'].astype(str)
     tt_labels = df_tt['Final Label'].astype(str)
 
-    # -------------------------------------------------------------
-    # 1. SO SÁNH QUY MÔ & PHÂN BỐ NHÃN
-    # -------------------------------------------------------------
-    print("\n[1] SO SÁNH QUY MÔ & PHÂN BỐ NHÃN CẢM XÚC:")
-    print(f"{'Tiêu chí':<25} | {'Facebook (v3)':<20} | {'TikTok (Mới)':<20}")
-    print("-" * 72)
-    print(f"{'Tổng số bình luận':<25} | {len(df_fb):<20,d} | {len(df_tt):<20,d}")
-    
-    for lbl in ['Positive', 'Neutral', 'Negative']:
-        fb_c = sum(fb_labels == lbl)
-        tt_c = sum(tt_labels == lbl)
-        fb_pct = fb_c / len(df_fb) * 100
-        tt_pct = tt_c / len(df_tt) * 100
-        print(f"  + Nhãn {lbl:<16} | {fb_c:4d} ({fb_pct:.2f}%)       | {tt_c:4d} ({tt_pct:.2f}%)")
+    # 1. Thống kê số lượng & nhãn
+    print(f"Facebook: {len(df_fb)} mẫu | Pos={sum(fb_labels=='Positive')} | Neu={sum(fb_labels=='Neutral')} | Neg={sum(fb_labels=='Negative')}")
+    print(f"TikTok  : {len(df_tt)} mẫu | Pos={sum(tt_labels=='Positive')} | Neu={sum(tt_labels=='Neutral')} | Neg={sum(tt_labels=='Negative')}")
 
-    # -------------------------------------------------------------
-    # 2. SO SÁNH ĐỘ DÀI BÌNH LUẬN (SỐ TỪ)
-    # -------------------------------------------------------------
+    # 2. Thống kê độ dài từ
     fb_lens = [len(t.split()) for t in fb_texts]
     tt_lens = [len(t.split()) for t in tt_texts]
+    print(f"Độ dài TB: FB={np.mean(fb_lens):.1f} từ (Max {np.max(fb_lens)}) | TikTok={np.mean(tt_lens):.1f} từ (Max {np.max(tt_lens)})")
 
-    print("\n[2] SO SÁNH ĐỘ DÀI BÌNH LUẬN (SỐ TỪ/CÂU):")
-    print(f"{'Chỉ số':<25} | {'Facebook':<20} | {'TikTok':<20}")
-    print("-" * 72)
-    print(f"{'Độ dài trung bình':<25} | {np.mean(fb_lens):<20.2f} | {np.mean(tt_lens):<20.2f}")
-    print(f"{'Độ lệch chuẩn (Std)':<25} | {np.std(fb_lens):<20.2f} | {np.std(tt_lens):<20.2f}")
-    print(f"{'Độ dài ngắn nhất (Min)':<25} | {np.min(fb_lens):<20d} | {np.min(tt_lens):<20d}")
-    print(f"{'Độ dài dài nhất (Max)':<25} | {np.max(fb_lens):<20d} | {np.max(tt_lens):<20d}")
-
-    # -------------------------------------------------------------
-    # 3. SO SÁNH KHÔNG GIAN TỪ VỰNG & TF-IDF
-    # -------------------------------------------------------------
+    # 3. Trích xuất đặc trưng TF-IDF
     vec_fb = TfidfVectorizer(ngram_range=(1, 2), min_df=2, sublinear_tf=True)
     X_fb = vec_fb.fit_transform(fb_texts)
     vocab_fb = set(vec_fb.get_feature_names_out())
@@ -73,94 +46,61 @@ def main():
     X_tt = vec_tt.fit_transform(tt_texts)
     vocab_tt = set(vec_tt.get_feature_names_out())
 
-    common_vocab = vocab_fb.intersection(vocab_tt)
-    fb_only = vocab_fb - vocab_tt
-    tt_only = vocab_tt - vocab_fb
+    common = vocab_fb & vocab_tt
+    print(f"Từ vựng: FB={len(vocab_fb)} | TikTok={len(vocab_tt)} | Chung={len(common)} ({len(common)/len(vocab_fb|vocab_tt)*100:.1f}%)")
 
-    print("\n[3] SO SÁNH KHÔNG GIAN TỪ VỰNG N-GRAM (TF-IDF):")
-    print(f"  * Tổng từ vựng Facebook (min_df=2) : {len(vocab_fb):,} n-grams")
-    print(f"  * Tổng từ vựng TikTok (min_df=2)   : {len(vocab_tt):,} n-grams")
-    print(f"  * Từ vựng GIAO THOA (chung cả 2)  : {len(common_vocab):,} ({len(common_vocab)/len(vocab_fb | vocab_tt)*100:.1f}%)")
-    print(f"  * Từ vựng ĐẶC THÙ chỉ có ở Facebook: {len(fb_only):,}")
-    print(f"  * Từ vựng ĐẶC THÙ chỉ có ở TikTok  : {len(tt_only):,}")
+    # 4. Xuất biểu đồ so sánh
+    output_dir = os.path.join("reports", "figures")
+    os.makedirs(output_dir, exist_ok=True)
 
-    # -------------------------------------------------------------
-    # 4. TOP ĐẶC TRƯNG TIÊU BIỂU CỦA TỪNG NỀN TẢNG
-    # -------------------------------------------------------------
+    # Biểu đồ 1: Phân bố nhãn
+    fig, ax = plt.subplots(figsize=(7, 4.5))
+    labels_list = ['Positive', 'Neutral', 'Negative']
+    x = np.arange(len(labels_list))
+    w = 0.35
+
+    fb_p = [sum(fb_labels == l)/len(df_fb)*100 for l in labels_list]
+    tt_p = [sum(tt_labels == l)/len(df_tt)*100 for l in labels_list]
+
+    ax.bar(x - w/2, fb_p, w, label=f'Facebook ({len(df_fb)})', color='#3b5998')
+    ax.bar(x + w/2, tt_p, w, label=f'TikTok ({len(df_tt)})', color='#00f2fe')
+    ax.set_ylabel('Tỷ lệ (%)')
+    ax.set_title('Phân Bố Nhãn Cảm Xúc: Facebook vs TikTok', fontweight='bold')
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels_list, fontweight='bold')
+    ax.legend()
+    ax.grid(axis='y', linestyle='--', alpha=0.5)
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, "comparison_label_distribution.png"), dpi=300)
+    plt.close()
+
+    # Biểu đồ 2: Top đặc trưng TF-IDF
     fb_scores = np.asarray(X_fb.mean(axis=0)).flatten()
     tt_scores = np.asarray(X_tt.mean(axis=0)).flatten()
     fb_words = vec_fb.get_feature_names_out()
     tt_words = vec_tt.get_feature_names_out()
 
-    print("\n[4] TOP 10 ĐẶC TRƯNG CÓ TRỌNG SỐ TF-IDF CAO NHẤT:")
-    print(f"{'Hạng':<5} | {'Facebook':<25} | {'TikTok':<25}")
-    print("-" * 60)
-    top_fb_idx = fb_scores.argsort()[::-1][:10]
-    top_tt_idx = tt_scores.argsort()[::-1][:10]
-    for r in range(10):
-        w_fb = f"{fb_words[top_fb_idx[r]]} ({fb_scores[top_fb_idx[r]]:.4f})"
-        w_tt = f"{tt_words[top_tt_idx[r]]} ({tt_scores[top_tt_idx[r]]:.4f})"
-        print(f" {r+1:2d}   | {w_fb:<25} | {w_tt:<25}")
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
+    fig.suptitle('Top 12 Đặc Trưng TF-IDF: Facebook vs TikTok', fontweight='bold')
 
-    # -------------------------------------------------------------
-    # 5. XUẤT CÁC BIỂU ĐỒ ĐỐI SÁNH
-    # -------------------------------------------------------------
-    output_dir = os.path.join("reports", "figures")
-    os.makedirs(output_dir, exist_ok=True)
-
-    # Biểu đồ 1: So sánh phân bố nhãn
-    fig, ax = plt.subplots(figsize=(8, 5))
-    labels_list = ['Positive', 'Neutral', 'Negative']
-    x = np.arange(len(labels_list))
-    width = 0.35
-
-    fb_pcts = [sum(fb_labels == l)/len(df_fb)*100 for l in labels_list]
-    tt_pcts = [sum(tt_labels == l)/len(df_tt)*100 for l in labels_list]
-
-    b1 = ax.bar(x - width/2, fb_pcts, width, label='Facebook (2.087 mẫu)', color='#3b5998')
-    b2 = ax.bar(x + width/2, tt_pcts, width, label='TikTok (1.307 mẫu)', color='#00f2fe')
-
-    ax.set_ylabel('Tỷ lệ (%)', fontsize=11)
-    ax.set_title('So Sánh Phân Bố Nhãn Cảm Xúc: Facebook vs TikTok', fontsize=13, fontweight='bold', pad=12)
-    ax.set_xticks(x)
-    ax.set_xticklabels(labels_list, fontsize=11, fontweight='bold')
-    ax.legend(fontsize=10)
-    ax.grid(axis='y', linestyle='--', alpha=0.5)
-
-    for bar in b1:
-        yval = bar.get_height()
-        ax.text(bar.get_x() + bar.get_width()/2.0, yval + 1, f'{yval:.1f}%', ha='center', va='bottom', fontsize=9)
-    for bar in b2:
-        yval = bar.get_height()
-        ax.text(bar.get_x() + bar.get_width()/2.0, yval + 1, f'{yval:.1f}%', ha='center', va='bottom', fontsize=9)
-
-    plt.tight_layout()
-    fig1_path = os.path.join(output_dir, "comparison_label_distribution.png")
-    plt.savefig(fig1_path, dpi=300)
-    plt.close()
-    print(f"\n[5] Đã lưu biểu đồ 1: {fig1_path}")
-
-    # Biểu đồ 2: So sánh Top 12 đặc trưng TF-IDF
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
-    fig.suptitle('So Sánh Top 12 Đặc Trưng TF-IDF: Facebook vs TikTok', fontsize=14, fontweight='bold', y=0.98)
-
-    top12_fb_idx = fb_scores.argsort()[::-1][:12]
-    ax1.barh(fb_words[top12_fb_idx][::-1], fb_scores[top12_fb_idx][::-1], color='#3b5998')
-    ax1.set_title('Facebook (Bình luận phim)', fontsize=12, fontweight='bold')
-    ax1.set_xlabel('Trọng số TF-IDF trung bình', fontsize=10)
+    top_fb = fb_scores.argsort()[::-1][:12]
+    ax1.barh(fb_words[top_fb][::-1], fb_scores[top_fb][::-1], color='#3b5998')
+    ax1.set_title('Facebook')
+    ax1.set_xlabel('Mean TF-IDF')
     ax1.grid(axis='x', linestyle='--', alpha=0.5)
 
-    top12_tt_idx = tt_scores.argsort()[::-1][:12]
-    ax2.barh(tt_words[top12_tt_idx][::-1], tt_scores[top12_tt_idx][::-1], color='#25F4EE')
-    ax2.set_title('TikTok (Bình luận phim)', fontsize=12, fontweight='bold')
-    ax2.set_xlabel('Trọng số TF-IDF trung bình', fontsize=10)
+    top_tt = tt_scores.argsort()[::-1][:12]
+    ax2.barh(tt_words[top_tt][::-1], tt_scores[top_tt][::-1], color='#25F4EE')
+    ax2.set_title('TikTok')
+    ax2.set_xlabel('Mean TF-IDF')
     ax2.grid(axis='x', linestyle='--', alpha=0.5)
 
     plt.tight_layout()
-    fig2_path = os.path.join(output_dir, "comparison_top_features_fb_vs_tt.png")
-    plt.savefig(fig2_path, dpi=300)
+    plt.savefig(os.path.join(output_dir, "comparison_top_features_fb_vs_tt.png"), dpi=300)
     plt.close()
-    print(f"    Đã lưu biểu đồ 2: {fig2_path}")
+
+    print(f"Đã lưu các biểu đồ so sánh tại: {output_dir}")
 
 
 if __name__ == "__main__":
