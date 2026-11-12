@@ -5,7 +5,7 @@
 
 ## 🎯 Mục tiêu
 1. Xử lý và vector hóa 2 nguồn dữ liệu: Facebook ($2.087$ mẫu) và TikTok ($1.307$ mẫu).
-2. Phân chia Train ($80\%$) và Test ($20\%$) phân tầng trước khi fit để chống rò rỉ dữ liệu.
+2. Phân chia Train ($80\%$) và Test ($20\%$) phân tầng trước khi vector hóa để chống rò rỉ dữ liệu.
 3. Xuất ma trận đặc trưng TF-IDF và Bag-of-Words (BoW) kết hợp n-gram ($1\text{–}2\text{-gram}$).
 4. So sánh dữ liệu và không gian đặc trưng giữa Facebook và TikTok.
 
@@ -24,10 +24,11 @@
 │       ├── facebook_tfidf_train_test.joblib         # TF-IDF Facebook
 │       └── facebook_bow_train_test.joblib           # BoW Facebook
 ├── src/
-│   ├── vectorization.py                             # Vector hóa TF-IDF (FB & TikTok)
-│   ├── vectorization_bow.py                         # Vector hóa BoW (FB & TikTok)
-│   ├── compare_datasets.py                          # So sánh dữ liệu & đặc trưng FB vs TikTok
-│   └── plot_features.py                             # Xuất biểu đồ đặc trưng TF-IDF
+│   ├── vectorization.ipynb                          # Notebook luồng thực thi trực quan toàn diện
+│   ├── vectorization.py                             # Script vector hóa TF-IDF (FB & TikTok)
+│   ├── vectorization_bow.py                         # Script vector hóa BoW (FB & TikTok)
+│   ├── compare_datasets.py                          # Script đối sánh dữ liệu FB vs TikTok
+│   └── plot_features.py                             # Script xuất biểu đồ đặc trưng
 ├── reports/
 │   ├── Quy_chuan_Tien_xu_ly_va_Dinh_dang_Du_lieu_NLP.docx # Quy chuẩn tiền xử lý
 │   └── figures/                                     # Biểu đồ phân tích & so sánh
@@ -43,13 +44,12 @@
 # 1. Cài đặt thư viện
 pip install -r requirements.txt
 
-# 2. Vector hóa TF-IDF
+# 2. Khởi chạy luồng trực quan trên Notebook (Khuyến nghị khi báo cáo)
+# Mở và chạy file: src/vectorization.ipynb
+
+# 3. Hoặc chạy độc lập bằng dòng lệnh
 python src/vectorization.py
-
-# 3. Vector hóa Bag-of-Words
 python src/vectorization_bow.py
-
-# 4. So sánh dữ liệu & xuất biểu đồ
 python src/compare_datasets.py
 python src/plot_features.py
 ```
