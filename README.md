@@ -1,17 +1,13 @@
 # NHIỆM VỤ 2: TRÍCH CHỌN ĐẶC TRƯNG & VECTOR HÓA DỮ LIỆU
-## Đề tài 3A: Phân tích cảm xúc bình luận phim "Trại buôn người" trên Facebook
-**Môn học:** Phân tích và Khai phá dữ liệu văn bản  
+## Đề tài 3A: Phân tích cảm xúc bình luận phim "Trại buôn người" (Facebook & TikTok)
 
 ---
 
-## 🎯 Mục tiêu nhiệm vụ
-1. Tiếp nhận dữ liệu bình luận phim **"Trại buôn người"** đã làm sạch và gán nhãn ($2.087$ mẫu).
-2. Thực hiện phân tầng tập **Train (80%)** và **Test (20%)** trước khi vector hóa nhằm chống rò rỉ dữ liệu (**Data Leakage**).
-3. Chuyển đổi văn bản thành ma trận véc-tơ số học bằng 2 phương pháp:
-   - **TF-IDF (Term Frequency - Inverse Document Frequency)** kết hợp Unigram & Bigram ($1\text{–}2\text{-gram}$).
-   - **Bag-of-Words (BoW / CountVectorizer)** kết hợp Unigram & Bigram ($1\text{–}2\text{-gram}$).
-4. Bàn giao gói ma trận đặc trưng Train/Test chuẩn cho các nhánh mô hình học máy (Naive Bayes, SVM).
-5. Trực quan hóa đặc trưng bằng biểu đồ phục vụ thuyết trình và báo cáo.
+## 🎯 Mục tiêu
+1. Xử lý và vector hóa 2 nguồn dữ liệu: Facebook ($2.087$ mẫu) và TikTok ($1.307$ mẫu).
+2. Phân chia Train ($80\%$) và Test ($20\%$) phân tầng trước khi vector hóa để chống rò rỉ dữ liệu.
+3. Xuất ma trận đặc trưng TF-IDF và Bag-of-Words (BoW) kết hợp n-gram ($1\text{–}2\text{-gram}$).
+4. So sánh dữ liệu và không gian đặc trưng giữa Facebook và TikTok.
 
 ---
 
@@ -20,58 +16,47 @@
 ```text
 .
 ├── Data/
-│   ├── final_labeled_clean_v3.xlsx                  # Dữ liệu sạch đầu vào (2.087 mẫu)
+│   ├── final_labeled_clean.xlsx                     # Dữ liệu sạch TikTok (1.307 mẫu)
+│   ├── final_labeled_clean_v3.xlsx                  # Dữ liệu sạch Facebook (2.087 mẫu)
 │   └── vectorized/
-│       ├── tfidf_train_test.joblib                  # Gói bàn giao ma trận TF-IDF (Train & Test)
-│       └── bow_train_test.joblib                    # Gói bàn giao ma trận BoW (Train & Test)
+│       ├── tiktok_tfidf_train_test.joblib           # TF-IDF TikTok
+│       ├── tiktok_bow_train_test.joblib             # BoW TikTok
+│       ├── facebook_tfidf_train_test.joblib         # TF-IDF Facebook
+│       └── facebook_bow_train_test.joblib           # BoW Facebook
 ├── src/
-│   ├── vectorization.py                             # Mã nguồn vector hóa TF-IDF (chuẩn Train/Test)
-│   ├── vectorization_bow.py                         # Mã nguồn vector hóa BoW (chuẩn Train/Test)
-│   ├── plot_features.py                             # Mã nguồn trực quan hóa đặc trưng TF-IDF
-│   ├── BoW_SVM.ipynb                                # Huấn luyện mô hình SVM với BoW
-│   └── TF_IDF_SVM.ipynb                             # Huấn luyện mô hình SVM với TF-IDF
-├── models/                                          # Thư mục chứa mô hình huấn luyện
+│   ├── vectorization.ipynb                          # Notebook luồng thực thi trực quan toàn diện
+│   └── plot_features.py                             # Script xuất biểu đồ đặc trưng
 ├── reports/
-│   └── figures/
-│       ├── top_20_tfidf_overall.png                 # Biểu đồ Top 20 đặc trưng TF-IDF
-│       └── top_features_by_sentiment.png            # Biểu đồ Top 15 đặc trưng theo 3 nhãn cảm xúc
+│   ├── Quy_chuan_Tien_xu_ly_va_Dinh_dang_Du_lieu_NLP.docx # Quy chuẩn tiền xử lý
+│   └── figures/                                     # Biểu đồ phân tích đặc trưng
 ├── requirements.txt
-├── .gitignore
 └── README.md
 ```
 
 ---
 
-## 🚀 Hướng dẫn chạy chương trình
+## 🚀 Hướng dẫn chạy
 
-### 1. Cài đặt môi trường
 ```bash
+# 1. Cài đặt thư viện
 pip install -r requirements.txt
-```
 
-### 2. Thực hiện Vector hóa văn bản
-* **Vector hóa bằng TF-IDF:**
-  ```bash
-  python src/vectorization.py
-  ```
-* **Vector hóa bằng Bag-of-Words (BoW):**
-  ```bash
-  python src/vectorization_bow.py
-  ```
+# 2. Khởi chạy luồng trực quan trên Notebook (Khuyến nghị)
+# Mở và chạy trực tiếp: src/vectorization.ipynb
 
-### 3. Xuất biểu đồ trực quan hóa đặc trưng
-```bash
+# 3. Hoặc xuất lại biểu đồ độc lập
 python src/plot_features.py
 ```
 
 ---
 
-## 📊 Kết quả thực nghiệm
+## 📊 Thống kê nhanh
 
-* **Tổng số bình luận:** $2.087$ mẫu (Positive: $1.280$, Neutral: $438$, Negative: $369$).
-* **Phân chia tập dữ liệu:** Train: $1.669$ mẫu ($80\%$), Test: $418$ mẫu ($20\%$).
-* **Cấu hình mô hình:** `ngram_range=(1, 2)`, `min_df=2`, `sublinear_tf=True` (học từ vựng chỉ trên tập Train).
-* **Số lượng đặc trưng từ vựng:** $4.745$ đặc trưng n-gram.
-* **Kích thước ma trận:**
-  - Tập Train: `(1669, 4745)`
-  - Tập Test: `(418, 4745)`
+| Chỉ số | Facebook | TikTok |
+| :--- | :---: | :---: |
+| **Tổng số mẫu** | $2.087$ | $1.307$ |
+| **Train / Test (80/20)** | $1.669$ / $418$ | $1.045$ / $262$ |
+| **Phân bố nhãn (Pos / Neu / Neg)** | $61.3\%$ / $21.0\%$ / $17.7\%$ | $65.3\%$ / $19.9\%$ / $14.8\%$ |
+| **Độ dài câu TB** | $18.5$ từ | $14.0$ từ |
+| **Số đặc trưng n-gram (Train)** | $4.745$ | $2.322$ |
+| **Đặc trưng chung** | \multicolumn{2}{c|}{$1.540$ n-grams ($21.4\%$)} |
