@@ -25,11 +25,10 @@
 │       └── facebook_bow_train_test.joblib           # BoW Facebook
 ├── src/
 │   ├── vectorization.ipynb                          # Notebook luồng thực thi trực quan toàn diện
-│   ├── compare_datasets.py                          # Script đối sánh dữ liệu FB vs TikTok
 │   └── plot_features.py                             # Script xuất biểu đồ đặc trưng
 ├── reports/
 │   ├── Quy_chuan_Tien_xu_ly_va_Dinh_dang_Du_lieu_NLP.docx # Quy chuẩn tiền xử lý
-│   └── figures/                                     # Biểu đồ phân tích & so sánh
+│   └── figures/                                     # Biểu đồ phân tích đặc trưng
 ├── requirements.txt
 └── README.md
 ```
@@ -45,8 +44,7 @@ pip install -r requirements.txt
 # 2. Khởi chạy luồng trực quan trên Notebook (Khuyến nghị)
 # Mở và chạy trực tiếp: src/vectorization.ipynb
 
-# 3. Hoặc chạy các script phụ trợ
-python src/compare_datasets.py
+# 3. Hoặc xuất lại biểu đồ độc lập
 python src/plot_features.py
 ```
 
