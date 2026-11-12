@@ -25,8 +25,6 @@
 │       └── facebook_bow_train_test.joblib           # BoW Facebook
 ├── src/
 │   ├── vectorization.ipynb                          # Notebook luồng thực thi trực quan toàn diện
-│   ├── vectorization.py                             # Script vector hóa TF-IDF (FB & TikTok)
-│   ├── vectorization_bow.py                         # Script vector hóa BoW (FB & TikTok)
 │   ├── compare_datasets.py                          # Script đối sánh dữ liệu FB vs TikTok
 │   └── plot_features.py                             # Script xuất biểu đồ đặc trưng
 ├── reports/
@@ -44,12 +42,10 @@
 # 1. Cài đặt thư viện
 pip install -r requirements.txt
 
-# 2. Khởi chạy luồng trực quan trên Notebook (Khuyến nghị khi báo cáo)
-# Mở và chạy file: src/vectorization.ipynb
+# 2. Khởi chạy luồng trực quan trên Notebook (Khuyến nghị)
+# Mở và chạy trực tiếp: src/vectorization.ipynb
 
-# 3. Hoặc chạy độc lập bằng dòng lệnh
-python src/vectorization.py
-python src/vectorization_bow.py
+# 3. Hoặc chạy các script phụ trợ
 python src/compare_datasets.py
 python src/plot_features.py
 ```
