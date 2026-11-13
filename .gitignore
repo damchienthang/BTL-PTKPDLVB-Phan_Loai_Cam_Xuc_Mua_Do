@@ -1,20 +1,52 @@
-# Byte-compiled / optimized / DLL files
+# ==========================================
+# Python & Môi trường ảo
+# ==========================================
+.venv/
+env/
+venv/
+ENV/
 __pycache__/
 *.py[cod]
 *$py.class
 
-# Environments
-.venv/
-venv/
-ENV/
-env/
+# ==========================================
+# Cấu hình bảo mật & Token API
+# ==========================================
+.env
+*.env
 
-# Editor & Temporary files
-.vscode/
+# ==========================================
+# Tệp hệ thống & IDE
+# ==========================================
+.DS_Store
+Thumbs.db
 .idea/
-~$*
+.vscode/
+*.suo
+*.user
+
+# ==========================================
+# Tệp nhị phân và khóa tạm của Microsoft Office
+# ==========================================
+*.exe
+tools/*.exe
+~$*.xlsx
+~$*.xls
+~$*.docx
 *.tmp
 
-# Phần làm sạch của thành viên khác (không đẩy lên repo nhiệm vụ 2)
-src/preprocessing.py
+# ==========================================
+# Báo cáo đánh giá cá nhân / Tệp rác
+# ==========================================
+Đánh giá*.docx
+output_llm_test/
+simple_post_excel/
+du_lieu_*.xlsx
+checkpoint_*.json
 
+# Thư mục tools: bỏ qua exe nhị phân nặng, dữ liệu crawl tạm
+tools/*.exe
+tools/data/
+tools/data/**
+!tools/*.py
+!tools/**/.gitkeep

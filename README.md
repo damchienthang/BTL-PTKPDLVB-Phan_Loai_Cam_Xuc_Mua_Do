@@ -1,62 +1,83 @@
-# NHIỆM VỤ 2: TRÍCH CHỌN ĐẶC TRƯNG & VECTOR HÓA DỮ LIỆU
-## Đề tài 3A: Phân tích cảm xúc bình luận phim "Trại buôn người" (Facebook & TikTok)
+# BÀI TẬP LỚN: PHÂN TÍCH VÀ KHAI PHÁ DỮ LIỆU VĂN BẢN (NLP)
+## Đề tài: Phân tích cảm xúc bình luận phim "Trại buôn người" (Facebook & TikTok)
 
 ---
 
-## 🎯 Mục tiêu
-1. Xử lý và vector hóa 2 nguồn dữ liệu: Facebook ($2.087$ mẫu) và TikTok ($1.307$ mẫu).
-2. Phân chia Train ($80\%$) và Test ($20\%$) phân tầng trước khi vector hóa để chống rò rỉ dữ liệu.
-3. Xuất ma trận đặc trưng TF-IDF và Bag-of-Words (BoW) kết hợp n-gram ($1\text{–}2\text{-gram}$).
-4. So sánh dữ liệu và không gian đặc trưng giữa Facebook và TikTok.
+## 🎯 Giới thiệu tổng quan
+Dự án xây dựng một luồng (pipeline) hoàn chỉnh phục vụ nghiên cứu và thực nghiệm xử lý ngôn ngữ tự nhiên (NLP) phân loại sắc thái bình luận tiếng Việt:
+1. **Nhiệm vụ 1: Thu thập & Tiền xử lý dữ liệu**
+   - Thu thập bình luận từ Facebook ($2.087$ mẫu) và TikTok ($1.307$ mẫu).
+   - Gán nhãn tự động bằng Gemini kết hợp thẩm định logic và QC người dùng.
+   - Chuẩn hóa văn bản: Unicode NFC, giải mã Teencode, chuẩn hóa emoji, tách từ tiếng Việt (PyVi) tạo ra hai định dạng chuẩn (`Text_PhoBERT` và `Text_TFIDF`).
+2. **Nhiệm vụ 2: Trích chọn đặc trưng & Vector hóa dữ liệu**
+   - Phân chia Train ($80\%$) và Test ($20\%$) phân tầng nhãn chống rò rỉ dữ liệu (Anti-Data Leakage).
+   - Trích xuất ma trận TF-IDF và Bag-of-Words (BoW) kết hợp n-gram ($1\text{–}2\text{-gram}$), lọc từ hiếm (`min_df=2`), `sublinear_tf=True`, chuẩn hóa $L_2$.
+   - Đối sánh không gian đặc trưng và phân bố cảm xúc giữa Facebook và TikTok trong notebook [`src/vectorization.ipynb`](src/vectorization.ipynb).
+3. **Nhiệm vụ 3: Huấn luyện, đánh giá & So sánh mô hình phân loại**
+   - Huấn luyện và tối ưu siêu tham số trên các thuật toán học máy: Naive Bayes (MultinomialNB) và Support Vector Machine (SVM).
+   - Đánh giá chéo, kiểm định độ tin cậy thống kê, xuất ma trận nhầm lẫn (Confusion Matrix) và đường cong ROC.
 
 ---
 
-## 📁 Cấu trúc thư mục
+## 📁 Cấu trúc thư mục dự án
 
 ```text
 .
-├── Data/
+├── Data/                                            # Dữ liệu phục vụ huấn luyện và đánh giá
 │   ├── final_labeled_clean.xlsx                     # Dữ liệu sạch TikTok (1.307 mẫu)
 │   ├── final_labeled_clean_v3.xlsx                  # Dữ liệu sạch Facebook (2.087 mẫu)
-│   └── vectorized/
+│   ├── merged_fb_tiktok.xlsx                        # Dữ liệu gộp Facebook & TikTok
+│   └── vectorized/                                  # Ma trận vector hóa (.joblib)
 │       ├── tiktok_tfidf_train_test.joblib           # TF-IDF TikTok
 │       ├── tiktok_bow_train_test.joblib             # BoW TikTok
 │       ├── facebook_tfidf_train_test.joblib         # TF-IDF Facebook
 │       └── facebook_bow_train_test.joblib           # BoW Facebook
-├── src/
-│   ├── vectorization.ipynb                          # Notebook luồng thực thi trực quan toàn diện
-│   └── plot_features.py                             # Script xuất biểu đồ đặc trưng
-├── reports/
-│   ├── Quy_chuan_Tien_xu_ly_va_Dinh_dang_Du_lieu_NLP.docx # Quy chuẩn tiền xử lý
-│   └── figures/                                     # Biểu đồ phân tích đặc trưng
-├── requirements.txt
+├── data/                                            # Cấu trúc thư mục dữ liệu thô và pipeline
+│   ├── facebook/ (raw, intermediate, processed)
+│   └── tiktok/ (raw)
+├── models/                                          # Mô hình đã huấn luyện
+│   ├── Naive_Bayes/                                 # Mô hình và thực nghiệm Naive Bayes
+│   ├── bow_svm/                                     # Mô hình SVM với Bag-of-Words
+│   └── tfidf_svm/                                   # Mô hình SVM với TF-IDF
+├── src/                                             # Mã nguồn thực nghiệm
+│   ├── vectorization.ipynb                          # Notebook xử lý và vector hóa toàn diện
+│   ├── BoW_SVM_V2.ipynb                             # Notebook huấn luyện SVM BoW
+│   ├── TF_IDF_SVM_V2.ipynb                          # Notebook huấn luyện SVM TF-IDF
+│   └── Model_Comparison.ipynb                       # So sánh hiệu năng các mô hình
+├── tools/                                           # Công cụ thu thập dữ liệu (crawlers)
+│   ├── crawl_facebook_comments.py
+│   └── crawl_tiktok_comments.py
+├── reports/                                         # Báo cáo và biểu đồ trực quan hóa
+│   ├── figures/                                     # Biểu đồ phân tích dữ liệu & mô hình
+│   └── BaoCaoNLP-N07.docx                           # Báo cáo tổng hợp bài tập lớn hoàn chỉnh
+├── requirements.txt                                 # Thư viện cần thiết
 └── README.md
 ```
 
 ---
 
-## 🚀 Hướng dẫn chạy
+## 🚀 Hướng dẫn cài đặt & Thực thi
 
+### 1. Cài đặt môi trường
 ```bash
-# 1. Cài đặt thư viện
 pip install -r requirements.txt
-
-# 2. Khởi chạy luồng trực quan trên Notebook (Khuyến nghị)
-# Mở và chạy trực tiếp: src/vectorization.ipynb
-
-# 3. Hoặc xuất lại biểu đồ độc lập
-python src/plot_features.py
 ```
 
----
+### 2. Chạy luồng tiền xử lý và gán nhãn
+```bash
+# Tiền xử lý dữ liệu Facebook
+python process_clean_v3.py
 
-## 📊 Thống kê nhanh
+# Tổng hợp và rà soát nhãn
+python build_final_labeled_dataset.py
+```
 
-| Chỉ số | Facebook | TikTok |
-| :--- | :---: | :---: |
-| **Tổng số mẫu** | $2.087$ | $1.307$ |
-| **Train / Test (80/20)** | $1.669$ / $418$ | $1.045$ / $262$ |
-| **Phân bố nhãn (Pos / Neu / Neg)** | $61.3\%$ / $21.0\%$ / $17.7\%$ | $65.3\%$ / $19.9\%$ / $14.8\%$ |
-| **Độ dài câu TB** | $18.5$ từ | $14.0$ từ |
-| **Số đặc trưng n-gram (Train)** | $4.745$ | $2.322$ |
-| **Đặc trưng chung** | \multicolumn{2}{c|}{$1.540$ n-grams ($21.4\%$)} |
+### 3. Thực thi Vector hóa dữ liệu
+Mở và chạy trực tiếp notebook:
+```bash
+jupyter notebook src/vectorization.ipynb
+```
+
+### 4. Huấn luyện và đánh giá mô hình
+- **SVM:** Chạy các notebook trong `src/BoW_SVM_V2.ipynb` và `src/TF_IDF_SVM_V2.ipynb`.
+- **So sánh mô hình:** Xem chi tiết tại `src/Model_Comparison.ipynb`.
