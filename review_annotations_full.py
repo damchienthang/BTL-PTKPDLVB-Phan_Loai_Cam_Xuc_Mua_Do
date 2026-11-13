@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 import sys
@@ -21,17 +22,27 @@ if sys.platform == "win32":
 ROOT_DIR = Path(__file__).resolve().parent
 load_dotenv(ROOT_DIR / ".env")
 
-_inter_dir = ROOT_DIR / "data" / "facebook" / "intermediate"
-_in_candidates = [
-    _inter_dir / "all_comments_annotated.xlsx",
-    ROOT_DIR / "all_comments_annotated.xlsx",
-]
-INPUT_FILE = next((p for p in _in_candidates if p.exists()), _in_candidates[0])
-OUTPUT_FILE = _inter_dir / "all_comments_reviewed_v2.xlsx"
-CHECKPOINT_FULL = _inter_dir / "checkpoint_full_reviewed_v2.json"
-CHECKPOINT_SAMPLE = _inter_dir / "checkpoint_review_sample_100.json"
 TARGET_MOVIE = "Trại buôn người"
 BATCH_SIZE = 30
+
+PLATFORM_REVIEW_CONFIGS: Dict[str, Dict[str, Path]] = {
+    "facebook": {
+        "input_candidates": (
+            ROOT_DIR / "data" / "facebook" / "intermediate" / "all_comments_annotated.xlsx",
+            ROOT_DIR / "all_comments_annotated.xlsx",
+        ),
+        "output_file": ROOT_DIR / "data" / "facebook" / "intermediate" / "all_comments_reviewed_v2.xlsx",
+        "checkpoint_full": ROOT_DIR / "data" / "facebook" / "intermediate" / "checkpoint_full_reviewed_v2.json",
+    },
+    "tiktok": {
+        "input_candidates": (
+            ROOT_DIR / "data" / "tiktok" / "tiktok_comments_annotated.xlsx",
+            ROOT_DIR / "data" / "tiktok" / "intermediate" / "tiktok_comments_annotated.xlsx",
+        ),
+        "output_file": ROOT_DIR / "data" / "tiktok" / "intermediate" / "tiktok_comments_reviewed_v2.xlsx",
+        "checkpoint_full": ROOT_DIR / "data" / "tiktok" / "intermediate" / "checkpoint_full_reviewed_v2.json",
+    },
+}
 
 
 # ==============================================================================
@@ -182,12 +193,17 @@ def review_batch_with_retry(
         temperature=0.1,
     )
 
+    # Danh sách model lite tốc độ cao, hỗ trợ chuyển đổi nếu model chính bị quá tải (503)
+    fallback_models = [model_name, "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"]
+    curr_model_idx = 0
+
     attempt = 0
     while attempt < max_retries:
         attempt += 1
+        active_model = fallback_models[curr_model_idx]
         try:
             response = key_manager.client.models.generate_content(
-                model=model_name,
+                model=active_model,
                 contents=prompt,
                 config=config,
             )
@@ -213,9 +229,19 @@ def review_batch_with_retry(
 
         except Exception as e:
             err_str = str(e)
-            print(f"\nLỗi khi gọi API (lần {attempt}/{max_retries}): {err_str[:120]}")
+            print(f"\nLỗi khi gọi API (lần {attempt}/{max_retries} với model {active_model}): {err_str[:120]}")
 
-            if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str or "404" in err_str:
+            # 1. Server quá tải (503 UNAVAILABLE) -> Tự động chuyển Model dự phòng
+            if "503" in err_str or "UNAVAILABLE" in err_str or "high demand" in err_str.lower():
+                curr_model_idx = (curr_model_idx + 1) % len(fallback_models)
+                next_model = fallback_models[curr_model_idx]
+                wait_time = 5 * attempt
+                print(f"-> Máy chủ quá tải (503). Chờ {wait_time}s và chuyển sang model: {next_model}...")
+                time.sleep(wait_time)
+                continue
+
+            # 2. Hết hạn ngạch quota (429) -> Đổi Key
+            if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
                 has_next = key_manager.rotate_key()
                 if has_next:
                     print("-> Đã chuyển sang key mới, thử lại batch ngay lập tức...")
@@ -229,7 +255,7 @@ def review_batch_with_retry(
                 print(f"Đã thử {max_retries} lần không thành công cho batch này.")
                 return None, {}
 
-            wait_time = 3 * attempt
+            wait_time = 4 * attempt
             print(f"Chờ {wait_time}s trước khi retry...")
             time.sleep(wait_time)
 
@@ -398,18 +424,53 @@ def export_reviewed_excel(df_all: pd.DataFrame, review_dict: Dict[int, Dict[str,
 # 6. Main
 # ==============================================================================
 def main():
+    parser = argparse.ArgumentParser(description="Kiểm định chéo (Review Lần 2) bằng Gemini API.")
+    parser.add_argument(
+        "--source",
+        choices=["facebook", "tiktok"],
+        default="facebook",
+        help="Chọn nền tảng dữ liệu (mặc định: facebook)",
+    )
+    parser.add_argument(
+        "--input",
+        type=str,
+        default="",
+        help="File đầu vào tùy chỉnh (nếu muốn)",
+    )
+    args = parser.parse_args()
+
+    cfg = PLATFORM_REVIEW_CONFIGS[args.source]
+    if args.input:
+        input_file = Path(args.input)
+    else:
+        input_file = next((p for p in cfg["input_candidates"] if p.exists()), None)
+
+    output_file = cfg["output_file"]
+    checkpoint_full = cfg["checkpoint_full"]
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+
     print("=" * 80)
-    print("CHẠY RÀ SOÁT VÀ HIỆU CHỈNH TOÀN BỘ 3.776 BÌNH LUẬN (BATCH SIZE = 30)")
+    print(f"CHẠY RÀ SOÁT VÀ HIỆU CHỈNH KIỂM ĐỊNH CHÉO: {args.source.upper()} (BATCH SIZE = {BATCH_SIZE})")
     print("=" * 80)
 
-    if not INPUT_FILE.exists():
-        print(f"LỖI: Không tìm thấy file {INPUT_FILE}")
+    if not input_file or not input_file.exists():
+        print(f"LỖI: Không tìm thấy file đầu vào cho {args.source.upper()}! Vui lòng chạy label_all_comments.py trước.")
         return 1
 
-    df_full = pd.read_excel(INPUT_FILE, sheet_name="ALL_ANNOTATED")
+    try:
+        df_full = pd.read_excel(input_file, sheet_name="ALL_ANNOTATED")
+    except Exception:
+        df_full = pd.read_excel(input_file, sheet_name=0)
+
+    # Chuẩn hóa tên cột thô
+    for c_alias in ["Nội dung RAW", "Nội dung", "RAW Text", "comment_text"]:
+        if c_alias in df_full.columns:
+            df_full["Nội dung RAW"] = df_full[c_alias]
+            break
+
     df_full["row_id"] = df_full.index + 2
     total_rows = len(df_full)
-    print(f"Đã đọc file gốc: {INPUT_FILE} ({total_rows:,} dòng).")
+    print(f"Đã đọc file gốc: {input_file} ({total_rows:,} dòng).")
 
     # Khởi tạo KeyManager
     raw_keys_env = os.environ.get("GEMINI_API_KEYS", "") or os.environ.get("GEMINI_API_KEY", "")
@@ -424,9 +485,9 @@ def main():
 
     # Nạp checkpoint
     review_dict: Dict[int, Dict[str, Any]] = {}
-    if CHECKPOINT_FULL.exists():
+    if checkpoint_full.exists():
         try:
-            with open(CHECKPOINT_FULL, "r", encoding="utf-8") as f:
+            with open(checkpoint_full, "r", encoding="utf-8") as f:
                 saved = json.load(f)
                 review_dict = {int(k): v for k, v in saved.items()}
             print(f"Tìm thấy checkpoint full: đã xử lý trước đó {len(review_dict):,}/{total_rows:,} dòng.")
@@ -488,7 +549,7 @@ def main():
             review_dict[ann.row_id] = ann.model_dump()
 
         # Lưu checkpoint sau mỗi batch
-        with open(CHECKPOINT_FULL, "w", encoding="utf-8") as f:
+        with open(checkpoint_full, "w", encoding="utf-8") as f:
             json.dump(review_dict, f, ensure_ascii=False, indent=2)
 
         t1 = time.time()
@@ -499,7 +560,7 @@ def main():
     print(f"\nHoàn thành rà soát {len(review_dict)}/{total_rows} dòng trong {elapsed:.2f}s. Tổng token: {total_tokens:,}")
 
     # Xuất file Excel
-    df_all_reviewed, df_change_log, df_human_review, df_summary = export_reviewed_excel(df_full, review_dict, OUTPUT_FILE)
+    df_all_reviewed, df_change_log, df_human_review, df_summary = export_reviewed_excel(df_full, review_dict, output_file)
 
     print("\n" + "=" * 80)
     print("BÁO CÁO TỔNG KẾT RÀ SOÁT TOÀN BỘ DATASET:")
@@ -508,7 +569,7 @@ def main():
     print(f"2. Đã rà soát thực tế: {len(review_dict):,} ({len(review_dict)/total_rows*100:.1f}%)")
     print(f"3. Tổng số dòng được điều chỉnh nhãn: {len(df_change_log):,} / {len(review_dict):,} ({len(df_change_log)/len(review_dict)*100:.1f}%)")
     print(f"4. Số dòng cần kiểm tra thủ công (HUMAN_REVIEW): {len(df_human_review):,}")
-    print(f"5. File kết quả Excel hoàn chỉnh: {OUTPUT_FILE}")
+    print(f"5. File kết quả Excel hoàn chỉnh: {output_file}")
     print("=" * 80 + "\n")
     return 0
 

@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 import sys
@@ -21,15 +22,23 @@ if sys.platform == "win32":
 ROOT_DIR = Path(__file__).resolve().parent
 load_dotenv(ROOT_DIR / ".env")
 
-_raw_candidates = [
-    ROOT_DIR / "data" / "facebook" / "raw" / "simple_post_comments_merged.xlsx",
-    ROOT_DIR / "simple_post_comments_merged.xlsx",
-]
-RAW_DATA_PATH = next((p for p in _raw_candidates if p.exists()), _raw_candidates[0])
-OUTPUT_PATH = ROOT_DIR / "data" / "facebook" / "intermediate" / "all_comments_annotated.xlsx"
-CHECKPOINT_PATH = ROOT_DIR / "data" / "facebook" / "intermediate" / "checkpoint_all_annotations.json"
 TARGET_MOVIE = "Trại buôn người"
 BATCH_SIZE = 30
+
+PLATFORM_LABEL_CONFIGS: Dict[str, Dict[str, Path]] = {
+    "facebook": {   
+        "raw_data": ROOT_DIR / "data" / "facebook" / "raw" / "simple_post_comments_merged.xlsx",
+        "output_path": ROOT_DIR / "data" / "facebook" / "intermediate" / "all_comments_annotated.xlsx",
+        "checkpoint_path": ROOT_DIR / "data" / "facebook" / "intermediate" / "checkpoint_all_annotations.json",
+        "simple_post_dir": ROOT_DIR / "data" / "facebook" / "raw" / "simple_post",
+    },
+    "tiktok": {
+        "raw_data": ROOT_DIR / "data" / "tiktok" / "tiktok_comments_merged.xlsx",
+        "output_path": ROOT_DIR / "data" / "tiktok" / "tiktok_comments_annotated.xlsx",
+        "checkpoint_path": ROOT_DIR / "data" / "tiktok" / "checkpoint_tiktok.json",
+        "simple_post_dir": ROOT_DIR / "data" / "tiktok" / "raw",
+    },
+}
 
 
 # ==========================================
@@ -149,8 +158,8 @@ DANH SÁCH {len(batch_items)} BÌNH LUẬN CẦN GÁN NHÃN:
 """
     for item in batch_items:
         uid = item["row_uid"]
-        text = item["Nội dung"]
-        c_type = item["Loại"]
+        text = item.get("Nội dung") or item.get("RAW Text") or item.get("comment_text") or ""
+        c_type = item.get("Loại") or item.get("Loại bình luận") or item.get("comment_type") or "Comment"
         parent_text = item.get("parent_comment_text", "")
         prompt += f"\n- [ID: {uid}] | Loại: {c_type}\n"
         if c_type == "Reply" and parent_text:
@@ -209,7 +218,7 @@ def annotate_batch_with_retry(
     key_manager: KeyManager,
     model_name: str,
     batch_items: List[Dict[str, Any]],
-    max_retries: int = 5,
+    max_retries: int = 6,
 ):
     from google.genai import types
 
@@ -218,14 +227,20 @@ def annotate_batch_with_retry(
         response_mime_type="application/json",
         response_schema=BatchAnnotationResponse,
         temperature=0.1,
+        http_options=types.HttpOptions(timeout=30000),  # 30 giây timeout, chống treo socket
     )
+
+    # Danh sách model lite tốc độ cao, hỗ trợ chuyển đổi nếu model chính bị quá tải (503)
+    fallback_models = [model_name, "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"]
+    curr_model_idx = 0
 
     attempt = 0
     while attempt < max_retries:
         attempt += 1
+        active_model = fallback_models[curr_model_idx]
         try:
             response = key_manager.client.models.generate_content(
-                model=model_name,
+                model=active_model,
                 contents=prompt,
                 config=config,
             )
@@ -251,13 +266,23 @@ def annotate_batch_with_retry(
 
         except Exception as e:
             err_str = str(e)
-            print(f"\nLỗi khi gọi API (lần {attempt}/{max_retries}): {err_str[:120]}")
+            print(f"\nLỗi khi gọi API (lần {attempt}/{max_retries} với model {active_model}): {err_str[:120]}")
 
-            if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str or "404" in err_str:
+            # 1. Server quá tải (503 UNAVAILABLE) -> Tự động chuyển Model dự phòng
+            if "503" in err_str or "UNAVAILABLE" in err_str or "high demand" in err_str.lower():
+                curr_model_idx = (curr_model_idx + 1) % len(fallback_models)
+                next_model = fallback_models[curr_model_idx]
+                wait_time = 5 * attempt
+                print(f"-> Máy chủ quá tải (503). Chờ {wait_time}s và chuyển sang model: {next_model}...")
+                time.sleep(wait_time)
+                continue
+
+            # 2. Hết hạn ngạch quota (429) -> Đổi Key
+            if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
                 has_next = key_manager.rotate_key()
                 if has_next:
                     print("-> Đã chuyển key mới thành công, thử lại batch ngay lập tức...")
-                    attempt = 0  # reset attempt cho key mới
+                    attempt = 0
                     time.sleep(1)
                     continue
                 else:
@@ -267,7 +292,7 @@ def annotate_batch_with_retry(
                 print(f"Đã thử {max_retries} lần không thành công cho batch này.")
                 return None, {}
 
-            wait_time = 3 * attempt
+            wait_time = 4 * attempt
             print(f"Chờ {wait_time}s trước khi retry...")
             time.sleep(wait_time)
 
@@ -385,34 +410,77 @@ def export_excel(df_all_rows: pd.DataFrame, annotated_dict: Dict[str, Dict[str, 
 # 6. Pipeline Chính
 # ==========================================
 def main():
+    parser = argparse.ArgumentParser(description="Gán nhãn bình luận tự động bằng Gemini API.")
+    parser.add_argument(
+        "--source",
+        choices=["facebook", "tiktok"],
+        default="facebook",
+        help="Chọn nền tảng dữ liệu (mặc định: facebook)",
+    )
+    parser.add_argument(
+        "--input",
+        type=str,
+        default="",
+        help="File đầu vào tùy chỉnh (nếu muốn)",
+    )
+    args = parser.parse_args()
+
+    cfg = PLATFORM_LABEL_CONFIGS[args.source]
+    raw_data_path = Path(args.input) if args.input else cfg["raw_data"]
+    output_path = cfg["output_path"]
+    checkpoint_path = cfg["checkpoint_path"]
+    simple_post_dir = cfg["simple_post_dir"]
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
     print("=" * 75)
-    print("CHẠY GÁN NHÃN TOÀN BỘ DỮ LIỆU BÌNH LUẬN VỚI GEMINI API (BATCH SIZE = 30)")
+    print(f"CHẠY GÁN NHÃN BÌNH LUẬN NỀN TẢNG: {args.source.upper()} (GEMINI API)")
     print("=" * 75)
 
-    if not RAW_DATA_PATH.exists():
-        print(f"Lỗi: Không tìm thấy file RAW tại {RAW_DATA_PATH}")
+    if not raw_data_path.exists():
+        print(f"Lỗi: Không tìm thấy file RAW tại {raw_data_path}")
         return 1
 
-    df_raw = pd.read_excel(RAW_DATA_PATH, sheet_name=0)
+    df_raw = pd.read_excel(raw_data_path, sheet_name=0)
     total_rows = len(df_raw)
     print(f"Tổng số dòng dữ liệu: {total_rows:,} bình luận.")
 
+    # Tự động ánh xạ linh hoạt tên cột cho cả Facebook và TikTok
+    if "Loại" not in df_raw.columns:
+        if "Loại bình luận" in df_raw.columns:
+            df_raw["Loại"] = df_raw["Loại bình luận"]
+        elif "comment_type" in df_raw.columns:
+            df_raw["Loại"] = df_raw["comment_type"]
+        else:
+            df_raw["Loại"] = "Comment"
+
+    if "Nội dung" not in df_raw.columns:
+        for alias in ["Nội dung RAW", "RAW Text", "comment_text", "Bình luận"]:
+            if alias in df_raw.columns:
+                df_raw["Nội dung"] = df_raw[alias]
+                break
+
     # Ánh xạ parent context
-    simple_post_dir = ROOT_DIR / "data" / "simple_post"
-    parent_map = build_parent_map(simple_post_dir)
-    print(f"Đã ánh xạ được {len(parent_map)} replies với bình luận cha.")
+    parent_map = build_parent_map(simple_post_dir) if simple_post_dir.exists() else {}
+    print(f"Đã ánh xạ được {len(parent_map)} replies với bình luận cha từ JSON.")
 
     df_raw["row_uid"] = [f"ROW_{i+1:04d}" for i in range(total_rows)]
     df_raw["Nội dung"] = df_raw["Nội dung"].fillna("").astype(str)
-    df_raw["parent_comment_text"] = df_raw["Comment ID"].astype(str).map(
-        lambda cid: parent_map.get(cid, {}).get("parent_comment_text", "")
-    )
+
+    # Nếu có cột 'Trả lời cho' (như dữ liệu TikTok/Facebook), map nội dung bình luận cha từ chính bảng
+    if "Trả lời cho" in df_raw.columns and df_raw["Trả lời cho"].notna().any():
+        cid_to_text = dict(zip(df_raw["Comment ID"].astype(str), df_raw["Nội dung"].astype(str)))
+        df_raw["parent_comment_text"] = df_raw["Trả lời cho"].astype(str).map(lambda pid: cid_to_text.get(pid, ""))
+    else:
+        df_raw["parent_comment_text"] = df_raw["Comment ID"].astype(str).map(
+            lambda cid: parent_map.get(cid, {}).get("parent_comment_text", "")
+        )
 
     # Đọc checkpoint nếu có
     annotated_dict: Dict[str, Dict[str, Any]] = {}
-    if CHECKPOINT_PATH.exists():
+    if checkpoint_path.exists():
         try:
-            with open(CHECKPOINT_PATH, "r", encoding="utf-8") as f:
+            with open(checkpoint_path, "r", encoding="utf-8") as f:
                 annotated_dict = json.load(f)
             print(f"Tìm thấy checkpoint: đã xử lý trước đó {len(annotated_dict):,}/{total_rows:,} dòng.")
         except Exception as e:
@@ -460,46 +528,53 @@ def main():
 
     total_batches = (len(items_to_process) + BATCH_SIZE - 1) // BATCH_SIZE if items_to_process else 0
 
-    for b_idx in range(0, len(items_to_process), BATCH_SIZE):
-        batch = items_to_process[b_idx : b_idx + BATCH_SIZE]
-        batch_num = b_idx // BATCH_SIZE + 1
-        t_batch_start = time.time()
+    try:
+        for b_idx in range(0, len(items_to_process), BATCH_SIZE):
+            batch = items_to_process[b_idx : b_idx + BATCH_SIZE]
+            batch_num = b_idx // BATCH_SIZE + 1
+            t_batch_start = time.time()
 
-        print(f"\n[Batch {batch_num}/{total_batches}] Đang gửi {len(batch)} bình luận ({batch[0]['row_uid']} -> {batch[-1]['row_uid']})...", end="", flush=True)
+            print(f"\n[Batch {batch_num}/{total_batches}] Đang gửi {len(batch)} bình luận ({batch[0]['row_uid']} -> {batch[-1]['row_uid']})...", end="", flush=True)
 
-        annotations, tokens = annotate_batch_with_retry(key_manager, model_name, batch)
+            annotations, tokens = annotate_batch_with_retry(key_manager, model_name, batch)
 
-        if annotations is None:
-            print(f"\n[CẢNH BÁO] Không thể xử lý Batch {batch_num}. Lưu checkpoint hiện tại và tạm dừng.")
-            break
+            if annotations is None:
+                print(f"\n[CẢNH BÁO] Không thể xử lý Batch {batch_num}. Lưu checkpoint hiện tại và tạm dừng.")
+                break
 
-        total_api_calls += 1
-        b_tok = tokens.get("total_tokens", 0)
-        total_tokens += b_tok
-        prompt_tokens += tokens.get("prompt_tokens", 0)
-        candidates_tokens += tokens.get("candidates_tokens", 0)
+            total_api_calls += 1
+            b_tok = tokens.get("total_tokens", 0)
+            total_tokens += b_tok
+            prompt_tokens += tokens.get("prompt_tokens", 0)
+            candidates_tokens += tokens.get("candidates_tokens", 0)
 
-        for ann in annotations:
-            if ann.filter_status in ["REMOVE", "REVIEW"]:
-                ann.sentiment = None
-            annotated_dict[ann.row_uid] = ann.model_dump()
+            for ann in annotations:
+                if ann.filter_status in ["REMOVE", "REVIEW"]:
+                    ann.sentiment = None
+                annotated_dict[ann.row_uid] = ann.model_dump()
 
-        # Lưu checkpoint sau mỗi batch
-        with open(CHECKPOINT_PATH, "w", encoding="utf-8") as f:
+            # Lưu checkpoint sau mỗi batch
+            with open(checkpoint_path, "w", encoding="utf-8") as f:
+                json.dump(annotated_dict, f, ensure_ascii=False, indent=2)
+
+            t_batch_end = time.time()
+            print(f" Xong ({t_batch_end - t_batch_start:.2f}s, {b_tok} tokens) -> Tổng tiến độ: {len(annotated_dict)}/{total_rows} ({len(annotated_dict)/total_rows*100:.1f}%)")
+
+            # Giãn cách 1.5s để đảm bảo an toàn rate limit
+            time.sleep(1.5)
+    except KeyboardInterrupt:
+        print("\n\n[DỪNG BỞI NGƯỜI DÙNG] Đã nhận tín hiệu dừng (Ctrl+C). Đang lưu checkpoint an toàn...")
+        with open(checkpoint_path, "w", encoding="utf-8") as f:
             json.dump(annotated_dict, f, ensure_ascii=False, indent=2)
-
-        t_batch_end = time.time()
-        print(f" Xong ({t_batch_end - t_batch_start:.2f}s, {b_tok} tokens) -> Tổng tiến độ: {len(annotated_dict)}/{total_rows} ({len(annotated_dict)/total_rows*100:.1f}%)")
-
-        # Giãn cách 1.5s để đảm bảo an toàn rate limit
-        time.sleep(1.5)
+        print(f"Đã lưu thành công {len(annotated_dict)} bình luận đã gán nhãn vào: {checkpoint_path}")
+        return 0
 
     elapsed = time.time() - start_time
     print(f"\nHoàn thành xử lý {len(annotated_dict)}/{total_rows} bình luận trong {elapsed:.2f}s.")
     print(f"Tổng token sử dụng: {total_tokens:,} (Prompt: {prompt_tokens:,} | Output: {candidates_tokens:,})")
 
     # Xuất file Excel
-    export_excel(df_raw, annotated_dict, OUTPUT_PATH)
+    export_excel(df_raw, annotated_dict, output_path)
 
     # Thống kê tổng hợp
     filter_counts = {}
@@ -537,7 +612,7 @@ def main():
     for k, v in confidence_counts.items():
         print(f"   - {k:8s}: {v:5d} ({v/len(annotated_dict)*100:5.1f}%)")
     print(f"\n6. Số bình luận cần con người kiểm tra (HUMAN_REVIEW): {review_required_count:,}")
-    print(f"7. Đường dẫn file Excel kết quả: {OUTPUT_PATH}")
+    print(f"7. Đường dẫn file Excel kết quả: {output_path}")
     print("=" * 75 + "\n")
     return 0
 

@@ -1,27 +1,27 @@
 """
-Script xử lý và làm sạch dữ liệu toàn diện (phiên bản hợp nhất v3):
+Script xử lý và làm sạch dữ liệu toàn diện (Clean Architecture v3):
 Sẵn sàng cho các mô hình PhoBERT/Transformer và TF-IDF/Machine Learning cổ điển.
 
-Tích hợp toàn bộ các bước từ tiền xử lý cơ bản (v2) đến chuẩn hóa chuyên sâu (v3):
-1. Lọc và di chuyển các dòng bình luận rác/quá ngắn/phụ thuộc ngữ cảnh sang REMOVED_DATA.
-2. Xử lý giá trị Null/NaN và khôi phục các tiền tố tên nhân vật/diễn viên bị cắt nhầm đầu câu.
-3. Đồng bộ hóa nhãn cảm xúc mâu thuẫn (ID 347 & 414 sang 'Positive').
-4. Tiền xử lý NLP tiếng Việt toàn diện qua module VietnameseCommentPreprocessor:
+Các bước thực thi:
+1. Đọc dữ liệu linh hoạt (hỗ trợ cả Facebook và TikTok, tự nhận diện sheet & cột).
+2. Tách dữ liệu: đưa các câu KEEP sang FINAL_DATA, các câu REMOVE/REVIEW sang REMOVED_DATA.
+3. Tiền xử lý NLP tiếng Việt toàn diện qua module VietnameseCommentPreprocessor:
    - Chuẩn hóa Unicode dựng sẵn (NFC).
-   - Giải mã triệt để từ điển Teencode, từ viết tắt và tiếng lóng mạng xã hội.
-   - Chuẩn hóa Emoticon, Emoji và điểm số (vd: 7/10 -> diem_7_tren_10).
-   - Bảo toàn cấu trúc câu phủ định (không, chẳng, chả, never...).
-   - Tách từ tự động bằng PyVi ('_').
-5. Xuất song song 2 định dạng biểu diễn văn bản chuyên biệt:
-   - 'Text_PhoBERT': Tách từ ghép ('_'), GIỮ NGUYÊN dấu câu và từ dừng để bảo toàn cơ chế Attention.
-   - 'Text_TFIDF': Tách từ ghép ('_'), LOẠI BỎ toàn bộ dấu câu, ký tự lạ và Stopwords.
-6. Khử trùng lặp nội dung Clean Text để triệt tiêu Data Leakage khi chia tập Train/Test.
-7. Xuất file Excel định dạng chuẩn 2 sheet: FINAL_DATA và REMOVED_DATA.
+   - Giải mã triệt để từ điển Teencode, từ viết tắt và tiếng lóng.
+   - Loại bỏ hoàn toàn Emoji và Emoticon.
+   - Chuẩn hóa điểm số (vd: 7/10 -> diem_7_tren_10).
+   - Tách từ tự động bằng PyVi (nối '_').
+   - Xuất song song 2 định dạng: 'Text_PhoBERT' và 'Text_TFIDF'.
+4. Khử trùng lặp nội dung Clean Text để triệt tiêu Data Leakage khi chia tập Train/Test.
+5. Xuất file Excel định dạng chuẩn 2 sheet: FINAL_DATA và REMOVED_DATA kèm styling chuyên nghiệp.
 """
 
-import re
+import argparse
 import sys
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
+import openpyxl
 import pandas as pd
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 
@@ -38,32 +38,150 @@ sys.path.insert(0, str(ROOT_DIR))
 
 from preprocess_comments import VietnameseCommentPreprocessor
 
-_inter_dir = ROOT_DIR / "data" / "facebook" / "intermediate"
-_proc_dir = ROOT_DIR / "data" / "facebook" / "processed"
-
-# Danh sách ứng viên file đầu vào theo thứ tự ưu tiên
-_in_cand = [
-    _proc_dir / "final_labeled_clean_v2.xlsx",
-    _inter_dir / "final_labeled_fixed.xlsx",
-    _inter_dir / "all_comments_reviewed_v2.xlsx",
-    _inter_dir / "final_labeled.xlsx",
-]
-INPUT_FILE = next((p for p in _in_cand if p.exists()), _in_cand[0])
-OUTPUT_FILE = _proc_dir / "final_labeled_clean_v3.xlsx"
 
 
-def style_worksheet(ws, cols_count: int, row_count: int, col_widths: dict):
-    """Định dạng worksheet Excel chuyên nghiệp."""
+TIKTOK_INTERMEDIATE_DIR = ROOT_DIR / "data" / "tiktok" / "intermediate"
+TIKTOK_PROCESSED_DIR = ROOT_DIR / "data" / "tiktok" / "processed"
+FACEBOOK_INTERMEDIATE_DIR = ROOT_DIR / "data" / "facebook" / "intermediate"
+FACEBOOK_PROCESSED_DIR = ROOT_DIR / "data" / "facebook" / "processed"
+
+# Cấu hình nguồn dữ liệu riêng biệt cho từng nền tảng
+PLATFORM_CONFIGS: Dict[str, Dict[str, Any]] = {
+    "tiktok": {
+        "name": "TIKTOK",
+        "candidates": (
+            TIKTOK_INTERMEDIATE_DIR / "tiktok_comments_reviewed_v2.xlsx",
+            TIKTOK_PROCESSED_DIR / "final_labeled_clean_v2.xlsx",
+            TIKTOK_INTERMEDIATE_DIR / "final_labeled_fixed.xlsx",
+            TIKTOK_INTERMEDIATE_DIR / "Danh_sach_kiem_tra_nhan.xlsx",
+            ROOT_DIR / "data" / "tiktok" / "tiktok_comments_annotated.xlsx",
+        ),
+        "output_file": TIKTOK_PROCESSED_DIR / "final_labeled_clean_v3.xlsx",
+    },
+    "facebook": {
+        "name": "FACEBOOK",
+        "candidates": (
+            FACEBOOK_PROCESSED_DIR / "final_labeled_clean_v2.xlsx",
+            FACEBOOK_INTERMEDIATE_DIR / "final_labeled.xlsx",
+            FACEBOOK_INTERMEDIATE_DIR / "all_comments_reviewed_v2.xlsx",
+            FACEBOOK_INTERMEDIATE_DIR / "final_labeled_fixed.xlsx",
+        ),
+        "output_file": FACEBOOK_PROCESSED_DIR / "final_labeled_clean_v3.xlsx",
+    },
+}
+
+# Danh sách tên cột ứng viên cho từng thuộc tính
+RAW_TEXT_COLUMN_CANDIDATES: Tuple[str, ...] = (
+    "RAW Text", "Nội dung RAW", "Nội dung", "Comment", "Text RAW", "comment_text",
+)
+
+ID_COLUMN_CANDIDATES: Tuple[str, ...] = (
+    "Comment ID", "Row ID", "ID", "comment_id",
+)
+
+LABEL_COLUMN_CANDIDATES: Tuple[str, ...] = (
+    "Final Label", "Final Sentiment", "Sentiment", "Nhãn", "sentiment", "Label",
+)
+
+FINAL_DATA_COLUMNS: Tuple[str, ...] = (
+    "Comment ID", "RAW Text", "Clean Text", "Text_PhoBERT", "Text_TFIDF", "Final Label",
+)
+
+REMOVED_DATA_COLUMNS: Tuple[str, ...] = (
+    "Comment ID", "RAW Text", "Comment Type", "Status", "Lý do loại",
+)
+
+# Cấu hình giao diện Excel
+EXCEL_HEADER_BG_COLOR = "1F4E79"
+EXCEL_HEADER_FONT_COLOR = "FFFFFF"
+EXCEL_BORDER_COLOR = "D9D9D9"
+
+FINAL_COL_WIDTHS: Dict[str, int] = {
+    "A": 12, "B": 45, "C": 45, "D": 45, "E": 45, "F": 14,
+}
+REMOVED_COL_WIDTHS: Dict[str, int] = {
+    "A": 12, "B": 50, "C": 14, "D": 12, "E": 50,
+}
+
+
+
+def find_matched_column(df: pd.DataFrame, candidates: Tuple[str, ...]) -> Optional[str]:
+    """Tìm cột đầu tiên khớp với danh sách ứng viên (Guard clause - Early return)."""
+    for col in candidates:
+        if col in df.columns:
+            return col
+    return None
+
+
+def extract_raw_datasets(input_path: Path) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Đọc và phân tách dữ liệu ban đầu thành 2 tập: FINAL_DATA (KEEP) và REMOVED_DATA.
+    Flattened logic loại bỏ if/else lồng nhau.
+    """
+    xls = pd.ExcelFile(input_path)
+
+    if "FINAL_DATA" in xls.sheet_names:
+        df_final = pd.read_excel(input_path, sheet_name="FINAL_DATA")
+    elif "ALL_REVIEWED" in xls.sheet_names:
+        df_final = pd.read_excel(input_path, sheet_name="ALL_REVIEWED")
+    else:
+        df_final = pd.read_excel(input_path, sheet_name=0)
+
+    # Nếu nguồn vào đã có sheet REMOVED_DATA riêng
+    if "REMOVED_DATA" in xls.sheet_names:
+        df_removed = pd.read_excel(input_path, sheet_name="REMOVED_DATA")
+        return df_final, df_removed
+
+    # Nếu nguồn vào có cột trạng thái (Final Status hoặc filter_status)
+    status_col = find_matched_column(df_final, ("Final Status", "filter_status", "Status"))
+    if status_col:
+        mask_keep = df_final[status_col].astype(str).str.upper() == "KEEP"
+        df_removed = df_final[~mask_keep].copy()
+        df_final = df_final[mask_keep].copy()
+        return df_final, df_removed
+
+    # Trường hợp mặc định
+    df_removed = pd.DataFrame(columns=list(REMOVED_DATA_COLUMNS))
+    return df_final, df_removed
+
+
+def standardize_dataframe_schema(df: pd.DataFrame) -> Tuple[pd.DataFrame, str]:
+    """Chuẩn hóa tên cột ID, RAW Text và Nhãn nhãn theo schema chuẩn."""
+    # 1. Chuẩn hóa ID
+    id_col = find_matched_column(df, ID_COLUMN_CANDIDATES)
+    if not id_col:
+        df["Comment ID"] = range(1, len(df) + 1)
+    elif id_col != "Comment ID":
+        df["Comment ID"] = df[id_col]
+
+    # 2. Chuẩn hóa nhãn cảm xúc
+    label_col = find_matched_column(df, LABEL_COLUMN_CANDIDATES)
+    if label_col and label_col != "Final Label":
+        df["Final Label"] = df[label_col]
+
+    # 3. Chuẩn hóa nội dung thô
+    raw_col = find_matched_column(df, RAW_TEXT_COLUMN_CANDIDATES)
+    if not raw_col:
+        raise KeyError(f"Không tìm thấy cột nội dung bình luận trong: {df.columns.tolist()}")
+
+    df["RAW Text"] = df[raw_col].fillna("").astype(str)
+    return df, "RAW Text"
+
+
+def style_worksheet(ws, cols_count: int, row_count: int, col_widths: Dict[str, int]) -> None:
+    """Áp dụng định dạng chuyên nghiệp cho worksheet Excel."""
     ws.freeze_panes = "A2"
     ws.auto_filter.ref = ws.dimensions
 
-    header_fill = PatternFill(start_color="1F4E79", end_color="1F4E79", fill_type="solid")
-    header_font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+    header_fill = PatternFill(
+        start_color=EXCEL_HEADER_BG_COLOR, end_color=EXCEL_HEADER_BG_COLOR, fill_type="solid"
+    )
+    header_font = Font(name="Calibri", size=11, bold=True, color=EXCEL_HEADER_FONT_COLOR)
     border_thin = Border(
-        left=Side(style="thin", color="D9D9D9"),
-        right=Side(style="thin", color="D9D9D9"),
-        top=Side(style="thin", color="D9D9D9"),
-        bottom=Side(style="thin", color="D9D9D9"),
+        left=Side(style="thin", color=EXCEL_BORDER_COLOR),
+        right=Side(style="thin", color=EXCEL_BORDER_COLOR),
+        top=Side(style="thin", color=EXCEL_BORDER_COLOR),
+        bottom=Side(style="thin", color=EXCEL_BORDER_COLOR),
     )
 
     for col_idx in range(1, cols_count + 1):
@@ -80,168 +198,150 @@ def style_worksheet(ws, cols_count: int, row_count: int, col_widths: dict):
             cell.border = border_thin
 
 
-def main():
+def run_cleaning_pipeline(
+    input_file: Path,
+    output_file: Path,
+) -> None:
+    """Thực thi pipeline làm sạch và tiền xử lý NLP toàn diện."""
     print("=" * 80)
-    print("BẮT ĐẦU CHẠY PIPELINE TIỀN XỬ LÝ TOÀN DIỆN V3 (FACEBOOK DATASET)")
+    print("BẮT ĐẦU CHẠY PIPELINE TIỀN XỬ LÝ TOÀN DIỆN V3 (CLEAN ARCHITECTURE)")
     print("=" * 80)
 
-    if not INPUT_FILE.exists():
-        raise FileNotFoundError(f"Không tìm thấy file nguồn: {INPUT_FILE}")
+    if not input_file.exists():
+        raise FileNotFoundError(f"Không tìm thấy file nguồn: {input_file}")
 
-    print(f"[Đọc dữ liệu] Nguồn vào: {INPUT_FILE}")
-    xls = pd.ExcelFile(INPUT_FILE)
-    if "FINAL_DATA" in xls.sheet_names:
-        df_final = pd.read_excel(INPUT_FILE, sheet_name="FINAL_DATA")
-    else:
-        df_final = pd.read_excel(INPUT_FILE, sheet_name=0)
-
-    if "REMOVED_DATA" in xls.sheet_names:
-        df_removed = pd.read_excel(INPUT_FILE, sheet_name="REMOVED_DATA")
-    else:
-        df_removed = pd.DataFrame(columns=["Comment ID", "RAW Text", "Comment Type", "Status", "Lý do loại"])
-
+    print(f"[Đọc dữ liệu] Nguồn vào: {input_file}")
+    df_final, df_removed = extract_raw_datasets(input_file)
     print(f"  -> FINAL_DATA ban đầu   : {len(df_final):,} dòng")
     print(f"  -> REMOVED_DATA ban đầu : {len(df_removed):,} dòng")
 
+    # 1. Chuẩn hóa Schema
+    df_final, raw_col = standardize_dataframe_schema(df_final)
 
-    # BƯỚC 1: DI CHUYỂN CÂU QUÁ NGẮN & KHÔI PHỤC DÒNG CẦN THIẾT
-    print("\n--- BƯỚC 1: Lọc dữ liệu thô & Khôi phục mẫu đặc thù ---")
-    # Khôi phục ID 1602 nếu đang nằm nhầm bên REMOVED_DATA
-    if "Comment ID" in df_removed.columns and 1602 in df_removed["Comment ID"].values and 1602 not in df_final["Comment ID"].values:
-        row_1602 = df_removed[df_removed["Comment ID"] == 1602].iloc[0]
-        new_row_1602 = {
-            "Comment ID": 1602,
-            "RAW Text": row_1602["RAW Text"],
-            "Clean Text": "dep chai coi_di",
-            "Final Label": "Positive",
-        }
-        df_final = pd.concat([df_final, pd.DataFrame([new_row_1602])], ignore_index=True)
-        df_removed = df_removed[df_removed["Comment ID"] != 1602].copy()
-        print("  -> [Khôi phục] Đã chuyển ID 1602 từ REMOVED_DATA về lại FINAL_DATA.")
+    # 2. Tiền xử lý NLP
+    print("\n--- Tiền xử lý NLP tiếng Việt toàn diện (PhoBERT & TF-IDF) ---")
+    preprocessor = VietnameseCommentPreprocessor()
 
-    # Di chuyển các câu quá ngắn, phụ thuộc ngữ cảnh cha
-    move_ids = [811, 879, 880, 3757]
-    if "Comment ID" in df_final.columns:
-        mask_move = df_final["Comment ID"].isin(move_ids)
-        rows_to_move = df_final[mask_move].copy()
-        if len(rows_to_move) > 0:
-            new_removed_records = []
-            for _, r in rows_to_move.iterrows():
-                new_removed_records.append({
-                    "Comment ID": r["Comment ID"],
-                    "RAW Text": r.get("RAW Text", ""),
-                    "Comment Type": "Reply",
-                    "Status": "REMOVE",
-                    "Lý do loại": "Câu quá ngắn, phụ thuộc ngữ cảnh",
-                })
-            df_removed = pd.concat([df_removed, pd.DataFrame(new_removed_records)], ignore_index=True)
-            df_final = df_final[~mask_move].copy()
-            print(f"  -> Đã di chuyển {len(rows_to_move)} dòng ngắn [811, 879, 880, 3757] sang REMOVED_DATA.")
-
-    # Xử lý NaN
-    if "RAW Text" in df_removed.columns:
-        df_removed["RAW Text"] = df_removed["RAW Text"].fillna("[Bình luận trống]")
-
-    # BƯỚC 2: KHÔI PHỤC TIỀN TỐ TÊN RIÊNG & ĐỒNG BỘ NHÃN MÂU THUẪN
-    print("\n--- BƯỚC 2: Khôi phục tiền tố tên riêng & Sửa nhãn mâu thuẫn ---")
-    if "Comment ID" in df_final.columns and "RAW Text" in df_final.columns:
-        idx_347 = df_final[df_final["Comment ID"] == 347].index
-        if len(idx_347) > 0:
-            df_final.loc[idx_347, "Final Label"] = "Positive"
-            print("  -> Đã cập nhật nhãn ID 347 sang 'Positive' (thống nhất với ID 414).")
-
-        # Cột nhãn chuẩn hóa
-        if "Final Label" not in df_final.columns and "Sentiment" in df_final.columns:
-            df_final["Final Label"] = df_final["Sentiment"]
-
-    # BƯỚC 3: TIỀN XỬ LÝ NLP TOÀN DIỆN (CHUYÊN BIỆT CHO PHOBERT & TF-IDF)
-    print("\n--- BƯỚC 3: Tiền xử lý NLP tiếng Việt toàn diện (PhoBERT & TF-IDF) ---")
-    p = VietnameseCommentPreprocessor()
-
-    phobert_texts = []
-    tfidf_texts = []
-
-    raw_col = "RAW Text" if "RAW Text" in df_final.columns else "Comment"
-    print(f"  -> Áp dụng tiền xử lý tự động đồng nhất cho toàn bộ {len(df_final):,} dòng...")
-    for _, r in df_final.iterrows():
-        raw = str(r[raw_col] or "").strip()
-        phobert_texts.append(p.preprocess_phobert(raw))
-        tfidf_texts.append(p.preprocess_tfidf(raw))
+    raw_texts = df_final[raw_col].tolist()
+    phobert_texts: List[str] = [preprocessor.preprocess_phobert(t) for t in raw_texts]
+    tfidf_texts: List[str] = [preprocessor.preprocess_tfidf(t) for t in raw_texts]
 
     df_final["Text_PhoBERT"] = phobert_texts
     df_final["Text_TFIDF"] = tfidf_texts
     df_final["Clean Text"] = tfidf_texts
 
-    # BƯỚC 4: KHỬ TRÙNG LẶP TRÁNH DATA LEAKAGE KHI CHIA TẬP HUẤN LUYỆN
-    print("\n--- BƯỚC 4: Khử trùng lặp nội dung Clean Text (chống Data Leakage) ---")
-    is_dup = df_final.duplicated(subset=["Clean Text"], keep="first")
-    df_unique = df_final[~is_dup].copy()
-    df_dups = df_final[is_dup].copy()
+    # 3. Khử trùng lặp tránh Data Leakage
+    print("\n--- Khử trùng lặp nội dung Clean Text (chống Data Leakage) ---")
+    is_duplicate = df_final.duplicated(subset=["Clean Text"], keep="first")
+    df_unique = df_final[~is_duplicate].copy()
+    df_duplicates = df_final[is_duplicate].copy()
 
     print(f"  -> Số dòng duy nhất giữ lại: {len(df_unique):,} dòng")
-    print(f"  -> Số dòng trùng lặp phát hiện: {len(df_dups):,} dòng")
+    print(f"  -> Số dòng trùng lặp phát hiện: {len(df_duplicates):,} dòng")
 
-    removed_records = []
-    for _, r in df_dups.iterrows():
-        removed_records.append({
-            "Comment ID": r["Comment ID"],
-            "RAW Text": r[raw_col],
-            "Comment Type": "Comment",
-            "Status": "REMOVE",
-            "Lý do loại": f"Bản ghi trùng lặp nội dung Clean Text ('{r['Clean Text'][:50]}...') (loại bỏ để chống data leakage khi chia train/test)",
-        })
+    if not df_duplicates.empty:
+        leakage_records = [
+            {
+                "Comment ID": r["Comment ID"],
+                "RAW Text": r[raw_col],
+                "Comment Type": "Comment",
+                "Status": "REMOVE",
+                "Lý do loại": f"Trùng lặp Clean Text ('{r['Clean Text'][:50]}...') (loại bỏ chống data leakage)",
+            }
+            for _, r in df_duplicates.iterrows()
+        ]
+        df_removed = pd.concat([df_removed, pd.DataFrame(leakage_records)], ignore_index=True)
 
-    if removed_records:
-        df_new_removed = pd.DataFrame(removed_records)
-        df_removed = pd.concat([df_removed, df_new_removed], ignore_index=True)
-
-    # BƯỚC 5: XUẤT BẢN FILE DATASET HOÀN THIỆN
-    print("\n--- BƯỚC 5: Xuất bản dataset hoàn chỉnh và định dạng ---")
+    # 4. Sắp xếp và định dạng cột cuối cùng
     df_unique = df_unique.sort_values("Comment ID").reset_index(drop=True)
     df_removed = df_removed.sort_values("Comment ID").reset_index(drop=True)
 
-    final_cols = ["Comment ID", raw_col, "Clean Text", "Text_PhoBERT", "Text_TFIDF", "Final Label"]
-    final_cols = [c for c in final_cols if c in df_unique.columns]
-    df_unique = df_unique[final_cols]
+    active_final_cols = [c for c in FINAL_DATA_COLUMNS if c in df_unique.columns]
+    df_unique = df_unique[active_final_cols]
 
-    rem_cols = ["Comment ID", raw_col, "Comment Type", "Status", "Lý do loại"]
-    for col in rem_cols:
+    for col in REMOVED_DATA_COLUMNS:
         if col not in df_removed.columns:
             df_removed[col] = ""
-    df_removed = df_removed[rem_cols]
+    df_removed = df_removed[list(REMOVED_DATA_COLUMNS)]
 
     print(f"  -> Tổng số dòng FINAL_DATA v3  : {len(df_unique):,} dòng")
     print(f"  -> Tổng số dòng REMOVED_DATA v3: {len(df_removed):,} dòng")
 
-    # Ghi file Excel với cơ chế fallback nếu file đang mở
-    target_out = OUTPUT_FILE
+    # 5. Xuất file Excel kèm cơ chế Fallback
+    target_output = output_file
     try:
-        with pd.ExcelWriter(target_out, engine="openpyxl") as writer:
+        with pd.ExcelWriter(target_output, engine="openpyxl") as writer:
             df_unique.to_excel(writer, sheet_name="FINAL_DATA", index=False)
             df_removed.to_excel(writer, sheet_name="REMOVED_DATA", index=False)
     except PermissionError:
-        target_out = _proc_dir / "final_labeled_clean_v3_new.xlsx"
-        print(f"[CẢNH BÁO] File đang bị mở trong Excel. Đang lưu tạm vào: {target_out}")
-        with pd.ExcelWriter(target_out, engine="openpyxl") as writer:
+        target_output = output_file.parent / f"{output_file.stem}_new.xlsx"
+        print(f"[CẢNH BÁO] File bị khóa do mở trong Excel. Lưu tạm vào: {target_output}")
+        with pd.ExcelWriter(target_output, engine="openpyxl") as writer:
             df_unique.to_excel(writer, sheet_name="FINAL_DATA", index=False)
             df_removed.to_excel(writer, sheet_name="REMOVED_DATA", index=False)
 
-    import openpyxl
-    wb = openpyxl.load_workbook(target_out)
-    style_worksheet(
-        wb["FINAL_DATA"],
-        cols_count=len(final_cols),
-        row_count=len(df_unique),
-        col_widths={"A": 12, "B": 45, "C": 45, "D": 45, "E": 45, "F": 14},
+    wb = openpyxl.load_workbook(target_output)
+    style_worksheet(wb["FINAL_DATA"], len(active_final_cols), len(df_unique), FINAL_COL_WIDTHS)
+    style_worksheet(wb["REMOVED_DATA"], len(REMOVED_DATA_COLUMNS), len(df_removed), REMOVED_COL_WIDTHS)
+    wb.save(target_output)
+
+    print(f"\n[THÀNH CÔNG] Đã xuất dataset chuẩn tại: {target_output}")
+
+
+def parse_arguments() -> argparse.Namespace:
+    """Xử lý các tham số dòng lệnh để chạy riêng biệt từng nền tảng."""
+    parser = argparse.ArgumentParser(
+        description="Pipeline tiền xử lý NLP bình luận mạng xã hội (Facebook & TikTok)"
     )
-    style_worksheet(
-        wb["REMOVED_DATA"],
-        cols_count=len(rem_cols),
-        row_count=len(df_removed),
-        col_widths={"A": 12, "B": 50, "C": 14, "D": 12, "E": 50},
+    parser.add_argument(
+        "--source",
+        choices=["facebook", "tiktok"],
+        default="tiktok",
+        help="Chọn nền tảng dữ liệu cần xử lý (mặc định: tiktok)",
     )
-    wb.save(target_out)
-    print(f"\n[THÀNH CÔNG] Đã xuất dataset chuẩn tại: {target_out}")
+    parser.add_argument(
+        "--input",
+        type=str,
+        default="",
+        help="Đường dẫn file đầu vào tùy chỉnh (nếu muốn chạy file chỉ định)",
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        default="",
+        help="Đường dẫn file đầu ra tùy chỉnh",
+    )
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_arguments()
+    platform_cfg = PLATFORM_CONFIGS[args.source]
+    platform_name = platform_cfg["name"]
+
+    print(f"\n[KHỞI ĐỘNG] Chế độ tiền xử lý nền tảng: {platform_name}")
+
+    # Xác định file đầu vào
+    if args.input:
+        input_file = Path(args.input)
+    else:
+        input_file = next((p for p in platform_cfg["candidates"] if p.exists()), None)
+
+    if not input_file or not input_file.exists():
+        raise FileNotFoundError(
+            f"Không tìm thấy file nguồn khả dụng cho {platform_name}! "
+            f"Đã tìm kiếm: {[str(p.name) for p in platform_cfg['candidates']]}"
+        )
+
+    # Xác định file đầu ra
+    if args.output:
+        output_file = Path(args.output)
+    else:
+        output_file = platform_cfg["output_file"]
+
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+
+    run_cleaning_pipeline(input_file=input_file, output_file=output_file)
 
 
 if __name__ == "__main__":
